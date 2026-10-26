@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "boundary": "H1",
+  "source_commit": "0acf2f53b77f72a3241cb162f44fc073fc986d02",
+  "publication_ready": false,
+  "files": [
+    {
+      "path": ".gitignore",
+      "source_path": ".gitignore",
+      "sha256": "8d2190d1c50acc282723b338056f5676a8d196067adee304a56a520b0bb13133",
+      "bytes": 183
+    },
+    {
+      "path": "LICENSE",
+      "source_path": "LICENSE",
+      "sha256": "57c8ff33c9c0cfc3ef00e650a1cc910d7ee479a8bc509f6c9209a7c2a11399d6",
+      "bytes": 34520
+    },
+    {
+      "path": "README.md",
+      "source_path": "contributions/host-core/README.md",
+      "sha256": "aee3328cfaee182bb66a1c049516718cbbf7e37ca0e340d1171a59f20d617645",
+      "bytes": 2117
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "source_path": "THIRD_PARTY_NOTICES.md",
+      "sha256": "c4fac2973956695e0caaaa26ef28be0953dca317ee5eac57efc16242226c3f3a",
+      "bytes": 4407
+    },
+    {
+      "path": "dependency-notices.json",
+      "source_path": "dependency-notices.json",
+      "sha256": "6a18c209e9e7d3c483173d25da17d3a85fbfde37422da61339176efb1b8c532e",
+      "bytes": 96218
+    },
+    {
+      "path": "licenses/Marlin-GPL-3.0.txt",
+      "source_path": "licenses/Marlin-GPL-3.0.txt",
+      "sha256": "98fb65289b5c3f1fe1ef6d9a909c450d649bf90bc18dcbccb9d0712539f1e725",
+      "bytes": 35149
+    },
+    {
+      "path": "licenses/OctoPrint-LICENSE.txt",
+      "source_path": "licenses/OctoPrint-LICENSE.txt",
+      "sha256": "57c8ff33c9c0cfc3ef00e650a1cc910d7ee479a8bc509f6c9209a7c2a11399d6",
+      "bytes": 34520
+    },
+    {
+      "path": "licenses/mcp-LICENSE.txt",
+      "source_path": "licenses/mcp-LICENSE.txt",
+      "sha256": "5e13dbbc1d120fc2a03cecde7c91424ae2d7de11b63d58ded2f4431e261ee50d",
+      "bytes": 1071
+    },
+    {
+      "path": "licenses/openai-LICENSE.txt",
+      "source_path": "licenses/openai-LICENSE.txt",
+      "sha256": "636eb7d79da9bb6d515a4b3fd417aa26679eb3cf16396ddab4bc55fa74e616e4",
+      "bytes": 11336
+    },
+    {
+      "path": "licenses/pytest-LICENSE.txt",
+      "source_path": "licenses/pytest-LICENSE.txt",
+      "sha256": "ca836a5f9ecca3b2f350230faa20a48fb8b145653b5568d784862df864706b9b",
+      "bytes": 1091
+    },
+    {
+      "path": "printer_control/__init__.py",
+      "source_path": "printer_control/__init__.py",
+      "sha256": "f3dc75a2ef55cf5c6c49462327a2a5b9e0346362a6ac8798c79f2effbed60025",
+      "bytes": 78
+    },
+    {
+      "path": "printer_control/checkpoint.py",
+      "source_path": "printer_control/checkpoint.py",
+      "sha256": "6ded40e93ad3f0ea6493c0c4160bead895b5053d21e3d5088686ef89d9d92eb9",
+      "bytes": 6489
+    },
+    {
+      "path": "printer_control/devices.py",
+      "source_path": "printer_control/devices.py",
+      "sha256": "e07fda31256425d3179bbfa8f71b78ed5e64472f3ccf399669e0a76ea12f3a92",
+      "bytes": 2486
+    },
+    {
+      "path": "printer_control/journal.py",
+      "source_path": "printer_control/journal.py",
+      "sha256": "6d75f5d2a4553077d9bbe19c485389aebb9fec9f6f1e6383a0681dd24bc49ea1",
+      "bytes": 13407
+    },
+    {
+      "path": "printer_control/ownership.py",
+      "source_path": "printer_control/ownership.py",
+      "sha256": "7064738771a4c87d4fb3e258242b09b88f7eec080cc6be613576ccacdf6a1132",
+      "bytes": 2297
+    },
+    {
+      "path": "printer_control/service.py",
+      "source_path": "printer_control/service.py",
+      "sha256": "8f759261aa3d6ce1ba57e8190664520d78298154a6a765fc5cf7a959bdb4a2c1",
+      "bytes": 11336
+    },
+    {
+      "path": "pyproject.toml",
+      "source_path": "contributions/host-core/pyproject.toml",
+      "sha256": "98aaaa675647eb038917d90976d83a09d6c064c532496155936891477632ea65",
+      "bytes": 476
+    },
+    {
+      "path": "tests/test_checkpoint.py",
+      "source_path": "tests/test_checkpoint.py",
+      "sha256": "790657e17974dd6834020d7dbae4c9da3353acb5363255a28a3b178a6c1bfc92",
+      "bytes": 4174
+    },
+    {
+      "path": "tests/test_devices.py",
+      "source_path": "tests/test_devices.py",
+      "sha256": "15c8296b4042045309688c9eaf2a12aaa8e26cffd908b32fc417c5bbfff09722",
+      "bytes": 2566
+    },
+    {
+      "path": "tests/test_journal.py",
+      "source_path": "tests/test_journal.py",
+      "sha256": "337c9d182eabd74de03fa660d799237a4e5895aeb214c472e38ecf397cf36a20",
+      "bytes": 3960
+    },
+    {
+      "path": "tests/test_service.py",
+      "source_path": "tests/test_service.py",
+      "sha256": "b4a9db9ee8e61887bec0e7daca5b13d235e27446b62dd67c573c7e5e826b3f6f",
+      "bytes": 10494
+    }
+  ]
+}
