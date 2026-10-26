@@ -290,3 +290,45 @@ be treated as a discontinuity. This is not a lossless hardware audit guarantee.
 The integration is currently limited to `hot_console`; cold/native-prompt tools
 retain their existing scope. Physical USB ownership, OS isolation, commissioning,
 controlled reset/reconnection and continuous physical telemetry still need work.
+
+## Constructing a backend before device access
+
+For a backend that can open hardware, use
+`OperationService.from_backend_factory(journal_path, factory, readiness_check=check)`.
+The existing constructor accepts an already-created backend; its construction
+cannot protect an earlier device open. Current virtual fixtures retain that path.
+
+The factory path first claims the canonical journal lease, rejects a camera-bound
+journal, recovers unfinished receipts to unknown and builds immutable
+`StartupState` with history/recovery counts and thermal/restoration flags. The
+trusted readiness checker runs before backend construction and returns a typed
+`StartupAdmission(evidence_id, prior_state_reconciled)`. A completed start receipt
+is still history; it does not prove that the printer is now idle. History requires
+an explicit independent reconciliation decision. A bare boolean, blank/oversize
+reference or absent reconciliation prevents factory invocation.
+
+The evidence ID is only a reference, not a physical readiness certificate. The
+checker must actually verify assignment/exclusions, board/processor/screen and
+recovery compatibility, current machine/sensor state, clearance and device-access
+policy without opening the device. It is operator-side integration code and is
+not exposed as an LLM approval or override tool. No real checker is supplied or
+activated while those facts remain unresolved.
+
+Only then does `factory(lease, startup_state, admission)` construct the backend,
+using that same service lease for `open_assigned_transport` and subsequent I/O.
+Authority is checked again after readiness assessment. The factory must close
+partially created resources if it raises; a successfully returned backend is
+closed before the service releases its lease. Existing unknown receipts and
+thermal/restoration gates are not cleared, and old checkpoints never gain new
+resume authority from this admission.
+
+The Linux software-terminal integration exercises factory → owned transport →
+shared frame writer with the same lease. It does not qualify real USB drivers,
+modem/reset behavior, firmware commissioning or a production physical sender.
+See the [goal audit](goal-audit.md) and [separate printing plan](printing-qualification-plan.md).
+
+Backend construction intent is committed before invoking the factory, even if no
+ordinary operation receipt exists. A failed or interrupted open therefore leaves
+history for the next readiness check. The immutable intent is not proof that a
+connection succeeded or shutdown completed. Printer startup journals and camera
+bindings are rejected in the opposite service role before receipt recovery.

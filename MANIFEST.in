@@ -34,10 +34,12 @@ include docs/blocker-matrix.md
 include docs/camera-interface.md
 include docs/contributions.md
 include docs/firmware-stack-builds.md
+include docs/goal-audit.md
 include docs/interface.md
 include docs/mcp.md
 include docs/model-demo.md
 include docs/pause-resume.md
+include docs/printing-qualification-plan.md
 include docs/prior-art.md
 include docs/prompt-backend.md
 include docs/prompt-channel.md
@@ -181,6 +183,7 @@ include tests/test_resend_guard.py
 include tests/test_restore_effects.py
 include tests/test_restored_resume.py
 include tests/test_service.py
+include tests/test_service_startup.py
 include tests/test_shared_receiver.py
 include tests/test_shared_writer.py
 include tests/test_shutdown_grant.py
@@ -231,12 +234,14 @@ include validation/host-qualification-boundary-stage98.json
 include validation/host-virtual-adapters-boundary-stage95.json
 include validation/host-virtual-runtime-boundary-stage96.json
 include validation/linux-package-stage111.json
+include validation/linux-package-stage118.json
 include validation/machine-events-stage84.json
 include validation/macos-discovery-stage108.json
 include validation/model-hot-stage75.json
 include validation/native-handoff-stage81.json
 include validation/native-thermal-stage78.json
 include validation/native-watch-stage79.json
+include validation/service-startup-stage118.json
 include validation/streamed-host-restart-stage109.json
 include validation/transport-readiness-stage110.json
 include validation/tty-ownership-stage89.json

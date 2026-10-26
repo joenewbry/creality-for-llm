@@ -1,6 +1,6 @@
 # Blocker qualification matrix
 
-Matrix updated through stage 81, October 25, 2026. Passing a host rejection
+Matrix reconciled through the October 26 goal audit. Later sections retain their pinned evidence scopes. Passing a host rejection
 check does not qualify physical recovery. The protected printer is excluded from
 all commissioning. Evidence paths below refer to local, non-public test records.
 
@@ -8,9 +8,9 @@ all commissioning. Evidence paths below refer to local, non-public test records.
 | --- | --- | --- | --- |
 | Generic user wait | Native handler plus virtual stream blocks at move 10; exact prompt response clears wait; qualified pause/resume finishes 80 moves once | Compiled native handlers, virtual sender, actual MCP client and model demonstration | Full controller/screen and development hardware qualification |
 | Runout represented as generic continue | Native process retains runout; response receives physical-action rejection; host retains requirement across inspection and refuses another response without writing | Native handler with sensor stub, journaled host adapter; tests-stage33-final.xml | Actual reload evidence and post-intervention recovery; sensor behavior on development printer |
-| Firmware-reported homing failure | Inject `Error:Homing failed, printer halted` and halt report while paused; sender disconnects, status retains fault, resume/cancel are refused with unknown device outcome | Synthetic serial reports through real virtual sender; tests-stage35-faults.xml | Real firmware homing-failure detection and timeout logic; normal qualified homing only on hardware |
-| Firmware-reported probe failure | Inject probing-failed/halt reports while paused; retain fault, reject resume and avoid claiming confirmed stop | Synthetic serial reports through real virtual sender; tests-stage35-faults.xml | Actual probe-state handler tests; verified normal probing on hardware |
-| Firmware-reported heating failure | Inject heating-failed/halt reports while paused; retain fault and reject resume | Synthetic serial reports, no simulated heating or real heater use; tests-stage35-faults.xml | Actual firmware heating-wait timeout/cancel and detection tests; scripted pause reheat is covered below |
+| Firmware-reported homing failure | Inject `Error:Homing failed, printer halted` and halt report while paused; sender disconnects, status retains fault, resume/cancel are refused with unknown device outcome | Synthetic serial reports through real virtual sender; tests-stage35-faults.xml | Native validation is covered below; full G28/caller/interrupt behavior and qualified physical homing remain |
+| Firmware-reported probe failure | Inject probing-failed/halt reports while paused; retain fault, reject resume and avoid claiming confirmed stop | Synthetic serial reports through real virtual sender; tests-stage35-faults.xml | Extracted probe-result handling is covered below; complete caller behavior and physical probing remain |
+| Firmware-reported heating failure | Inject heating-failed/halt reports while paused; retain fault and reject resume | Synthetic serial reports, no simulated heating or real heater use; tests-stage35-faults.xml | Extracted waits/watch/runaway paths are covered below; full manager integration, token-safe active-wait cancellation and physical qualification remain |
 | Thermal fault | Virtual reports retain fault and refuse resume; native runaway/error/disable functions detect a sustained drop and clear modeled targets, PWM and pins | Virtual debug injection plus 18 extracted native nozzle/bed cases; tests-stage35-faults.xml and native-thermal-stage78.json | Full manager/sensor/interrupt/kill integration and physical shutdown remain unqualified; never induce physical runaway |
 | Short pause and explicit resume | Queue barrier, position/modal checkpoint, unchanged paused movement count, explicit resume, once/in-order completion | Virtual sender and actual model-selected operations | Cold hardware rehearsal after commissioning; real extrusion later |
 | Extended pause / clock correction | +61 simulated policy seconds expires checkpoint; clock correction and another pause request cannot renew it; resume refused | Accelerated virtual policy; tests-stage31-renewal.xml | Software standby/reheat now covered below; physical thermal/motor policy and endurance qualification remain |
@@ -23,7 +23,7 @@ all commissioning. Evidence paths below refer to local, non-public test records.
 | Controller reset during streaming | Actual virtual reset clears buffer; post-bootstrap start banner changes generation and invalidates checkpoint; outcome unknown, mutations refused and no start replay | Virtual reset through sender receive hook; tests-stage39.xml | Physical reset behavior, controlled reset tool and reconstruction of safe state before any recovery |
 | Resend of a rejected current line | Exact requested frame retransmitted; pause/resume then all 80 moves once in order | Real virtual sender with prepared pre-execution error; tests-stage40.xml | Physical error detection and relative-extrusion qualification |
 | Resend of an already executed line | Generic debug trigger previously duplicated movement; the virtual acknowledgment guard now refuses before replay and invalidates the connection | Failed stage40 logs preserved; passing stage41 guarded old-line injection | Physical acknowledgment profiles and wider resend windows remain unqualified |
-| Host restart, lost acknowledgments | Protocol/journal/prompt-channel coverage plus real child-process SIGKILL at five accept/dispatch/completion boundaries; retry does not replay | Unit/native and process-crash tests with independent file dispatch witness; no physical device | Full combined streamed-job interruption matrix at each transition, host power loss and physical transport recovery |
+| Host restart, lost acknowledgments | Protocol/journal/prompt-channel coverage plus real child-process SIGKILL at five accept/dispatch/completion boundaries; retry does not replay | Unit/native and process-crash tests with independent file dispatch witness; no physical device | Three actual virtual-sender process-death states are covered below; surviving-printer buffering, host power loss and physical transport recovery remain |
 
 No test in this matrix establishes real heating, extrusion, print quality or safe
 continued printing after a clog. The three new fault-report scenarios all begin
@@ -142,8 +142,10 @@ and invoke the recording kill stub. Other tested deadline and disarm behavior
 is preserved. Failed evidence is retained; the fix is not merely inferred from
 source. See [watch validation](../validation/native-watch-stage79.json).
 
-The fix applies cleanly to the pinned original Creality source, but this is not
-a current-upstream reproduction or an accepted contribution. It changes the
+The stage 79 fix applies cleanly to the pinned original Creality source. That
+fixture is not current-upstream qualification or acceptance; the later standalone
+[Marlin submission](../validation/upstream-submission-stage115.json) records a
+separate current-source candidate and native/cross-build evidence. It changes the
 modified firmware pin used by native tests; older validation records retain their
 original source identities. The new F401 candidate builds but has not been flashed.
 

@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-26",
+  "scope": "journal-before-backend startup and software terminal composition; no physical commissioning",
+  "source_sha256": {
+    "printer_control/service.py": "c0f481f1f2dd626005a9a862fb0d154e5813803987c2811a20a877ef65cafb6b",
+    "printer_control/camera.py": "9b408301d87de8e2dfc78cf6bbe90f112d683e939f635d82f0e5611e9e690d3e",
+    "tests/test_service_startup.py": "8a61fcb5af1e7e36f48c9ae29893e2cff7244cebe15f378eb3dc91f4e8318a2e"
+  },
+  "physical_device_access": false,
+  "real_readiness_checker_implemented": false,
+  "production_sender_implemented": false,
+  "limits": [
+    "StartupAdmission evidence reference is not proof of readiness",
+    "readiness checker is trusted integration code, not a tool-level safety override",
+    "old unknown receipts and thermal/restoration gates remain intact",
+    "factories own cleanup of partially created resources",
+    "Linux software terminals do not qualify USB driver/reset/device-isolation behavior"
+  ],
+  "mac_focused": {
+    "passed": 230,
+    "skipped": 1,
+    "scope": "startup, service, journal/device/tool, prompt/pause/restore/crash, camera and exporter checks",
+    "junit_sha256": "f0b55d611362ebda6cb0eab3f8357eec90ccfdce19cac18fe3bf280eeb357113"
+  },
+  "covered": [
+    "exclusive canonical journal lease before readiness or backend factory",
+    "durable immutable construction intent before possible device open",
+    "historical completed operations, observations or prior open intent require explicit reconciliation",
+    "camera/printer journal roles separated before recovery",
+    "ownership revalidated after readiness and intent persistence",
+    "readiness references do not clear old unknown receipts or thermal/restoration gates"
+  ],
+  "linux_full_qualification": "linux-package-stage118.json",
+  "durable_intent_before_factory": true,
+  "camera_printer_journal_role_separation": true
+}

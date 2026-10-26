@@ -1,0 +1,31 @@
+{
+  "source_commit": "3536d3f617c82ca56b896e3fc6dbd398d71848b8",
+  "source_files": 249,
+  "source_hashes_unchanged": true,
+  "installed_runtime_bytes_match_export": true,
+  "installed_imports_from_site_packages": true,
+  "python": "3.11.13 (main, Jun 12 2025, 12:27:40) [GCC 6.3.0 20170516]",
+  "os": "Linux-5.15.148-tegra-aarch64-with-glibc2.35",
+  "machine": "aarch64",
+  "locked_packages_verified": 99,
+  "firmware_commit": "98aa03248337b8039a09bbc1a29f33432aed08ca",
+  "firmware_tree": "70ec40fa273bd88cfbda442935ac275cbf9f981b",
+  "firmware_clean": true,
+  "physical_access": false,
+  "paid_model_calls": 0,
+  "schema_version": 1,
+  "scope": "current installed-package Linux software qualification; no physical commissioning",
+  "compiler": "Ubuntu Clang 15.0.7; rootless task-local compiler path",
+  "installed_suite": {
+    "tests": "986",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "310.035"
+  },
+  "junit_sha256": "3288fd3cea47b8008f5e93311423edde84f662e62172d27c0c28443a8efa6e72",
+  "log_sha256": "cfd6fe62de5bed7e4ecd926b5f152b419836885990e270fdc37536826f163a7c",
+  "command": "python -I -m pytest -q -o pythonpath=. tests tests_mcp tests_model tests_print_mcp",
+  "test_corpus_outside_source_tree": true,
+  "runtime_and_test_source_changes_after_run": false
+}

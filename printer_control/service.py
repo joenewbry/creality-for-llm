@@ -3,10 +3,11 @@
 The backend owns transport and completion criteria. Merely returning from
 dispatch never completes an operation. This service does not discover devices.
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 import math
 from pathlib import Path
 import time
+import uuid
 from typing import Protocol, ContextManager
 
 from .journal import Journal, RequestRejected
@@ -43,14 +44,35 @@ class Backend(Protocol):
     def close(self) -> None: ...
 
 
+@dataclass(frozen=True)
+class StartupState:
+    has_history: bool
+    recovered_operations: int
+    unknown_operations: int
+    thermal_recovery_required: bool
+    restoration_recovery_required: bool
+    previous_backend_attempts: int
+
+
+@dataclass(frozen=True)
+class StartupAdmission:
+    evidence_id: str
+    prior_state_reconciled: bool
+
+
 class OperationService:
     def __init__(self, journal_path, backend: Backend, *, clock=time.time, max_age=5.0):
+        self.backend = backend
+        self._initialize(journal_path, clock=clock, max_age=max_age)
+
+    def _initialize(self, journal_path, *, clock, max_age):
         if type(max_age) not in (int, float) or not math.isfinite(max_age) or max_age <= 0:
             raise ValueError('max_age must be positive and finite')
         # Resolve aliases so two spellings of one journal use the same lock.
         path = Path(journal_path).resolve()
         self.lease = ControllerLease(str(path) + '.owner').acquire()
-        self.backend, self.clock, self.max_age = backend, clock, max_age
+        self.clock, self.max_age = clock, max_age
+        self.startup_state = self.startup_admission = None
         self._pending = {}
         self._thermal_pause = None
         self._thermal_monitor = None
@@ -60,11 +82,67 @@ class OperationService:
         self._resume_workflow = None
         try:
             self.journal = Journal(path)
+            with self.journal._db() as db:
+                if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='camera_binding'").fetchone():
+                    raise RequestRejected('camera_journal_cannot_control_printer')
             self.recovered = self.journal.recover_after_restart(now=self.clock())
             self._thermal_recovery_required = self.journal.has_unreconciled_thermal_pause()
             self._restore_recovery_required = self.journal.has_unreconciled_restore()
         except BaseException:
             self.lease.close()
+            raise
+
+    @classmethod
+    def from_backend_factory(cls, journal_path, backend_factory, *, readiness_check,
+                             clock=time.time, max_age=5.0):
+        """Acquire/recover the journal before any backend construction.
+
+        readiness_check is trusted operator-side code, not an LLM approval tool.
+        It must establish assignment, hardware/recovery and current-state facts
+        without opening a device. An evidence ID is a reference, not proof of
+        physical readiness. Factories own cleanup of partially created resources.
+        Historical receipts never become live resume authority here.
+        """
+        if not callable(backend_factory) or not callable(readiness_check):
+            raise TypeError('backend factory and readiness check required')
+        service = cls.__new__(cls)
+        service.backend = None
+        service._initialize(journal_path, clock=clock, max_age=max_age)
+        try:
+            with service.journal._db() as db:
+                db.execute('CREATE TABLE IF NOT EXISTS backend_startups (attempt_id TEXT PRIMARY KEY, recorded_at REAL NOT NULL, evidence TEXT NOT NULL)')
+                attempts = db.execute('SELECT count(*) FROM backend_startups').fetchone()[0]
+                count = db.execute('SELECT count(*) FROM operations').fetchone()[0]
+                unknown = db.execute("SELECT count(*) FROM operations WHERE status='outcome_unknown'").fetchone()[0]
+                observations = db.execute('SELECT count(*) FROM observations').fetchone()[0]
+            state = StartupState(bool(count or observations or attempts), service.recovered, unknown,
+                service._thermal_recovery_required, service._restore_recovery_required, attempts)
+            service.startup_state = state
+            service.lease.check()
+            admission = readiness_check(state)
+            if (type(admission) is not StartupAdmission or type(admission.evidence_id) is not str
+                    or not 1 <= len(admission.evidence_id) <= 128 or not admission.evidence_id.strip()
+                    or type(admission.prior_state_reconciled) is not bool):
+                raise RequestRejected('invalid_startup_admission')
+            if (state.has_history or state.thermal_recovery_required or state.restoration_recovery_required) and not admission.prior_state_reconciled:
+                raise RequestRejected('startup_requires_reconciliation')
+            service.lease.check()  # a slow readiness check may have lost ownership
+            service.startup_admission = admission
+            # Durable intent precedes construction: a crash during an open may
+            # leave no ordinary operation receipt but still affect the machine.
+            now = service.clock()
+            Journal._time(now)
+            evidence = Journal._encode({'startup_state': asdict(state), 'admission': asdict(admission)})
+            with service.journal._db() as db:
+                db.execute('INSERT INTO backend_startups VALUES (?,?,?)', (uuid.uuid4().hex, now, evidence))
+            service.lease.check()  # persistence may also outlive ownership
+            backend = backend_factory(service.lease, state, admission)
+            if backend is None:
+                raise TypeError('backend factory returned no backend')
+            service.backend = backend
+            return service
+        except BaseException:
+            service.lease.close()
             raise
 
     def _fresh(self, context, now):
