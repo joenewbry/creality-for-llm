@@ -28,6 +28,8 @@ and changes the protocol observer generation; provenance keeps the original
 connection generation so the two identities are distinguishable.
 
 Capture failure or early capture closure invalidates attached job authority.
+An assigned resend request or communication timeout also retires the shared
+connection; the original received resend line remains in this history.
 Shutdown stops the sender, closes and drains capture, then closes the transport
 before releasing the controller lease. Capture timeout retains that lease.
 Physical printer shutdown is a separate operation; recorder closure does not

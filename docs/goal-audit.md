@@ -30,15 +30,15 @@ full-suite run.
 | Homing/probing | Extracted validation/probe-result functions and synthetic error reports, including probe failure without an invented halt | Full G28/G29 caller/interrupt integration or a physically qualified probe/motion envelope |
 | Queue pressure and stop | Bounded prompt/mailbox/frame paths, serialized writes and virtual stop/cancel evidence | Measured MCU response bounds or a physical emergency-stop guarantee |
 | Pause/resume | Verified virtual cursor/mode/thermal restoration and original moves once; repeated cycles, invalidation and interruption tests | Endurance/adhesion/motor holding or actual extrusion continuation. Power loss/reset/reconnect resume remains unqualified. |
-| Resend/ack uncertainty | Exact virtual resend cases, rejection of unsafe replay, durable unknown outcomes | Arbitrary physical acknowledgment windows or blind replay after reconnect |
+| Resend/ack uncertainty | Exact virtual resend cases, rejection of unsafe replay, durable unknown outcomes; the assigned sender explicitly retires on unqualified resend/timeout instead of inheriting replay or fabricated credit | Arbitrary physical acknowledgment windows or blind replay after reconnect |
 | Host death | Journal/crash boundaries and actual virtual-sender SIGKILL in running/paused/resume-dispatched states; old requests do not replay | Buffered motion or heaters on a surviving printer, safe physical reconnect or recovered print continuity |
 | Setup/calibration | Bounded software fixtures distinguish temporary changes from persistence | Physical homing, jogging, heating or calibration on this unit |
 | Camera and mount | Broker/client/owner API tests, metadata/freshness/version fences, four CAD meshes and two conditional view models | Native acquisition/control, actual clock/profile/identity, image quality, fault detection, physical fit/clearance/framing |
 | Publication | Owned explanation page, architecture, platform/repository distinctions, PR dependencies and screenshot review | Firmware commissioning or an accepted upstream release |
 
-The [current installed Linux qualification](../validation/linux-package-stage124.json)
-passes 1130 tests with zero skips at public source `2e9013a`, including the camera,
-startup, shared serial ownership, journaled assigned job/prompt tools and source-bound serial history. The earlier 986-case qualification
+The [current installed Linux qualification](../validation/linux-package-stage125.json)
+passes 1136 tests with zero skips at public source `f19377a`, including the camera,
+startup, shared serial ownership, journaled assigned job/prompt tools, source-bound serial history and explicit transport-uncertainty retirement. The earlier 986-case qualification
 remains historical. Subsequent delivery changes are documentation/qualification
 metadata only. Neither test counts nor a successful source export prove physical
 readiness.

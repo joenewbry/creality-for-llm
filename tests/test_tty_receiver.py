@@ -190,3 +190,41 @@ def test_arrival_metadata_overflow_is_bounded_and_invalidates_both_copies():
         now[0]=float(i+10);assert hub.prompt_pump().data==b'\n'
     with pytest.raises(ValueError,match='metadata'):hub.prompt_pump()
     with pytest.raises(OSError):hub.job_readline_observed()
+
+
+def test_retirement_latches_before_waiting_for_in_flight_io():
+    import threading,time
+    hub=TTYReceiveHub(lambda:b'',lambda:None,lambda:10.,copy_jobs=True)
+    assert hub._lock.acquire(timeout=.2)
+    finished=[]
+    thread=threading.Thread(target=lambda:finished.append(hub.retire('assigned_timeout_unqualified')))
+    thread.start()
+    end=time.monotonic()+1
+    while not hub.fault and time.monotonic()<end:time.sleep(.001)
+    assert hub.fault=='assigned_timeout_unqualified'
+    thread.join(1);assert not thread.is_alive() and finished==[False]
+    hub._lock.release()
+    writes=[]
+    with pytest.raises(OSError):hub.write_frame(lambda data:writes.append(data) or len(data),b'M400\n')
+    assert not writes
+    hub.close();assert hub.fault=='assigned_timeout_unqualified'
+
+
+def test_retirement_during_write_keeps_emitted_frame_outcome_unknown():
+    import threading
+    hub=TTYReceiveHub(lambda:b'',lambda:None,lambda:10.)
+    entered,release=threading.Event(),threading.Event();writes=[];outcomes=[]
+    def write(data):
+        writes.append(data);entered.set();assert release.wait(2);return len(data)
+    def emit():
+        try:outcomes.append(hub.write_frame(write,b'M400\n'))
+        except OSError:outcomes.append('unknown')
+    thread=threading.Thread(target=emit);thread.start()
+    try:
+        assert entered.wait(1)
+        assert hub.retire('assigned_timeout_unqualified') is False
+    finally:
+        release.set();thread.join(1)
+    assert not thread.is_alive() and outcomes==['unknown'] and writes==[b'M400\n']
+    with pytest.raises(OSError):hub.write_frame(write,b'M400\n')
+    assert writes==[b'M400\n']

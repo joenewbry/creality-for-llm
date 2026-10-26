@@ -232,6 +232,7 @@ include tests_print_mcp/test_virtual_setup_mcp.py
 include tests_print_mcp/test_virtual_stop_evidence.py
 include validation/assigned-job-stage123.json
 include validation/assigned-observations-stage124.json
+include validation/assigned-replay-stage125.json
 include validation/assigned-sender-stage122.json
 include validation/camera-broker-stage114.json
 include validation/camera-owner-api-stage117.json
@@ -258,6 +259,7 @@ include validation/linux-package-stage121.json
 include validation/linux-package-stage122.json
 include validation/linux-package-stage123.json
 include validation/linux-package-stage124.json
+include validation/linux-package-stage125.json
 include validation/machine-events-stage84.json
 include validation/macos-discovery-stage108.json
 include validation/model-hot-stage75.json

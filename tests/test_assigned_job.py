@@ -134,7 +134,7 @@ def test_completion_provider_exception_is_observable_unknown(runtime):
     assert runtime[1].capabilities()['physical_control_qualified'] is False
 
 
-@pytest.mark.parametrize('scenario',['resume','native_prompt','cancel','denied'])
+@pytest.mark.parametrize('scenario',['resume','native_prompt','cancel','denied','resend','ack_timeout'])
 def test_journaled_assigned_job_tools_over_owned_software_terminal(scenario):
     if sys.platform!='linux':pytest.skip('Linux owned-terminal integration')
     root=Path(__file__).resolve().parents[1]
@@ -142,6 +142,9 @@ def test_journaled_assigned_job_tools_over_owned_software_terminal(scenario):
     assert run.returncode==0,run.stderr[-5000:]
     result=json.loads(run.stdout);assert result['physical_serial_open_or_discovery_attempts']==0
     if scenario=='denied':assert result['rejected_before_start']
+    elif scenario in ('resend','ack_timeout'):
+        assert result['job_state']=='outcome_unknown' and not result['physical_stop_confirmed'] and not result['automatic_emergency_frame_emitted']
+        assert result['no_additional_wire_frames_after_retirement'] and result['no_original_move_replay'] and result['source_bound_serial_capture']
     else:
         assert result['source_changed_after_stage'] and result['physical_provider_implemented'] is False
         assert result['moves_completed']==80 if scenario!='cancel' else 0<result['moves_completed']<80

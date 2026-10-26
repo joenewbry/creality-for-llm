@@ -126,3 +126,23 @@ def test_another_thread_cannot_consume_the_assigned_reader_stream(endpoint):
     thread=threading.Thread(target=other);thread.start();thread.join(1)
     assert not thread.is_alive() and len(errors)==1 and serial.read_sequence==0
     assert serial.readline()==b'ok\n'
+
+
+@pytest.mark.parametrize('kind',['resend','timeout'])
+def test_assigned_sender_never_delegates_unqualified_replay_or_ack_credit(endpoint,monkeypatch,kind):
+    from octoprint.util.comm import MachineCom
+    serial,writes,_=endpoint;serial.claim();serial.write(b'M400\n')
+    sender=AssignedSender.__new__(AssignedSender);sender._assigned_endpoint=serial
+    inherited=[];errors=[]
+    monkeypatch.setattr(MachineCom,'_handle_resend_request',lambda *a:inherited.append('resend'))
+    monkeypatch.setattr(MachineCom,'_handle_timeout',lambda *a:inherited.append('timeout'))
+    sender._trigger_error=lambda text,reason:errors.append((text,reason))
+    if kind=='resend':sender._handle_resend_request('Resend: 1')
+    else:sender._handle_timeout()
+    assert not inherited
+    assert serial.backend.receive_hub.fault==('assigned_resend_unqualified' if kind=='resend' else 'assigned_timeout_unqualified')
+    assert len(errors)==1 and errors[0][1]=='connection'
+    with pytest.raises(OSError):serial.write(b'M400\n')
+    from printer_control.prompt_wire import PromptWireCommand
+    with pytest.raises(OSError):serial.backend.frame_writer.write_prompt(PromptWireCommand('inspect',1).encode())
+    assert writes==[b'M400\n']

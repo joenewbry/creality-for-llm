@@ -1,7 +1,9 @@
 """Explicit pinned sender attachment to an already-owned Linux connection.
 
 No port discovery/open, reset, reconnect, physical launcher or job tool backend.
-The enclosing controller retains transport and lease ownership through cleanup.
+Unqualified resend/timeout handling retires the connection without replay or
+manufactured acknowledgment credit. The enclosing controller retains transport
+and lease ownership through cleanup.
 """
 from dataclasses import dataclass
 import os
@@ -113,6 +115,10 @@ class AssignedSerialEndpoint:
         # the pinned sender's special timeout retry must not replay a frame.
         return self.backend.frame_writer.write_job(data)
 
+    def retire(self,reason):
+        if os.getpid()!=self._pid:raise OSError('assigned endpoint belongs to another process')
+        self.backend.receive_hub.retire(reason)
+
     def close(self):
         if os.getpid()!=self._pid:raise OSError('assigned endpoint belongs to another process')
         if not self._closed:
@@ -153,3 +159,17 @@ class AssignedSender(PositionWakeMixin,MachineCom):
 
     def _perform_detection_step(self,init=False):
         self._trigger_error('Assigned autodetection is disabled','connection')
+
+    def _retire_replay(self,reason):
+        self._assigned_endpoint.retire(reason)
+        # The connection reason suppresses the inherited automatic M112 path.
+        # Closing does not prove stopped motion or cold heaters.
+        self._trigger_error('Assigned transport requires reconciliation: '+reason,'connection')
+
+    def _handle_resend_request(self,line):
+        self._retire_replay('assigned_resend_unqualified')
+
+    def _handle_timeout(self):
+        # Do not inherit resend, probe, fake acknowledgment or queue-credit
+        # behavior on a connection whose acknowledgment profile is unqualified.
+        self._retire_replay('assigned_timeout_unqualified')
