@@ -36,5 +36,6 @@
     "skipped": 0,
     "scope": "combined pause/stop/cancel policy, interruption and source export checks",
     "junit_sha256": "0ffe3dcfd16ad99e7047be9c12c8611d7c016ad7a7efc84c4c6ffb2a99a787a1"
-  }
+  },
+  "linux_full_qualification": "linux-package-stage120.json"
 }
