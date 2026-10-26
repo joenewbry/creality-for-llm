@@ -1,0 +1,22 @@
+{
+  "scope": "Mac read-only IOKit discovery and assignment conversion",
+  "platform": "macOS 15.2, Python 3.11.13",
+  "live_usb_serial_interfaces": 2,
+  "live_snapshots_stable": true,
+  "python_device_open_attempts": 0,
+  "instrumentation_limit": "Python device-node guards do not trace framework internals; binding calls registry APIs only, no device open API",
+  "tests": {
+    "tests": "51",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "10.069"
+  },
+  "junit_sha256": "e18c6af5f5a54fc639fbb7762b4355c44da96342e035b0b36e0f93b2f416a5f5",
+  "source_sha256": {
+    "printer_control/macos_discovery.py": "97ef451138c9f3eeeaf4ae4bb94bb8b71f9001a25cb87d2a4b533cc99938f832",
+    "tests/test_macos_discovery.py": "00193173f836b3443f52e0623f6d655530d8b025c8142b4da30e487e6b99ef02"
+  },
+  "mac_transport_enabled": false,
+  "physical_serial_access": false
+}

@@ -60,6 +60,7 @@ include printer_control/combined_virtual.py
 include printer_control/devices.py
 include printer_control/journal.py
 include printer_control/machine_events.py
+include printer_control/macos_discovery.py
 include printer_control/mcp_adapter.py
 include printer_control/modal.py
 include printer_control/octoprint_sender.py
@@ -132,6 +133,7 @@ include tests/test_firmware_host_actions.py
 include tests/test_firmware_parser.py
 include tests/test_journal.py
 include tests/test_machine_events.py
+include tests/test_macos_discovery.py
 include tests/test_marlin_modal_virtual.py
 include tests/test_modal.py
 include tests/test_native_heater_watch.py
@@ -207,6 +209,7 @@ include validation/host-qualification-boundary-stage98.json
 include validation/host-virtual-adapters-boundary-stage95.json
 include validation/host-virtual-runtime-boundary-stage96.json
 include validation/machine-events-stage84.json
+include validation/macos-discovery-stage108.json
 include validation/model-hot-stage75.json
 include validation/native-handoff-stage81.json
 include validation/native-thermal-stage78.json
