@@ -1,22 +1,22 @@
-# Powered pause and restoration policy
+# Durable pause effects and restoration handoff
 
-This H2c boundary builds on H2b. It adds command-mode tracking, bounded
-thermal-pause policy and immutable in-place restoration plans. These modules
-make decisions and emit plans; this boundary does not execute a printer job.
+H2d builds on H2c's powered-pause policy. It adds stream-state evidence,
+one-use command grants, durable thermal effects, background pause monitoring
+and restoration dispatch/receipt handling. A tested handoff rechecks evidence
+before allowing a stub backend to continue the same job.
 
-Mode tracking preserves independent coordinate/extrusion modes and relevant
-fan, feed and temperature settings. Unsupported or ambiguous commands latch
-uncertainty. Cold-job preflight restricts admitted commands and distinguishes
-tracked modes from commands the cold test profile permits. Restoration requires a matching job, connection, configuration,
-position and continuity checkpoint. It never treats a saved file offset as
-permission to resume after reset or position loss.
+Effect intent is recorded before dispatch. Storage or partial-write failures
+cannot silently authorize follow-up commands. A restart seals uncertain prior
+work instead of replaying it. Restoration needs its own completion receipt and
+fresh continuity evidence before the service dispatches resume. Cancel and stop
+remain distinct from confirmed physical shutdown.
 
-Thermal pause moves through explicit standby, reheat, ready and consumed states.
-Limits, observation freshness, deadlines and continuity evidence gate transitions.
-Temperature readiness requires sustained acceptable observations; an acknowledged
-command alone is insufficient. Restoration plans preserve order and avoid
-coordinate changes. Actual command dispatch, receipt correlation and resumed
-stream accounting are later integration work.
+These modules accept explicitly supplied callbacks; this boundary provides no
+physical sender or full virtual job runner. The tests use deterministic backend
+and stream-hook substitutes. They qualify state transitions, ordering, grants
+and durable outcomes, not actual queued motion or heater behavior. The later
+combined-virtual cancellation tests remain in the complete project's integration
+suite; they are not included or claimed as passed by this boundary alone.
 
 ## Reproduce
 
@@ -30,19 +30,13 @@ uv pip install --python .venv/bin/python --no-deps .
 .venv/bin/python -m pytest -q tests
 ```
 
-The repository argument must supply the exact commit/tree in
-`firmware-test-source.json`; the public fork remains unpublished. Preparation
-creates an independent firmware checkout, never builds an upload target or
-opens a serial port. Tests compare emitted modes and restoration sequences with
-extracted functions from the pinned firmware. The native restoration harness
-substitutes its parser and physical dependencies; it is not the complete Marlin
-parser, scheduler, interrupt system or hardware.
+The firmware repository must contain the exact commit/tree pinned in
+`firmware-test-source.json`. Public firmware publication is pending. Inherited
+native tests use extracted firmware functions and physical stubs. The installed
+package has no OctoPrint or model-client dependency at this boundary.
 
-Tests include stale/invalid checkpoints, mode combinations, bounded thermal
-transitions and loss of continuity. No test here proves physical heater behavior,
-motor hold, part adhesion or resumed extrusion. Virtual sender integration,
-setup/maintenance, LLM tools and physical commissioning remain later boundaries.
-No PR has been submitted.
-
-Original host source is AGPL-3.0-or-later. Native firmware retains its GPL terms
-and is fetched separately; third-party notices are included.
+The full managed resume workflow, virtual job sender, setup/maintenance, LLM
+interface and physical commissioning remain later review units. No test here
+opens a printer or establishes resumed extrusion quality. No PR is submitted.
+Original host source is AGPL-3.0-or-later; separately fetched firmware retains
+its own GPL terms and attribution.

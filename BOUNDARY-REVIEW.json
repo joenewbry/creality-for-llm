@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "boundary": "H2c",
-  "source_commit": "d04474abecc98e67cfc197c915d3c45a73532e43",
+  "boundary": "H2d",
+  "source_commit": "754d839747218d2d5fcdd143ecc95be5ffdf5155",
   "publication_ready": false,
   "files": [
     {
@@ -18,9 +18,9 @@
     },
     {
       "path": "README.md",
-      "source_path": "contributions/host-pause-policy/README.md",
-      "sha256": "720ccddd930112859aa565cb2b88349d7d456507198b3e3f6ab33b3c066b5abc",
-      "bytes": 2524
+      "source_path": "contributions/host-pause-execution/README.md",
+      "sha256": "05f2cdea11e28da39d11a08f2eb7127569db88282fb3876d06f6785038b2b0e7",
+      "bytes": 2162
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -113,6 +113,18 @@
       "bytes": 2297
     },
     {
+      "path": "printer_control/pause_effects.py",
+      "source_path": "printer_control/pause_effects.py",
+      "sha256": "45b5c100abdf21f5e478c0965639a96f6a590877908970a022b5acc88f774a68",
+      "bytes": 9787
+    },
+    {
+      "path": "printer_control/pause_monitor.py",
+      "source_path": "printer_control/pause_monitor.py",
+      "sha256": "4856c163d84a49673ea94f81e2f68dda19fb6fac85bad274ab4d4c5863fd77e9",
+      "bytes": 4026
+    },
+    {
       "path": "printer_control/pause_restore.py",
       "source_path": "printer_control/pause_restore.py",
       "sha256": "97f74798ce1e7b399abed83e2b387d7abbd2d104c0a7f96d1709951de1566e61",
@@ -149,6 +161,12 @@
       "bytes": 8346
     },
     {
+      "path": "printer_control/restore_effects.py",
+      "source_path": "printer_control/restore_effects.py",
+      "sha256": "c63820f43e00d109db4c19c34aee4d52c386bcf60aeec079bc61592854d972d0",
+      "bytes": 12421
+    },
+    {
       "path": "printer_control/service.py",
       "source_path": "printer_control/service.py",
       "sha256": "8f759261aa3d6ce1ba57e8190664520d78298154a6a765fc5cf7a959bdb4a2c1",
@@ -167,6 +185,12 @@
       "bytes": 2274
     },
     {
+      "path": "printer_control/stream_witness.py",
+      "source_path": "printer_control/stream_witness.py",
+      "sha256": "387a242c70281f3c6b79426813933970fdafb1ab0c0628253868f30c72c2232a",
+      "bytes": 8392
+    },
+    {
       "path": "printer_control/thermal_pause.py",
       "source_path": "printer_control/thermal_pause.py",
       "sha256": "d79f57de4d25c74359fc2b42d5c1c5b0d1a74ffc4da7603a220a356521561e96",
@@ -174,9 +198,9 @@
     },
     {
       "path": "pyproject.toml",
-      "source_path": "contributions/host-pause-policy/pyproject.toml",
-      "sha256": "5a213d2758b3d704d8ff9b1d1ad263d62ce3243aad70f5c02fb0fee812175b26",
-      "bytes": 488
+      "source_path": "contributions/host-pause-execution/pyproject.toml",
+      "sha256": "09f7fa7250724c68d8f2b82e4209027cd785fca9bc0dfc8c17e584b35e9a42a9",
+      "bytes": 497
     },
     {
       "path": "scripts/prepare_firmware.py",
@@ -239,6 +263,18 @@
       "bytes": 2286
     },
     {
+      "path": "tests/test_pause_effects.py",
+      "source_path": "tests/test_pause_effects.py",
+      "sha256": "525e20794edafa618bb92471ed61a975c331f2ba5bd140e5b1be29c9138fa405",
+      "bytes": 6992
+    },
+    {
+      "path": "tests/test_pause_monitor.py",
+      "source_path": "tests/test_pause_monitor.py",
+      "sha256": "be125749acf6fa6da8759548266e2a2bf974e0faee4d558f566e1586f635ff03",
+      "bytes": 3496
+    },
+    {
       "path": "tests/test_pause_restore.py",
       "source_path": "tests/test_pause_restore.py",
       "sha256": "614dfc7796c9923f6f2a8c428c7ad760fd6f3858f96b661fc824af4b987f79e2",
@@ -275,6 +311,18 @@
       "bytes": 3020
     },
     {
+      "path": "tests/test_restore_effects.py",
+      "source_path": "tests/test_restore_effects.py",
+      "sha256": "a31208a167c487313fbc2e8e130f11f9a9a7fc599896107aede487d9a24f99f6",
+      "bytes": 7048
+    },
+    {
+      "path": "tests/test_restored_resume.py",
+      "source_path": "tests/test_restored_resume.py",
+      "sha256": "be457231171c2676adcd9f6ad9c65bb22ea439ed2235eb9c78e6210d4048051c",
+      "bytes": 8380
+    },
+    {
       "path": "tests/test_service.py",
       "source_path": "tests/test_service.py",
       "sha256": "b4a9db9ee8e61887bec0e7daca5b13d235e27446b62dd67c573c7e5e826b3f6f",
@@ -291,6 +339,12 @@
       "source_path": "tests/test_shared_writer.py",
       "sha256": "815942b859ceefbc68caa749457868a05f12cff3c05d5225086a8e120d435afc",
       "bytes": 3887
+    },
+    {
+      "path": "tests/test_stream_witness.py",
+      "source_path": "tests/test_stream_witness.py",
+      "sha256": "fd7e296bfc951b53c6c72f5610da6b9fa57cfebef3c7c250f6694bdb9af84650",
+      "bytes": 8485
     },
     {
       "path": "tests/test_thermal_pause.py",
