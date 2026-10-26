@@ -1,6 +1,6 @@
 # Contribution delivery and review stack
 
-Updated October 26, 2026. Fifteen host and six firmware pull requests are open as drafts in the owner's repositories. Each PR names its predecessor and validation evidence. They are review candidates, not merged releases or accepted upstream contributions.
+Updated October 26, 2026. Sixteen host and six firmware pull requests are open as drafts in the owner's repositories. Each PR names its predecessor and validation evidence. They are review candidates, not merged releases or accepted upstream contributions.
 
 ## Repository relationships
 
@@ -28,6 +28,8 @@ Updated October 26, 2026. Fifteen host and six firmware pull requests are open a
 | [H5](https://github.com/joenewbry/creality-for-llm/pull/14) | Camera interface, architecture and overview mount prototype | `stack/h4e-restart-and-clients` |
 
 | [H6](https://github.com/joenewbry/creality-for-llm/pull/15) | Assigned camera broker and durable controls | `stack/h5-camera-design` |
+
+| [H7](https://github.com/joenewbry/creality-for-llm/pull/16) | Upstream Marlin submission and qualification evidence | `stack/h6-camera-broker` |
 
 ## Firmware stack
 

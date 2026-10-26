@@ -161,7 +161,7 @@
   ],
   "physical_commissioning_complete": false,
   "camera_capture_implemented": false,
-  "latest_branch": "stack/h6-camera-broker",
+  "latest_branch": "stack/h7-upstream-contribution",
   "note": "First ten trees are identical to tested local review trees; parent history is a clean public bootstrap. Later runtime/test bytes match the qualified source export. Self commit is resolved from latest_branch.",
   "host_prs": [
     {
@@ -298,6 +298,15 @@
       "isDraft": true,
       "state": "OPEN",
       "url": "https://github.com/joenewbry/creality-for-llm/pull/15"
+    },
+    {
+      "key": "H7",
+      "title": "Upstream Marlin contribution and qualification evidence",
+      "baseRefName": "stack/h6-camera-broker",
+      "headRefName": "stack/h7-upstream-contribution",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/creality-for-llm/pull/16"
     }
   ],
   "firmware_prs": [
@@ -355,5 +364,6 @@
       "state": "OPEN",
       "url": "https://github.com/joenewbry/Ender-3S1-llm/pull/6"
     }
-  ]
+  ],
+  "standalone_upstream_pr": "https://github.com/MarlinFirmware/Marlin/pull/28753"
 }
