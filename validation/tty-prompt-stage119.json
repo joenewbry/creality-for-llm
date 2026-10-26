@@ -22,5 +22,12 @@
     "software terminals do not qualify physical USB ownership, reset, driver or screen behavior",
     "no job sender, automatic reconnect, firmware reset or physical commissioning",
     "terminal release failure retains journal lease until explicit cleanup retry"
-  ]
+  ],
+  "linux_full_qualification": "linux-package-stage119.json",
+  "mac_focused": {
+    "passed": 38,
+    "skipped": 5,
+    "scope": "prompt/backend and publication export tests; Linux-only terminal cases skipped",
+    "junit_sha256": "f6f343a68ef565a69fbc2813d1d8de9ffa08da6f761bd193230e0623d495fbe2"
+  }
 }

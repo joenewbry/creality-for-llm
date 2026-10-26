@@ -236,6 +236,7 @@ include validation/host-virtual-adapters-boundary-stage95.json
 include validation/host-virtual-runtime-boundary-stage96.json
 include validation/linux-package-stage111.json
 include validation/linux-package-stage118.json
+include validation/linux-package-stage119.json
 include validation/machine-events-stage84.json
 include validation/macos-discovery-stage108.json
 include validation/model-hot-stage75.json

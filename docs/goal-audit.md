@@ -13,7 +13,7 @@ full-suite run.
 | 1. Preserve source and match hardware/recovery | Pinned controller/screen sources and attributed candidate builds exist; [source relationships](contributions.md), [build records](firmware-stack-builds.md), [recovery research](recovery.md) | Exact development board, processor, screen, bootloader, readable settings and authentic compatible rollback are unconfirmed. The older source does not match the installed version merely because both say F4. |
 | 2. Fork, branch, focused stack and ecosystem contribution | Public host and Creality firmware repositories, dependent draft PRs and [standalone Marlin PR 28753](https://github.com/MarlinFirmware/Marlin/pull/28753) exist | The requested publication/submission artifacts exist. Review, merge and maintainer acceptance are external follow-up, not claims made by this delivery. Physical release qualification is tracked separately below. |
 | 3. Specify the whole LLM interface and blockers | [Interface](interface.md), [blocker matrix](blocker-matrix.md), typed tool schemas, exact prompt identities and explicit uncertainty rules exist | Actual display/controller pairing and the complete physical alert inventory remain unqualified. Unknown states must remain blocked. |
-| 4. Build firmware and implement host control | Candidate builds, native firmware functions, virtual sender, journal/tool service, Linux owned-descriptor foundation and Mac metadata discovery are tested | A production physical sender/backend and actual Mac serial-driver isolation are not implemented/qualified. Pre-open startup admission now exists, but no real hardware readiness checker is supplied. |
+| 4. Build firmware and implement host control | Candidate builds, native firmware functions, virtual sender, journal/tool service, Linux assigned prompt connection and Mac metadata discovery are tested | A production physical sender/backend and actual Mac serial-driver isolation are not implemented/qualified. Pre-open startup admission now exists, but no real hardware readiness checker is supplied. |
 | 5. Simulated printer and blocker matrix | Real virtual sender, native handler/protection fixtures, MCP/model demonstrations and [streamed process-death cases](../validation/streamed-host-restart-stage109.json) provide substantial software evidence | A simulator restarted with its host does not model a surviving physical printer. Full controller/screen/ADC/interrupt integration and real timing remain open. |
 | 6. Commission only the clogged printer | No firmware was flashed; the earlier development-only query reported a negative nozzle temperature with zero target | Identify the exact hardware and recovery route, diagnose the sensor reading, establish clearance, then qualify installation and non-printing behavior. No protected-printer substitution. |
 | 7. Exercise sequences and simulated printing | Constrained virtual jobs finish original moves once, including supported waits and powered pause/resume; [model hot-pause evidence](../validation/model-hot-stage75.json) | No motion-only hardware rehearsal or real-print continuation is qualified. A clogged nozzle does not make an ordinary print file safe to execute. |
@@ -36,11 +36,12 @@ full-suite run.
 | Camera and mount | Broker/client/owner API tests, metadata/freshness/version fences, four CAD meshes and two conditional view models | Native acquisition/control, actual clock/profile/identity, image quality, fault detection, physical fit/clearance/framing |
 | Publication | Owned explanation page, architecture, platform/repository distinctions, PR dependencies and screenshot review | Firmware commissioning or an accepted upstream release |
 
-The [current installed Linux qualification](../validation/linux-package-stage118.json)
-passes 986 tests with zero skips at public source `b627601`, including the camera and
-startup additions. The earlier 876-case record remains historical. Subsequent
-delivery changes are documentation/qualification metadata only. Neither test counts nor a successful source
-export prove physical readiness.
+The [current installed Linux qualification](../validation/linux-package-stage119.json)
+passes 1004 tests with zero skips at public source `3abe546`, including the camera,
+startup and assigned Linux prompt integration. The earlier 986-case qualification
+remains historical. Subsequent delivery changes are documentation/qualification
+metadata only. Neither test counts nor a successful source export prove physical
+readiness.
 
 ## Startup gap found during this audit
 
