@@ -23,10 +23,7 @@ It always sets `publication_ready: false`. Export success does not authorize a
 push, create a GitHub repository, license the project or claim a tested release.
 
 The host uses AGPL-3.0-or-later; original upstream terms are recorded in
-`THIRD_PARTY_NOTICES.md` and the pinned dependency metadata inventory. Remaining
-gates include artifact-specific attribution review, manual privacy inspection,
-clean-export tests, publishing the pinned modified firmware, and buildable PR
-boundaries with dependency links. This is not a finished open-source release.
+`THIRD_PARTY_NOTICES.md` and the pinned dependency metadata inventory. The October 26 delivery publishes the allowlisted host tree and pinned firmware in separate owner repositories with dependent draft PRs. Pattern scans, clean-export checks, attribution/dependency inventory and review of the exposed I/O, model, documentation and evidence paths informed publication; these are not a formal privacy or legal certification. Physical commissioning, production sender integration and upstream acceptance remain open.
 Existing upstream licenses must remain with their respective source trees.
 Neither stock recovery binaries nor screen assets are included in this export.
 
@@ -48,4 +45,4 @@ contain the complete qualification suite or firmware checkout.
 Build distribution artifacts from a sanitized review checkout, not the private
 working tree. Inspect archive members and compare their bytes to the reviewed
 source. Firmware remains separately fetched and pinned; an archive does not
-make the unpublished firmware source available or qualify physical operation.
+qualify physical operation. The pinned modified firmware is now public in the linked owner fork.

@@ -12,8 +12,7 @@ behavior at every boundary, or establish a safe recovery image.
 | F2: prompt identity and lifecycle | `7ec664f7ceb5d3bfb754aa0778ab786dde953274` | `STM32F401RC_creality` |
 | F3: bounded prompt transport | `a5c1cabc478e52c5e2ec00a00686e2b573a912e4` | `STM32F401RC_creality` |
 
-Use a reviewed firmware repository containing those revisions. No public fork
-is available yet. For each row, substitute its commit and a new destination:
+The public [owner firmware fork](https://github.com/joenewbry/Ender-3S1-llm) contains these revisions and all six dependent draft PRs. For each row, substitute its commit and a new destination:
 
 ```sh
 python3.11 -m venv /path/to/build-venv

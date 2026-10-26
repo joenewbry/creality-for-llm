@@ -219,3 +219,20 @@ and report outcome unknown. All six host fault scenarios pass, with zero
 physical serial-open attempts. This is host handling of a synthetic report,
 not a probe command executed by the virtual printer or a firmware-to-host
 integration test.
+
+## Actual virtual-sender process death and restart
+
+Three additional scenarios SIGKILL the actual OctoPrint sender/tool-server process
+while streaming, after a completed pause, and after resume dispatch while its
+receipt is still running. Each restarts the server with the same SQLite journal
+and a fresh virtual connection. Completed receipts remain byte-for-byte equal;
+the interrupted resume becomes `outcome_unknown` with `host_restarted` and
+`requires_reconciliation`. Repeating old requests dispatches nothing. New
+start/resume requests without current staging/checkpoint are rejected, and the
+replacement simulator executes zero job moves. Both launchers deny physical
+serial opens. All three scenarios pass.
+
+The original simulator dies with its host. This is a process/journal plus actual
+sender integration test, not continuity of a surviving printer. It does not
+qualify buffered motion, heater disposition, physical reconnect or resuming a
+real part after host death. Those remain required for recovery qualification.

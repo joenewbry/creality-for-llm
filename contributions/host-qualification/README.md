@@ -1,54 +1,62 @@
-# Printer-control qualification and release preparation
+# Creality printer control for LLMs
 
-H4a collects the software qualification, source/build references, prior-art
-research, contribution preparation and recovery candidate documentation for the
-preceding host stack. It includes native firmware protection regressions and a
-Linux-only descriptor transport with assignment and controller-lease checks. This is not a commissioned development
-release, and no physical printer migration is authorized by these artifacts.
+A development interface for bounded job control, prompt handling, durable receipts
+and powered pause/resume. The complete installed-package software suite passed
+876 tests with zero skips on Linux/Python 3.11.13. Physical printer commissioning
+is incomplete; the firmware candidate is unflashed.
 
-## Reproduce software evidence
+[Architecture and camera path](docs/architecture.md) · [Pause/resume](docs/pause-resume.md)
+· [Camera interface design](docs/camera-interface.md) · [Mount prototype](hardware/camera-mount/README.md)
+· [Explanation page](https://robot.digitalsurfacelabs.com/pages/creality-for-llm/)
 
-Use Python 3.11, Git and `clang++` on macOS or Linux:
+## What is implemented
+
+- Typed jobs, supported prompts, setup operations, event history and durable
+  operation receipts with state/generation/deadline checks and duplicate handling.
+- Virtual streamed jobs, actual native firmware-handler tests, managed standby,
+  reheat/restoration and explicit pause/resume/cancel/stop semantics.
+- Linux descriptor ownership/I/O foundation tested with software terminals.
+- Read-only Mac USB connection discovery; Mac physical transport remains disabled.
+
+One host codebase contains both OS paths. Firmware builds are selected by the
+printer's board/processor and screen, not the host OS. The modified firmware is
+in [the separate Creality fork](https://github.com/joenewbry/Ender-3S1-llm).
+Both repositories use draft review stacks; these are not commissioned releases.
+[Open host PRs](https://github.com/joenewbry/creality-for-llm/pulls) contain the
+focused changes, validation and dependencies.
+
+## Reproduce the software checks
+
+Use Python 3.11, Git and Clang. Native firmware tests require the exact pinned
+source; the preparation step verifies its commit/tree and refuses an existing
+checkout.
 
 ```sh
+clang++ --version
 uv venv --python 3.11 .venv
 uv pip sync --python .venv/bin/python requirements-print-mcp.lock
 uv pip install --python .venv/bin/python --no-deps .
-.venv/bin/python scripts/prepare_firmware.py --repository /path/to/reviewed/firmware-repository
+.venv/bin/python scripts/prepare_firmware.py --repository https://github.com/joenewbry/Ender-3S1-llm.git
 .venv/bin/python -m pytest -q tests tests_mcp tests_model tests_print_mcp
 ```
 
-The firmware repository must contain the exact commit/tree in
-`firmware-test-source.json`; the public firmware fork remains unpublished.
-Native tests compile actual or extracted source functions with substituted
-physical dependencies. They are not complete firmware simulation or hardware
-qualification. The normal suite calls no paid model API.
+The normal suite uses no paid model API. On Mac, Linux terminal tests skip;
+Linux/Python 3.11.13/Clang 15.0.7 passed the complete installed-package suite.
+See [pinned evidence](validation/linux-package-stage111.json).
 
-Linux terminal-exclusivity, descriptor I/O and assigned-factory tests are skipped
-on macOS. They require a Linux run to qualify those layers; the adapter rejects
-macOS before opening a device.
-The Linux tests use software terminals, not printers. Exclusion does not evict
-existing descriptors or replace device permissions and identity checks.
+## Remaining physical and camera work
 
-## What remains before a development release
+Confirm the development board, processor, display, bootloader and recovery route;
+resolve the negative nozzle reading and confirm clearance before operational
+commissioning. Production USB integration, access isolation and physical pause/
+resume remain unqualified. The protected printer stays excluded.
 
-- Establish the development printer's board, MCU, screen, bootloader and recovery
-  route. The currently printing printer remains protected and excluded.
-- Resolve the observed sensor problem, verify the workspace and qualify any
-  permitted non-printing motion. Keep heating/extrusion disabled for the clogged
-  test profile. No stock package is yet a validated rollback for this device.
-- Complete production USB ownership, device access isolation and controlled
-  recovery. The tested runtime is virtual-only.
-- Complete manual privacy/attribution review, publish the pinned firmware and
-  host PR stack, and update the explanatory page with actual public links.
-- Keep real printing, adhesion, extrusion and print-resume quality outside the
-  non-printing qualification until the nozzle is repaired and supervised tests
-  pass. Never migrate the protected printer as part of this project.
+Camera capture, controls and monitoring are planned interfaces. The C270 mount
+has editable CAD, manifold mesh and conditional visibility/keep-out checks;
+actual clip/desk/printer fit, focus, cable routing and framing remain unverified.
+No mesh has been sent to a printer. Real extrusion and print quality require
+nozzle repair and supervised qualification.
 
-See [recovery limits](docs/recovery.md), [interface scope](docs/interface.md),
-[prior art](docs/prior-art.md), [contribution plan](docs/contributions.md) and
-[publication checks](docs/publication.md). Each validation record pins its tested
-revision; historical successes do not qualify later untested changes. Local
-progress logs, physical-device records, recovery binaries and private Git history
-are excluded from this package. No PR submission or maintainer acceptance is
-claimed. Original host source is AGPL-3.0-or-later; third-party terms remain intact.
+Original source is AGPL-3.0-or-later, with firmware patches and third-party terms
+preserved in [the notices](THIRD_PARTY_NOTICES.md). No upstream acceptance or
+physical release is implied by an open draft PR.
