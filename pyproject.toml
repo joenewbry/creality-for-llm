@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "llm-printer-control"
 version = "0.1.0"
-description = "Typed printer control with durable pause effects and restoration handoff"
+description = "Typed virtual printer job and setup adapter components"
 requires-python = ">=3.11"
 license = "AGPL-3.0-or-later"
 license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md", "licenses/*.txt"]
@@ -16,3 +16,6 @@ include = ["printer_control*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+
+[project.optional-dependencies]
+virtual = ["OctoPrint==1.11.8"]

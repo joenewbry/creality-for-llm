@@ -1,22 +1,21 @@
-# Durable pause effects and restoration handoff
+# Virtual job and setup adapter components
 
-H2d builds on H2c's powered-pause policy. It adds stream-state evidence,
-one-use command grants, durable thermal effects, background pause monitoring
-and restoration dispatch/receipt handling. A tested handoff rechecks evidence
-before allowing a stub backend to continue the same job.
+H2e builds on H2d with OctoPrint virtual job/combined-prompt adapters, bounded
+setup operations and resend tracking. The adapter requires the explicit VIRTUAL
+port and OctoPrint's virtual-printer type. It provides no physical port factory.
 
-Effect intent is recorded before dispatch. Storage or partial-write failures
-cannot silently authorize follow-up commands. A restart seals uncertain prior
-work instead of replaying it. Restoration needs its own completion receipt and
-fresh continuity evidence before the service dispatches resume. Cancel and stop
-remain distinct from confirmed physical shutdown.
+Completion needs the expected state transition and drained modeled moves, not
+just an end-of-file callback. Home/jog operations are bounded to the cold test
+profile and require correlated completion evidence. Combined cancellation
+revokes queued pause grants before dispatch. Resend uncertainty cannot silently
+renew an invalidated job. Tests also kill a separate host process at durable
+operation boundaries and verify that startup does not replay its effects.
 
-These modules accept explicitly supplied callbacks; this boundary provides no
-physical sender or full virtual job runner. The tests use deterministic backend
-and stream-hook substitutes. They qualify state transitions, ordering, grants
-and durable outcomes, not actual queued motion or heater behavior. The later
-combined-virtual cancellation tests remain in the complete project's integration
-suite; they are not included or claimed as passed by this boundary alone.
+This boundary qualifies adapter components using controlled sender/device
+substitutes. It does not run the full serial sender or qualify actual motion,
+heaters, homing or USB ownership. Later boundaries add the complete virtual job
+runner and managed pause/resume workflow. The original full-project integration
+tests remain separate from these component results.
 
 ## Reproduce
 
@@ -24,19 +23,19 @@ Use Python 3.11, Git and `clang++` on macOS or Linux:
 
 ```sh
 uv venv --python 3.11 .venv
+uv pip sync --python .venv/bin/python requirements-octoprint.lock
 uv pip install --python .venv/bin/python pytest==8.3.5
 uv pip install --python .venv/bin/python --no-deps .
 .venv/bin/python scripts/prepare_firmware.py --repository /path/to/reviewed/firmware-repository
 .venv/bin/python -m pytest -q tests
 ```
 
-The firmware repository must contain the exact commit/tree pinned in
-`firmware-test-source.json`. Public firmware publication is pending. Inherited
-native tests use extracted firmware functions and physical stubs. The installed
-package has no OctoPrint or model-client dependency at this boundary.
+The reviewed firmware must contain the pinned commit/tree in
+`firmware-test-source.json`. The public firmware fork is not yet published.
+Inherited native tests use actual functions with physical stubs. Adapter
+admission tests use inert objects and reject nonvirtual assignments before job
+access; no physical serial port is opened. Model credentials are unnecessary.
 
-The full managed resume workflow, virtual job sender, setup/maintenance, LLM
-interface and physical commissioning remain later review units. No test here
-opens a printer or establishes resumed extrusion quality. No PR is submitted.
-Original host source is AGPL-3.0-or-later; separately fetched firmware retains
-its own GPL terms and attribution.
+Original host source is AGPL-3.0-or-later; separately fetched firmware and
+installed dependencies retain their licenses. This is our local adapter package,
+not an OctoPrint upstream contribution. No public PR has been submitted.
