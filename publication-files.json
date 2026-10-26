@@ -237,6 +237,7 @@
     "validation/streamed-host-restart-stage109.json",
     "printer_control/camera.py",
     "tests/test_camera.py",
-    "validation/camera-broker-stage114.json"
+    "validation/camera-broker-stage114.json",
+    "validation/upstream-submission-stage115.json"
   ]
 }

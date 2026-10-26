@@ -48,7 +48,9 @@ The development board, processor, screen, recovery procedure and sensor fault re
 
 ## Ecosystem contribution status
 
-A focused Marlin heater-watch zero-deadline patch and five regressions are prepared separately, with native and candidate board build evidence. It has not been submitted upstream; rebase, duplicate check and current contribution-policy review are still required. The near-target handoff change retains upstream attribution. Review PRs in the owner fork do not imply Creality or Marlin acceptance.
+[Marlin PR 28753](https://github.com/MarlinFirmware/Marlin/pull/28753) submits the focused heater-watch zero-deadline fix and five regressions upstream. Candidate `c8139a8c96a83271bad5fe541ea15b68143fa2a0` is rebased onto `cce3c1218cba190168f432d5ffbedfb43d95515b`. The exact candidate passes 168 native cases and AVR mega2560 / 32-bit DUE builds, including the existing chamber-enabled configuration. [Submission evidence](../validation/upstream-submission-stage115.json) records scope and log hashes. It is open for upstream review; CI/maintainer review and acceptance are separate from local qualification. The AI assistance is disclosed. No physical heater or full simulator test is claimed.
+
+The near-target handoff backport retains upstream attribution. Owner-fork review PRs do not imply Creality acceptance. The standalone Marlin PR depends on neither the host tools nor the old Creality source.
 
 No generated patch or description will be submitted to OctoPrint: the checked contribution policy excludes predominantly AI-authored contributions. The virtual integration stays in this host project. PrintMCP and Toka remain comparison/adapter targets, with no submission claimed.
 
