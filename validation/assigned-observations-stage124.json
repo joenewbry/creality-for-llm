@@ -58,5 +58,6 @@
     "actual sensor validity, position/part/motor continuity, configuration and board/display identity are unqualified",
     "physical USB isolation, job policy/recovery and real capture/mount visibility remain unfinished",
     "source provenance is controller-report evidence, not an authenticated firmware attestation or a physical readiness certificate"
-  ]
+  ],
+  "linux_full_qualification": "linux-package-stage124.json"
 }
