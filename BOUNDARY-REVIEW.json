@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "boundary": "H2b",
-  "source_commit": "b764a19584d97c0a5dfc67d23a493d6af683c6c6",
+  "boundary": "H2c",
+  "source_commit": "d04474abecc98e67cfc197c915d3c45a73532e43",
   "publication_ready": false,
   "files": [
     {
@@ -18,9 +18,9 @@
     },
     {
       "path": "README.md",
-      "source_path": "contributions/host-prompt-transport/README.md",
-      "sha256": "158bb53529787c3680c65f09d3a14ea1efc82fbf1355713fe9b0f40ead7bbbbd",
-      "bytes": 2366
+      "source_path": "contributions/host-pause-policy/README.md",
+      "sha256": "720ccddd930112859aa565cb2b88349d7d456507198b3e3f6ab33b3c066b5abc",
+      "bytes": 2524
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -101,10 +101,28 @@
       "bytes": 7409
     },
     {
+      "path": "printer_control/modal.py",
+      "source_path": "printer_control/modal.py",
+      "sha256": "94d692edc55a907d8bf1b0419332e782cac69e990648b34368fab24319b36de3",
+      "bytes": 6658
+    },
+    {
       "path": "printer_control/ownership.py",
       "source_path": "printer_control/ownership.py",
       "sha256": "7064738771a4c87d4fb3e258242b09b88f7eec080cc6be613576ccacdf6a1132",
       "bytes": 2297
+    },
+    {
+      "path": "printer_control/pause_restore.py",
+      "source_path": "printer_control/pause_restore.py",
+      "sha256": "97f74798ce1e7b399abed83e2b387d7abbd2d104c0a7f96d1709951de1566e61",
+      "bytes": 4445
+    },
+    {
+      "path": "printer_control/preflight.py",
+      "source_path": "printer_control/preflight.py",
+      "sha256": "98772bcff3ff4c172f4f2fb0cdfebe7affe1b88c5d3c5bf3cb449a9c24fa6217",
+      "bytes": 1200
     },
     {
       "path": "printer_control/prompt_backend.py",
@@ -149,10 +167,16 @@
       "bytes": 2274
     },
     {
+      "path": "printer_control/thermal_pause.py",
+      "source_path": "printer_control/thermal_pause.py",
+      "sha256": "d79f57de4d25c74359fc2b42d5c1c5b0d1a74ffc4da7603a220a356521561e96",
+      "bytes": 11785
+    },
+    {
       "path": "pyproject.toml",
-      "source_path": "contributions/host-prompt-transport/pyproject.toml",
-      "sha256": "adbd288c3161dce6a726ba0ffab93f971470709556b06459da9d24fd96df8f53",
-      "bytes": 478
+      "source_path": "contributions/host-pause-policy/pyproject.toml",
+      "sha256": "5a213d2758b3d704d8ff9b1d1ad263d62ce3243aad70f5c02fb0fee812175b26",
+      "bytes": 488
     },
     {
       "path": "scripts/prepare_firmware.py",
@@ -165,6 +189,12 @@
       "source_path": "tests/native_harness.py",
       "sha256": "b2a5ca6071cbd4b4fd58749496467ae3569dce832142504a5362b16d7ab1f7e2",
       "bytes": 14090
+    },
+    {
+      "path": "tests/native_restore_harness.py",
+      "source_path": "tests/native_restore_harness.py",
+      "sha256": "6bc2ee0c1f0a042139b5a3cbefb6ae7a0b6e296e87a416d4327baa066e5d5646",
+      "bytes": 7487
     },
     {
       "path": "tests/test_checkpoint.py",
@@ -195,6 +225,24 @@
       "source_path": "tests/test_machine_events.py",
       "sha256": "859aa4fd51de41bc87050cbb1d60a99b320f1a3ccae6441970ba15cec66672fc",
       "bytes": 7583
+    },
+    {
+      "path": "tests/test_modal.py",
+      "source_path": "tests/test_modal.py",
+      "sha256": "933fda3a7d06e8a7bc2bdb006f47ed11b3c9b20bcccd70a7dd4b93781c9d148f",
+      "bytes": 5170
+    },
+    {
+      "path": "tests/test_native_restore.py",
+      "source_path": "tests/test_native_restore.py",
+      "sha256": "5b8ee1db600c107fd946ef8e7054623d1d431dd1e82e6b1f251308581839a0cb",
+      "bytes": 2286
+    },
+    {
+      "path": "tests/test_pause_restore.py",
+      "source_path": "tests/test_pause_restore.py",
+      "sha256": "614dfc7796c9923f6f2a8c428c7ad760fd6f3858f96b661fc824af4b987f79e2",
+      "bytes": 5523
     },
     {
       "path": "tests/test_prepare_firmware.py",
@@ -243,6 +291,12 @@
       "source_path": "tests/test_shared_writer.py",
       "sha256": "815942b859ceefbc68caa749457868a05f12cff3c05d5225086a8e120d435afc",
       "bytes": 3887
+    },
+    {
+      "path": "tests/test_thermal_pause.py",
+      "source_path": "tests/test_thermal_pause.py",
+      "sha256": "3193feea3e90be9f1bbf0abde8cd487546a4d11711ff63c70c0dbd54259fbad7",
+      "bytes": 7286
     }
   ]
 }
