@@ -78,3 +78,25 @@ python -m pytest -q tests/test_camera.py tests/test_tools.py tests/test_service.
 ```
 
 Tests include a real MCP SDK client/server over memory streams, one-write duplicate/concurrent requests, ambiguous readback and restart, competing owners, wrong printer/camera/job, generation changes, expired frames and malformed/oversized images. Frames and control devices are fixtures. Actual capture, host-driver isolation, focus, mount fit/clearance/framing and physical operation remain unqualified.
+
+## Capture-owner HTTP adapter
+
+`CaptureOwnerHTTP` in `printer_control.camera_http` is a concrete client backend for an existing acquisition owner; it does not open a webcam or start/restart a service. Configure the origin and a pinned numeric destination address outside the LLM tool arguments. HTTPS validates the origin hostname and certificate using the standard trust store (a private CA can be supplied through `SSL_CERT_FILE`). Unencrypted HTTP requires explicit opt-in and a loopback destination, for an already secured local bridge. No DNS, environment proxies, redirects, arbitrary paths, embedded URL credentials or tool-selected endpoints are used. Optional authorization headers stay in operator configuration and are excluded from error results.
+
+Every exchange has a maximum five-second default timeout (configurable up to ten seconds), capped by its operation deadline. An absolute timer interrupts a drip-fed socket response. Responses are identity-encoded JSON bounded to 110,000 bytes; duplicate keys, nonfinite values and unsupported protocol versions are rejected. The broker still enforces frame association/freshness and post-write readback. Inspection has its own bounded timeout; the broker rechecks the mutation deadline before dispatch. These are transport/software bounds, not a real-time firmware stop guarantee.
+
+The owner must implement this narrow interface under its existing access gate:
+
+| Method/path | Required envelope | Meaning |
+| --- | --- | --- |
+| GET `/llm-camera/v1/state` | `{protocol_version: 1, state: {...}}` | Exact broker state fields: camera/printer/owner identities, reconnect generation, state version, numeric control ranges and current readback values |
+| GET `/llm-camera/v1/snapshot` | `{protocol_version: 1, frame: {...}}` | Exact broker frame fields, substituting `data_base64` for raw `data`; capture/receive times and actual job/view association must come from the owner |
+| POST `/llm-camera/v1/controls` | Request: camera ID, generation, expected state version, deadline and controls. Response: `{protocol_version: 1, accepted: true}` | Owner validates context/deadline and makes one bounded attempt. Response acknowledges dispatch only; later state readback determines completion |
+
+The owner must assign identities from verified configuration, change generation after reconnect/restart and advance state version whenever controls, profile, mount/view or association change. It must not infer job association merely from a printer index. Frame timestamp semantics and clock alignment need qualification. A byte signature is not image decoding or optical verification. Use this adapter only behind `CameraBroker`, which supplies durable mutation intent and uncertainty handling.
+
+The inspected existing Print room endpoint `/api/cameras/{printer_id}/snapshot.jpg` supplies JPEG bytes and a frame timestamp but not this identity/generation/job envelope. It is deliberately incompatible with the strict client; the legacy-refusal test confirms that. Its source/service/configuration has not been changed or deployed by this work. An owner-side metadata upgrade and live qualification remain necessary before connecting the actual Logitech. No bridge to the active printer or existing camera is activated.
+
+An accepted frame now records the capture-owner state version. An external version change invalidates the cached frame even if the USB generation is unchanged. This prevents fresh-looking observations from surviving a changed exposure/profile/view.
+
+[HTTP/broker validation](../validation/camera-owner-http-stage116.json) includes real local HTTP and TLS exchanges. These tests do not establish physical camera acquisition, optical quality or host-driver isolation.

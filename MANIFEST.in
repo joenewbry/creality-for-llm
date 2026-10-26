@@ -67,6 +67,7 @@ include licenses/openai-LICENSE.txt
 include licenses/pytest-LICENSE.txt
 include printer_control/__init__.py
 include printer_control/camera.py
+include printer_control/camera_http.py
 include printer_control/checkpoint.py
 include printer_control/combined_virtual.py
 include printer_control/devices.py
@@ -136,6 +137,7 @@ include tests/restore_serial_scenario.py
 include tests/stream_disconnect_scenario.py
 include tests/test_assigned_transport.py
 include tests/test_camera.py
+include tests/test_camera_http.py
 include tests/test_checkpoint.py
 include tests/test_combined_pause_interrupt.py
 include tests/test_combined_policy.py
@@ -209,6 +211,7 @@ include tests_print_mcp/test_virtual_job_mcp.py
 include tests_print_mcp/test_virtual_setup_mcp.py
 include tests_print_mcp/test_virtual_stop_evidence.py
 include validation/camera-broker-stage114.json
+include validation/camera-owner-http-stage116.json
 include validation/capture-finalization-stage86.json
 include validation/clean-export-4b768f9.json
 include validation/clean-export-86bde0b.json
