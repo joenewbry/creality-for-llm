@@ -72,7 +72,8 @@ not journaled job tools; no physical job backend is supplied or commissioned.
 
 Real production integration still requires a job backend with immutable staging,
 state/sensor/configuration gates, transport observations, qualified checkpoints,
-shutdown and restart handling, plus fixed isolated settings/hooks/scripts. The
+shutdown/restart handling, acknowledgment/resend/barrier and queue-saturation
+qualification, plus fixed isolated settings/hooks/scripts. The
 existing virtual backend deliberately refuses this endpoint. No default launcher
 or existing printer service changes. Board/processor/screen/recovery, sensor,
 clearance, actual USB driver/device isolation and camera qualification remain open.
