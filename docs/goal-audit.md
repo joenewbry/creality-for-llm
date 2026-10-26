@@ -36,9 +36,9 @@ full-suite run.
 | Camera and mount | Broker/client/owner API tests, metadata/freshness/version fences, four CAD meshes and two conditional view models | Native acquisition/control, actual clock/profile/identity, image quality, fault detection, physical fit/clearance/framing |
 | Publication | Owned explanation page, architecture, platform/repository distinctions, PR dependencies and screenshot review | Firmware commissioning or an accepted upstream release |
 
-The [current installed Linux qualification](../validation/linux-package-stage124.json)
-passes 1130 tests with zero skips at public source `2e9013a`, including the camera,
-startup, shared serial ownership, journaled assigned job/prompt tools and source-bound serial history. The earlier 986-case qualification
+The [current installed Linux qualification](../validation/linux-package-stage125.json)
+passes 1136 tests with zero skips at public source `f19377a`, including the camera,
+startup, shared serial ownership, journaled assigned job/prompt tools, source-bound serial history and explicit transport-uncertainty retirement. The earlier 986-case qualification
 remains historical. Subsequent delivery changes are documentation/qualification
 metadata only. Neither test counts nor a successful source export prove physical
 readiness.

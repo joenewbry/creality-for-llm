@@ -51,5 +51,6 @@
     "physical acknowledgment/recovery profile remains unqualified; separate virtual single-window resend cases retain their original scope",
     "retiring or closing the connection cannot undo buffered movement or prove heater shutdown",
     "exact development hardware/recovery/sensors/clearance and physical/camera integration remain unfinished"
-  ]
+  ],
+  "linux_full_qualification": "linux-package-stage125.json"
 }

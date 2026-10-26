@@ -278,6 +278,7 @@
     "docs/assigned-observations.md",
     "validation/assigned-observations-stage124.json",
     "validation/linux-package-stage124.json",
-    "validation/assigned-replay-stage125.json"
+    "validation/assigned-replay-stage125.json",
+    "validation/linux-package-stage125.json"
   ]
 }
