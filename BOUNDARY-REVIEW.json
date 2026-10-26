@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "boundary": "H2d",
-  "source_commit": "754d839747218d2d5fcdd143ecc95be5ffdf5155",
+  "boundary": "H2e",
+  "source_commit": "ba0e77fac7c3249a154c33dc53fa345557a5fd29",
   "publication_ready": false,
   "files": [
     {
@@ -18,9 +18,9 @@
     },
     {
       "path": "README.md",
-      "source_path": "contributions/host-pause-execution/README.md",
-      "sha256": "05f2cdea11e28da39d11a08f2eb7127569db88282fb3876d06f6785038b2b0e7",
-      "bytes": 2162
+      "source_path": "contributions/host-virtual-adapters/README.md",
+      "sha256": "8704c175be6cb026998e2bac9cc2f1804fcbda156cb87244e8e75a36753bd03f",
+      "bytes": 2124
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -83,6 +83,12 @@
       "bytes": 6489
     },
     {
+      "path": "printer_control/combined_virtual.py",
+      "source_path": "printer_control/combined_virtual.py",
+      "sha256": "ca1cc323e4caf629271e028c2b5d6504e3ce4ab48c24b36a4cc2fec97708d81a",
+      "bytes": 9229
+    },
+    {
       "path": "printer_control/devices.py",
       "source_path": "printer_control/devices.py",
       "sha256": "e07fda31256425d3179bbfa8f71b78ed5e64472f3ccf399669e0a76ea12f3a92",
@@ -105,6 +111,12 @@
       "source_path": "printer_control/modal.py",
       "sha256": "94d692edc55a907d8bf1b0419332e782cac69e990648b34368fab24319b36de3",
       "bytes": 6658
+    },
+    {
+      "path": "printer_control/octoprint_virtual.py",
+      "source_path": "printer_control/octoprint_virtual.py",
+      "sha256": "d0cd4fe5d94afab60c78a7f274dfcbbba149fe5d92b72458ff85a61d14c90f24",
+      "bytes": 21556
     },
     {
       "path": "printer_control/ownership.py",
@@ -161,6 +173,12 @@
       "bytes": 8346
     },
     {
+      "path": "printer_control/resend_guard.py",
+      "source_path": "printer_control/resend_guard.py",
+      "sha256": "815a0a96a8ed7dcb8cce1e337fc7d476bad200ba3958f666a46a5ee04675d970",
+      "bytes": 3114
+    },
+    {
       "path": "printer_control/restore_effects.py",
       "source_path": "printer_control/restore_effects.py",
       "sha256": "c63820f43e00d109db4c19c34aee4d52c386bcf60aeec079bc61592854d972d0",
@@ -197,10 +215,22 @@
       "bytes": 11785
     },
     {
+      "path": "printer_control/virtual_setup.py",
+      "source_path": "printer_control/virtual_setup.py",
+      "sha256": "9e1783cbee584050c17e2ae219d887b351c6e34094a4ef23e3befe4c6d5efd34",
+      "bytes": 10784
+    },
+    {
       "path": "pyproject.toml",
-      "source_path": "contributions/host-pause-execution/pyproject.toml",
-      "sha256": "09f7fa7250724c68d8f2b82e4209027cd785fca9bc0dfc8c17e584b35e9a42a9",
-      "bytes": 497
+      "source_path": "contributions/host-virtual-adapters/pyproject.toml",
+      "sha256": "08e953b1a6ff8610f61793e5b3bcfebbcf59f1ea310244bab99c30b61ab550fa",
+      "bytes": 544
+    },
+    {
+      "path": "requirements-octoprint.lock",
+      "source_path": "requirements-octoprint.lock",
+      "sha256": "4e96a576b47cdcdce4ad30d4992567a49b87c03b6f4b266b4c6ac1ccf29e2c6e",
+      "bytes": 1347
     },
     {
       "path": "scripts/prepare_firmware.py",
@@ -225,6 +255,18 @@
       "source_path": "tests/test_checkpoint.py",
       "sha256": "790657e17974dd6834020d7dbae4c9da3353acb5363255a28a3b178a6c1bfc92",
       "bytes": 4174
+    },
+    {
+      "path": "tests/test_combined_pause_interrupt.py",
+      "source_path": "tests/test_combined_pause_interrupt.py",
+      "sha256": "83a2c8bb51423210fb5746a959a30937e864a2ed79d19a42ac9a762f810bd9ae",
+      "bytes": 4562
+    },
+    {
+      "path": "tests/test_crash_recovery.py",
+      "source_path": "tests/test_crash_recovery.py",
+      "sha256": "219ee5370218a07fd62cd3e74a1e79f5ede5ea0826325f41afdc95ac4d0b01ec",
+      "bytes": 5418
     },
     {
       "path": "tests/test_devices.py",
@@ -311,6 +353,12 @@
       "bytes": 3020
     },
     {
+      "path": "tests/test_resend_guard.py",
+      "source_path": "tests/test_resend_guard.py",
+      "sha256": "c553d736170e5cde8eaf8b1c0f14d2e04a0aac50432a41164045d0d43eade059",
+      "bytes": 2524
+    },
+    {
       "path": "tests/test_restore_effects.py",
       "source_path": "tests/test_restore_effects.py",
       "sha256": "a31208a167c487313fbc2e8e130f11f9a9a7fc599896107aede487d9a24f99f6",
@@ -351,6 +399,24 @@
       "source_path": "tests/test_thermal_pause.py",
       "sha256": "3193feea3e90be9f1bbf0abde8cd487546a4d11711ff63c70c0dbd54259fbad7",
       "bytes": 7286
+    },
+    {
+      "path": "tests/test_virtual_assignment.py",
+      "source_path": "tests/test_virtual_assignment.py",
+      "sha256": "efe1b54857a67142bc8b6653ba205963af9ba23aa279e441389618a040ab1d11",
+      "bytes": 844
+    },
+    {
+      "path": "tests/test_virtual_completion.py",
+      "source_path": "tests/test_virtual_completion.py",
+      "sha256": "05511c389e79689a5063f18058cf0af80d6bda7c5ea5375409e6c027964a9c05",
+      "bytes": 3013
+    },
+    {
+      "path": "tests/test_virtual_setup.py",
+      "source_path": "tests/test_virtual_setup.py",
+      "sha256": "08198ffb025fd65c86942a6bb06f63d6aac19dc72ef92db01d498f9f34380b27",
+      "bytes": 7669
     }
   ]
 }
