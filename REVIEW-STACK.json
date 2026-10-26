@@ -162,5 +162,189 @@
   "physical_commissioning_complete": false,
   "camera_capture_implemented": false,
   "latest_branch": "stack/h5-camera-design",
-  "note": "First ten trees are identical to tested local review trees; parent history is a clean public bootstrap. Later runtime/test bytes match the qualified source export. Self commit is resolved from latest_branch."
+  "note": "First ten trees are identical to tested local review trees; parent history is a clean public bootstrap. Later runtime/test bytes match the qualified source export. Self commit is resolved from latest_branch.",
+  "host_prs": [
+    {
+      "key": "H1",
+      "title": "Typed operation core",
+      "baseRefName": "main",
+      "headRefName": "stack/h1-core",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/creality-for-llm/pull/1"
+    },
+    {
+      "key": "H2a",
+      "title": "Serial observations and native prompt protocol",
+      "baseRefName": "stack/h1-core",
+      "headRefName": "stack/h2a-observations",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/creality-for-llm/pull/2"
+    },
+    {
+      "key": "H2b",
+      "title": "Shared frame transport and prompt operations",
+      "baseRefName": "stack/h2a-observations",
+      "headRefName": "stack/h2b-prompt-transport",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/creality-for-llm/pull/3"
+    },
+    {
+      "key": "H2c",
+      "title": "Pause policy and restoration planning",
+      "baseRefName": "stack/h2b-prompt-transport",
+      "headRefName": "stack/h2c-pause-policy",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/creality-for-llm/pull/4"
+    },
+    {
+      "key": "H2d",
+      "title": "Durable pause effects and restoration handoff",
+      "baseRefName": "stack/h2c-pause-policy",
+      "headRefName": "stack/h2d-pause-effects",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/creality-for-llm/pull/5"
+    },
+    {
+      "key": "H2e",
+      "title": "Virtual job and setup adapters",
+      "baseRefName": "stack/h2d-pause-effects",
+      "headRefName": "stack/h2e-virtual-adapters",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/creality-for-llm/pull/6"
+    },
+    {
+      "key": "H2f",
+      "title": "Streamed virtual runtime and managed resume",
+      "baseRefName": "stack/h2e-virtual-adapters",
+      "headRefName": "stack/h2f-virtual-runtime",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/creality-for-llm/pull/7"
+    },
+    {
+      "key": "H3",
+      "title": "MCP tools and model evaluation",
+      "baseRefName": "stack/h2f-virtual-runtime",
+      "headRefName": "stack/h3-llm-interface",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/creality-for-llm/pull/8"
+    },
+    {
+      "key": "H4a",
+      "title": "Native firmware and package qualification",
+      "baseRefName": "stack/h3-llm-interface",
+      "headRefName": "stack/h4a-qualification",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/creality-for-llm/pull/9"
+    },
+    {
+      "key": "H4b",
+      "title": "Complete archives and assigned Linux descriptor transport",
+      "baseRefName": "stack/h4a-qualification",
+      "headRefName": "stack/h4b-package-and-transport",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/creality-for-llm/pull/10"
+    },
+    {
+      "key": "H4c",
+      "title": "Read-only Mac USB connection discovery",
+      "baseRefName": "stack/h4b-package-and-transport",
+      "headRefName": "stack/h4c-macos-discovery",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/creality-for-llm/pull/11"
+    },
+    {
+      "key": "H4d",
+      "title": "Revalidate terminal authority after readiness waits",
+      "baseRefName": "stack/h4c-macos-discovery",
+      "headRefName": "stack/h4d-readiness-authority",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/creality-for-llm/pull/12"
+    },
+    {
+      "key": "H4e",
+      "title": "Qualify streamed restart and external-client concurrency",
+      "baseRefName": "stack/h4d-readiness-authority",
+      "headRefName": "stack/h4e-restart-and-clients",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/creality-for-llm/pull/13"
+    },
+    {
+      "key": "H5",
+      "title": "Camera interface, architecture and overview mount prototype",
+      "baseRefName": "stack/h4e-restart-and-clients",
+      "headRefName": "stack/h5-camera-design",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/creality-for-llm/pull/14"
+    }
+  ],
+  "firmware_prs": [
+    {
+      "key": "F1",
+      "title": "Repair baseline S1 Pro build compatibility",
+      "baseRefName": "s1-pro-baseline",
+      "headRefName": "stack/f1-build-repairs",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/Ender-3S1-llm/pull/1"
+    },
+    {
+      "key": "F1b",
+      "title": "Select the F401 development build configuration",
+      "baseRefName": "stack/f1-build-repairs",
+      "headRefName": "stack/f1b-f401-candidate",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/Ender-3S1-llm/pull/2"
+    },
+    {
+      "key": "F2",
+      "title": "Bind remote prompt replies to the active firmware prompt",
+      "baseRefName": "stack/f1b-f401-candidate",
+      "headRefName": "stack/f2-prompt-identity",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/Ender-3S1-llm/pull/3"
+    },
+    {
+      "key": "F3",
+      "title": "Add bounded prompt frames and correlated UART receipts",
+      "baseRefName": "stack/f2-prompt-identity",
+      "headRefName": "stack/f3-prompt-transport",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/Ender-3S1-llm/pull/4"
+    },
+    {
+      "key": "F4",
+      "title": "Keep heater watch armed when its deadline wraps to zero",
+      "baseRefName": "stack/f3-prompt-transport",
+      "headRefName": "stack/f4-watch-deadline",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/Ender-3S1-llm/pull/5"
+    },
+    {
+      "key": "F5",
+      "title": "Backport Marlin near-target thermal protection handoff",
+      "baseRefName": "stack/f4-watch-deadline",
+      "headRefName": "stack/f5-thermal-handoff",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/Ender-3S1-llm/pull/6"
+    }
+  ]
 }

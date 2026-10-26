@@ -38,3 +38,9 @@ The firmware candidate builds for an F401 configuration, but the development
 unit's exact board, processor, screen and recovery route remain unconfirmed.
 No candidate has been flashed. Camera capture, controls and visual monitoring
 are planned interfaces; the CAD mount is a geometrically checked prototype.
+
+## Development identity evidence and commissioning gate
+
+The October 26 inventory audit checked printer rows and their cell notes; no exact board, processor marking or display revision is recorded. Read-only USB metadata identifies a CH340 bridge and topology, which cannot identify the board or MCU behind it. The earlier development-only firmware response `2.0.8.28F4` is not conclusive processor identification. The F401 build remains a candidate, not permission to flash.
+
+Commissioning requires development-unit board and processor markings, screen/About identity, matching bootloader/update procedure and a verified recovery artifact. The earlier negative nozzle reading also needs diagnosis, plus movement-clearance confirmation. None can be inferred from successful native tests. The active printer remains excluded, including if its path disappears or its job finishes; do not reset the shared hub to investigate. Independent software and documentation work does not need these physical facts.
