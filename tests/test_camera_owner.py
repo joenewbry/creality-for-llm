@@ -248,3 +248,17 @@ def test_inherited_owner_is_rejected_before_locks_or_callbacks(owner,method):
     with pytest.raises(RequestRejected,match='capture_owner_process_changed'):
         getattr(obj,method)(**args[method])
     assert writes==[]
+
+
+def test_oversized_asgi_chunk_is_rejected_before_copying_into_buffer(owner):
+    import tracemalloc
+    obj,_,writes=owner
+    api=api_for(obj)
+    payload=b'x'*(2*1024*1024)
+    tracemalloc.start()
+    try:
+        status,_=asyncio.run(call(api,'controls',method='POST',data=payload))
+        _,peak=tracemalloc.get_traced_memory()
+    finally:tracemalloc.stop()
+    assert status==413 and writes==[]
+    assert peak<256*1024

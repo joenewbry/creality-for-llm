@@ -48,8 +48,10 @@ class CaptureOwnerAPI:
                 while True:
                     message=await asyncio.wait_for(receive(),timeout=max(0,end-time.monotonic()))
                     if message['type']!='http.request': raise RequestRejected('owner_body_interrupted')
-                    raw.extend(message.get('body',b''))
-                    if len(raw)>8192: raise OwnerHTTPError(413,'body_too_large')
+                    chunk=message.get('body',b'')
+                    if type(chunk) is not bytes: raise RequestRejected('invalid_owner_body')
+                    if len(chunk)>8192-len(raw): raise OwnerHTTPError(413,'body_too_large')
+                    raw.extend(chunk)
                     if not message.get('more_body'): break
                 def pairs(items):
                     result={}
