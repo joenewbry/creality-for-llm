@@ -238,6 +238,9 @@
     "printer_control/camera.py",
     "tests/test_camera.py",
     "validation/camera-broker-stage114.json",
-    "validation/upstream-submission-stage115.json"
+    "validation/upstream-submission-stage115.json",
+    "printer_control/camera_http.py",
+    "tests/test_camera_http.py",
+    "validation/camera-owner-http-stage116.json"
   ]
 }

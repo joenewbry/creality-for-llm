@@ -120,7 +120,8 @@ class CameraBroker:
         with self.lock:
             state = self._state()
             frame = self.latest_frame
-            if frame and frame['connection_generation'] != state['connection_generation']:
+            if frame and (frame['connection_generation'] != state['connection_generation']
+                          or frame['state_version'] != state['state_version']):
                 self.latest_frame = frame = None
             return {**state, 'latest_frame': deepcopy(frame), 'physical_qualification': False,
                     'scope': 'injected_capture_owner_adapter', 'automatic_printer_actions': False}
@@ -165,7 +166,8 @@ class CameraBroker:
             # This is an encoded-byte envelope, not an image decoder or optical validator.
             if not data.startswith(b'\x89PNG\r\n\x1a\n' if frame['media_type'] == 'image/png' else b'\xff\xd8\xff'):
                 raise RequestRejected('invalid_frame_signature')
-            frame.update(sha256=hashlib.sha256(data).hexdigest(), bytes=len(data))
+            frame.update(sha256=hashlib.sha256(data).hexdigest(), bytes=len(data),
+                         state_version=state['state_version'])
             self.latest_frame = frame
             return {**deepcopy(frame), 'data_base64': base64.b64encode(data).decode('ascii'),
                     'optical_quality_verified': False}

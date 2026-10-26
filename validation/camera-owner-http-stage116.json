@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-26",
+  "scope": "capture-owner HTTP client and broker integration with actual local HTTP/TLS servers; fixture images/control state only",
+  "command": "python -m pytest -q tests/test_camera_http.py tests/test_camera.py tests/test_tools.py tests/test_service.py tests/test_export_review.py",
+  "passed": 110,
+  "skipped": 0,
+  "covered": [
+    "real pinned-address HTTP round trips with no DNS or proxy routing",
+    "real TLS handshake: trusted matching certificate accepted, untrusted and wrong hostname rejected",
+    "absolute request timeout under drip-fed response",
+    "redirect, legacy JPEG-only, duplicate/nonfinite JSON and oversized response rejection",
+    "decoded frame provenance through broker",
+    "control write and readback with durable duplicate receipt and uncertainty blocking",
+    "external capture-owner state change invalidates cached frame"
+  ],
+  "regression_before_fix": "cached frame remained available after external owner state_version advanced; new test failed before fix",
+  "physical_device_access": false,
+  "legacy_owner_compatible": false,
+  "remaining": [
+    "existing capture owner must implement versioned metadata API",
+    "camera/printer/job mapping and timestamps need physical qualification",
+    "live camera capture/controls, owner isolation, optics and mount remain unqualified"
+  ],
+  "source_sha256": {
+    "printer_control/camera.py": "7be9e76fe554d6b4c8be3c60b7fcf260a42a806c7e282efef5699b1dadcb6e7e",
+    "printer_control/camera_http.py": "8dc1bc121364cbbd7a62cd7464793522fa9c3f3ccb7256034243463c83cc2859",
+    "tests/test_camera.py": "c8c297e1bcb8dadc80f63d19ac64705afe1e47edbe8fa937655389cbdedff334",
+    "tests/test_camera_http.py": "358b1508f43a1b23e47e20221816aa93fe21a3d3febab0952f75d3dcfd257cf7"
+  },
+  "clean_export": {
+    "file_count": 241,
+    "passed": 110,
+    "skipped": 0
+  },
+  "installed_wheel": {
+    "passed": 101,
+    "skipped": 0,
+    "source_import_excluded": true,
+    "module_location_asserted": true,
+    "platform": "macOS arm64",
+    "python": "3.11.13",
+    "dependencies": "requirements-print-mcp.lock",
+    "scope": "camera HTTP, broker, tools and service; nine source-only exporter cases counted separately"
+  }
+}

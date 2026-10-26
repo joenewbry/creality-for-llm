@@ -248,3 +248,11 @@ def test_process_restart_recovers_unfinished_camera_receipt_without_dispatch(set
         assert restarted.set_controls(controls())['status']=='rejected'
         assert owner.writes==[]
     finally:restarted.close()
+
+
+def test_external_control_state_change_invalidates_previous_frame(setup):
+    broker,owner,tools=setup
+    tools.call('camera.snapshot',snap())
+    owner.state['state_version']+=1
+    owner.state['values']['gain']=30
+    assert tools.call('monitor.inspect',{})['available'] is False
