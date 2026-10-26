@@ -1,62 +1,81 @@
-# Creality printer control for LLMs
+# LLM printer control
 
-A development interface for bounded job control, prompt handling, durable receipts
-and powered pause/resume. The complete installed-package software suite passed
-876 tests with zero skips on Linux/Python 3.11.13. Physical printer commissioning
-is incomplete; the firmware candidate is unflashed.
+Development implementation of a typed LLM control interface for the Creality S1 Pro.
+The protected production printer and its host software are outside this repository's device scope.
 
-[Architecture and camera path](docs/architecture.md) · [Pause/resume](docs/pause-resume.md)
-· [Camera interface design](docs/camera-interface.md) · [Mount prototype](hardware/camera-mount/README.md)
-· [Explanation page](https://robot.digitalsurfacelabs.com/pages/creality-for-llm/)
+This development prototype includes typed tools, durable operations, virtual jobs,
+native firmware prompt handling and bounded simulator setup controls.
+It does not yet implement a qualified hardware controller. Tests use virtual devices, software terminals and hardware substitutes; no physical printer or camera capture is controlled.
 
-## What is implemented
+Current installed-package qualification: **986 tests passed, zero skips on Linux/Python 3.11.13** at the [public source snapshot](https://github.com/joenewbry/creality-for-llm/tree/b627601c3b7e614cf43706fbca189b4610fa0c69). Installed runtime bytes and all 99 locked dependencies were verified. See [the qualification record](validation/linux-package-stage118.json), [goal audit](docs/goal-audit.md), [contribution stack](docs/contributions.md) and [post-repair printing plan](docs/printing-qualification-plan.md). Firmware commissioning and physical printer/camera operation remain unqualified.
 
-- Typed jobs, supported prompts, setup operations, event history and durable
-  operation receipts with state/generation/deadline checks and duplicate handling.
-- Virtual streamed jobs, actual native firmware-handler tests, managed standby,
-  reheat/restoration and explicit pause/resume/cancel/stop semantics.
-- Linux descriptor ownership/I/O foundation tested with software terminals.
-- Read-only Mac USB connection discovery; Mac physical transport remains disabled.
+## Source layout
 
-One host codebase contains both OS paths. Firmware builds are selected by the
-printer's board/processor and screen, not the host OS. The modified firmware is
-in [the separate Creality fork](https://github.com/joenewbry/Ender-3S1-llm).
-Both repositories use draft review stacks; these are not commissioned releases.
-[Open host PRs](https://github.com/joenewbry/creality-for-llm/pulls) contain the
-focused changes, validation and dependencies.
+- `printer_control`: host tools, durable service, protocol, ownership and camera interfaces.
+- `tests`, `tests_mcp`, `tests_model`, `tests_print_mcp`: behavioral and integration checks.
+- `firmware-test-source.json` and `scripts/prepare_firmware.py`: fetch the separately published, pinned firmware source into an ignored local checkout.
+- `hardware/camera-mount`: editable CAD and conditional prototype geometry checks.
+- `docs` and `validation`: design, qualification scopes and sanitized evidence.
+- `evidence`: local/private raw artifacts, excluded from source publication.
 
-## Reproduce the software checks
+## Run software tests
 
-Use Python 3.11, Git and Clang. Native firmware tests require the exact pinned
-source; the preparation step verifies its commit/tree and refuses an existing
-checkout.
+For a clean checkout, follow [reproducible software setup](docs/reproduce.md).
+It pins the modified firmware needed by native tests as well as host dependencies.
 
-```sh
-clang++ --version
-uv venv --python 3.11 .venv
-uv pip sync --python .venv/bin/python requirements-print-mcp.lock
-uv pip install --python .venv/bin/python --no-deps .
-.venv/bin/python scripts/prepare_firmware.py --repository https://github.com/joenewbry/Ender-3S1-llm.git
-.venv/bin/python -m pytest -q tests tests_mcp tests_model tests_print_mcp
-```
 
-The normal suite uses no paid model API. On Mac, Linux terminal tests skip;
-Linux/Python 3.11.13/Clang 15.0.7 passed the complete installed-package suite.
-See [pinned evidence](validation/linux-package-stage111.json).
+Use Python 3.11 and `pytest==8.3.5` in an isolated virtual environment.
+Run `python -m pytest -q tests tests_mcp tests_model tests_print_mcp` for the complete suite. Software-terminal opens and read-only OS metadata checks are included; physical serial opens are denied by the virtual runners.
+Firmware builds use `platformio==6.1.18` and an isolated `PLATFORMIO_CORE_DIR`.
 
-## Remaining physical and camera work
+## OctoPrint integration experiment
 
-Confirm the development board, processor, display, bootloader and recovery route;
-resolve the negative nozzle reading and confirm clearance before operational
-commissioning. Production USB integration, access isolation and physical pause/
-resume remain unqualified. The protected printer stays excluded.
+Install `requirements-octoprint.lock` in a separate Python 3.11 environment.
+Run `python tests/octoprint_virtual_smoke.py --scenario resume`, then repeat with
+`missing_position` and `disconnect`. Each command runs in its own process with
+temporary settings. No web server starts. Physical PySerial opens are denied;
+the only connection factory accepts `VIRTUAL`. The sender and bundled virtual
+firmware are OctoPrint 1.11.8; application callbacks and plugin discovery are
+replaced. A recording subclass observes actual simulated move completion.
 
-Camera capture, controls and monitoring are planned interfaces. The C270 mount
-has editable CAD, manifold mesh and conditional visibility/keep-out checks;
-actual clip/desk/printer fit, focus, cable routing and framing remain unverified.
-No mesh has been sent to a printer. Real extrusion and print quality require
-nozzle repair and supervised qualification.
+This tests an integration direction, not the complete LLM controller or S1
+firmware. Physical parking, thermal-policy qualification and a production adapter remain unfinished. A missing position report still lets OctoPrint enter
+Paused; missing position therefore remains an uncertain result and blocks resume.
 
-Original source is AGPL-3.0-or-later, with firmware patches and third-party terms
-preserved in [the notices](THIRD_PARTY_NOTICES.md). No upstream acceptance or
-physical release is implied by an open draft PR.
+Add `--service` to route pause/resume/cancel through `OperationService` and the
+virtual-only backend. The service resume scenario now captures a durable
+checkpoint and executes all 80 moves once through the service, without a direct
+resume bypass. Also run `--service --scenario interference` and `--service
+--scenario expired`. The latter advances a test clock by 61 seconds; it is not
+a real-time endurance test. This initial profile is cold and in-place, with a
+60-second simulated policy limit and explicit virtual-model restrictions.
+
+An opt-in `--service --scenario hot_resume` experiment now streams a fixed hot
+simulation through standby, reheat, native-compared modal restoration and the
+durable one-use resume handoff. It checks every file move executes once in order
+and final heater targets are zero. `--scenario hot_resume_temp_loss` verifies
+that losing nozzle temperature after restoration keeps the job paused.
+`--scenario hot_resume_twice` verifies two complete cycles in the same job,
+with distinct checkpoints and retired prior-pause resources. These
+use an extended virtual model, scripted temperatures, synthetic motor/part
+continuity and accelerated time limits. They do not qualify either physical
+printer, arbitrary hot jobs or long-duration adhesion. The explicit
+`hot_console` profile exposes these simulated operations through typed MCP tools;
+see [current profile launch instructions](docs/mcp.md).
+
+Design: [prior art](docs/prior-art.md), [pause/resume](docs/pause-resume.md),
+[interface](docs/interface.md), [typed tools and console](docs/tools.md), [publication preparation](docs/publication.md).
+The [explanation page](https://robot.digitalsurfacelabs.com/pages/creality-for-llm/)
+is published behind the existing site access gate.
+
+Do not run upload targets. Firmware files built here are not qualified for either physical printer.
+The second printer's board, bootloader, screen version, physical identity and rollback image must be recorded before flashing.
+
+## License and attribution
+
+Original host code, tests and documentation are offered under the GNU Affero
+General Public License, version 3 or (at your option) any later version
+(`AGPL-3.0-or-later`), without warranty. See [LICENSE](LICENSE).
+Upstream code and assets retain their own notices and terms; see
+[third-party notices](THIRD_PARTY_NOTICES.md). The host license does not grant
+rights to stock firmware binaries or screen assets. A commissioned physical development release remains pending.

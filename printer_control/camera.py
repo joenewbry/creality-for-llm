@@ -49,6 +49,8 @@ class CameraBroker:
         try:
             self.journal = Journal(journal_path)
             with self.journal._db() as db:
+                if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='backend_startups'").fetchone():
+                    raise RequestRejected('printer_startup_journal_cannot_control_camera')
                 binding = {'camera_id': camera_id, 'printer_id': printer_id, 'capture_owner': capture_owner}
                 exists = db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='camera_binding'").fetchone()
                 if not exists:

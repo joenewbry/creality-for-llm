@@ -161,8 +161,8 @@
   ],
   "physical_commissioning_complete": false,
   "camera_capture_implemented": false,
-  "latest_branch": "stack/h9-capture-owner-api",
-  "note": "First ten public trees preserve their tested local review trees. Later PRs carry separate qualification records; the 876-case Linux run predates the camera additions. Resolve the current delivery head from latest_branch.",
+  "latest_branch": "stack/h10-startup-and-audit",
+  "note": "First ten public trees preserve their originally tested local review trees. Current full Linux installed qualification passes 986 cases on public snapshot b627601; later delivery changes are documentation and qualification metadata. Resolve the current delivery head from latest_branch.",
   "host_prs": [
     {
       "key": "H1",
@@ -325,6 +325,15 @@
       "isDraft": true,
       "state": "OPEN",
       "url": "https://github.com/joenewbry/creality-for-llm/pull/18"
+    },
+    {
+      "key": "H10",
+      "title": "Lease-first backend startup and full goal audit",
+      "baseRefName": "stack/h9-capture-owner-api",
+      "headRefName": "stack/h10-startup-and-audit",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/creality-for-llm/pull/19"
     }
   ],
   "firmware_prs": [
@@ -384,5 +393,6 @@
     }
   ],
   "standalone_upstream_pr": "https://github.com/MarlinFirmware/Marlin/pull/28753",
-  "current_camera_owner_qualification": "validation/camera-owner-api-stage117.json"
+  "current_camera_owner_qualification": "validation/camera-owner-api-stage117.json",
+  "current_full_qualification": "validation/linux-package-stage118.json"
 }
