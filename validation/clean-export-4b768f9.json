@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "source_commit": "4b768f956a7ebd90e6f297a0149963d057187723",
+  "exported_files": 170,
+  "export_manifest_sha256": "3e7744ce62887d24d478ce42b4fc84f49577e826ded9c30552f5c2b61f404770",
+  "source_files_unchanged_after_tests": true,
+  "host_git_history_included": false,
+  "test_result": {
+    "tests": 775,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "elapsed_seconds": 70.509,
+  "python_version": "3.11.13",
+  "locked_packages": 99,
+  "dependency_lock_sha256": "72095c4af50910df0b2ff4554473e01b01ea182b468fdfd47996ebc203c85458",
+  "firmware": {
+    "schema_version": 1,
+    "upstream_commit": "7fffa9270ff8fb5ee208a5b04f832e20bab19c60",
+    "commit": "98aa03248337b8039a09bbc1a29f33432aed08ca",
+    "tree": "70ec40fa273bd88cfbda442935ac275cbf9f981b",
+    "publication_status": "local-only; supply the reviewed firmware repository explicitly"
+  },
+  "firmware_worktree_clean": true,
+  "junit_sha256": "cff5bc75dcf995aa6bc8d1d2de03e6db49fc45caf122d89a6ce2c40c2d65aa9c",
+  "environment": "new virtual environment; local package cache and reviewed local firmware repository",
+  "physical_printer_qualified": false,
+  "public_fork_reproduction": false,
+  "firmware_binary_rebuilt": false,
+  "paid_model_calls": 0
+}

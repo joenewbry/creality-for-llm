@@ -1,0 +1,497 @@
+{
+  "settings": {
+    "THERMAL_PROTECTION_PERIOD": 60,
+    "THERMAL_PROTECTION_HYSTERESIS": 4,
+    "THERMAL_PROTECTION_BED_PERIOD": 180,
+    "THERMAL_PROTECTION_BED_HYSTERESIS": 2
+  },
+  "temperature_file_sha256": "5cd13d09e75c4ce1b3dc57da5da04a392d96cda661c3f00174cc0393f05ba739",
+  "header_file_sha256": "e8340d3ed4eda327094d7a35a3668e1c35f4fcb07544a4650b1956604cafdcec",
+  "configuration_adv_sha256": "7cd902cdc3a697a781408e5b7dcb25b72471a3d39800b7ce2bd118f8e19f4c63",
+  "declaration_sha256": "038c221c0645a856cd22d3e675144d1b479964a708a6bca1f9ed70cb0b82c90f",
+  "snippet_sha256": {
+    "runaway": "b1c5c6fd53ef3de61ddb9927bfc3614c4b1f61d4026d20f3bc1e0342fe39fdc3",
+    "error": "07c91f16f2a88cca7a4444625d1c9f4d15c74c1d27a63232e9c76b31add4b6a9",
+    "disable": "ca3b742625fa2d13f835f11afff4132826fcf3c2e99ff41ce215f527690f4c9f"
+  },
+  "physical_qualified": false,
+  "pin_io": "recording stub",
+  "kill": "recording stub",
+  "sensors": "scripted",
+  "idle_handler": true,
+  "autotemp": true,
+  "target_setters": "recording stubs",
+  "excluded": [
+    "sensor sampling",
+    "interrupts",
+    "full manager",
+    "physical kill",
+    "adaptive fan slowing",
+    "bogus temperature grace period"
+  ],
+  "heating_watch": {
+    "settings": {
+      "WATCH_TEMP_PERIOD": 40,
+      "WATCH_TEMP_INCREASE": 2,
+      "WATCH_BED_TEMP_PERIOD": 180,
+      "WATCH_BED_TEMP_INCREASE": 2,
+      "TEMP_HYSTERESIS": 3,
+      "TEMP_BED_HYSTERESIS": 3
+    },
+    "snippets_sha256": {
+      "template": "4c0bb59495e38a7c080bca071fa6855148297401a1a2756314c71ca043fff57d",
+      "hotend_branch": "d5cb418cd751673f0b1ffed8bbb4ff0854779667758ce1c30418607d052aedd3",
+      "bed_branch": "96e1a65ddfd09e429f610f551fac8221b61e6199d7ec2860dfbeeaf3599af847",
+      "start_hotend": "6f7a52e76a61a00968a351fe1dcef50451b854c281750842cb844b155226a160",
+      "start_bed": "2524c7aca467c4afe1d131dae8d2b89427f57c2b517c6f094b106405c10ed004"
+    }
+  },
+  "firmware": {
+    "schema_version": 1,
+    "upstream_commit": "7fffa9270ff8fb5ee208a5b04f832e20bab19c60",
+    "commit": "126e17173498f9598c9d11188b3aadb456580020",
+    "tree": "3cf0c03616195fd83cfb727527a194825d069dab",
+    "publication_status": "local-only; supply the reviewed firmware repository explicitly"
+  },
+  "cases": [
+    {
+      "heater": "hotend",
+      "scenario": "no_rise",
+      "observation": {
+        "kills": 1,
+        "before_kills": 0,
+        "last_heater": 0,
+        "period_seconds": 40,
+        "next_ms": 41000,
+        "watch_target": 22,
+        "now": 41000,
+        "nozzle_target": 0,
+        "bed_target": 0,
+        "nozzle_pwm": 0,
+        "bed_pwm": 0,
+        "nozzle_pin": 0,
+        "bed_pin": 0,
+        "watchdogs": 1,
+        "screen_fault_updates": 1,
+        "serial_message": "HEATING FAILED",
+        "autotemp_enabled": false
+      }
+    },
+    {
+      "heater": "hotend",
+      "scenario": "wrap",
+      "observation": {
+        "kills": 1,
+        "before_kills": 0,
+        "last_heater": 0,
+        "period_seconds": 40,
+        "next_ms": 38999,
+        "watch_target": 22,
+        "now": 38999,
+        "nozzle_target": 0,
+        "bed_target": 0,
+        "nozzle_pwm": 0,
+        "bed_pwm": 0,
+        "nozzle_pin": 0,
+        "bed_pin": 0,
+        "watchdogs": 1,
+        "screen_fault_updates": 1,
+        "serial_message": "HEATING FAILED",
+        "autotemp_enabled": false
+      }
+    },
+    {
+      "heater": "hotend",
+      "scenario": "zero_deadline",
+      "observation": {
+        "kills": 1,
+        "before_kills": 0,
+        "last_heater": 0,
+        "period_seconds": 40,
+        "next_ms": 1,
+        "watch_target": 22,
+        "now": 1,
+        "nozzle_target": 0,
+        "bed_target": 0,
+        "nozzle_pwm": 0,
+        "bed_pwm": 0,
+        "nozzle_pin": 0,
+        "bed_pin": 0,
+        "watchdogs": 1,
+        "screen_fault_updates": 1,
+        "serial_message": "HEATING FAILED",
+        "autotemp_enabled": false
+      }
+    },
+    {
+      "heater": "hotend",
+      "scenario": "insufficient",
+      "observation": {
+        "kills": 1,
+        "before_kills": 0,
+        "last_heater": 0,
+        "period_seconds": 40,
+        "next_ms": 41000,
+        "watch_target": 22,
+        "now": 41000,
+        "nozzle_target": 0,
+        "bed_target": 0,
+        "nozzle_pwm": 0,
+        "bed_pwm": 0,
+        "nozzle_pin": 0,
+        "bed_pin": 0,
+        "watchdogs": 1,
+        "screen_fault_updates": 1,
+        "serial_message": "HEATING FAILED",
+        "autotemp_enabled": false
+      }
+    },
+    {
+      "heater": "hotend",
+      "scenario": "later_stall",
+      "observation": {
+        "kills": 1,
+        "before_kills": 0,
+        "last_heater": 0,
+        "period_seconds": 40,
+        "next_ms": 81000,
+        "watch_target": 24,
+        "now": 81000,
+        "nozzle_target": 0,
+        "bed_target": 0,
+        "nozzle_pwm": 0,
+        "bed_pwm": 0,
+        "nozzle_pin": 0,
+        "bed_pin": 0,
+        "watchdogs": 1,
+        "screen_fault_updates": 1,
+        "serial_message": "HEATING FAILED",
+        "autotemp_enabled": false
+      }
+    },
+    {
+      "heater": "hotend",
+      "scenario": "repeat",
+      "observation": {
+        "kills": 1,
+        "before_kills": 1,
+        "last_heater": 0,
+        "period_seconds": 40,
+        "next_ms": 41000,
+        "watch_target": 22,
+        "now": 41000,
+        "nozzle_target": 0,
+        "bed_target": 0,
+        "nozzle_pwm": 0,
+        "bed_pwm": 0,
+        "nozzle_pin": 0,
+        "bed_pin": 0,
+        "watchdogs": 2,
+        "screen_fault_updates": 2,
+        "serial_message": "HEATING FAILED",
+        "autotemp_enabled": false
+      }
+    },
+    {
+      "heater": "hotend",
+      "scenario": "enough_rise",
+      "observation": {
+        "kills": 0,
+        "before_kills": 0,
+        "last_heater": 99,
+        "period_seconds": 40,
+        "next_ms": 81000,
+        "watch_target": 24,
+        "now": 41000,
+        "nozzle_target": 200,
+        "bed_target": 60,
+        "nozzle_pwm": 100,
+        "bed_pwm": 100,
+        "nozzle_pin": 1,
+        "bed_pin": 1,
+        "watchdogs": 0,
+        "screen_fault_updates": 0,
+        "serial_message": "",
+        "autotemp_enabled": true
+      }
+    },
+    {
+      "heater": "hotend",
+      "scenario": "near_target",
+      "observation": {
+        "kills": 0,
+        "before_kills": 0,
+        "last_heater": 99,
+        "period_seconds": 40,
+        "next_ms": 0,
+        "watch_target": 22,
+        "now": 41000,
+        "nozzle_target": 200,
+        "bed_target": 60,
+        "nozzle_pwm": 100,
+        "bed_pwm": 100,
+        "nozzle_pin": 1,
+        "bed_pin": 1,
+        "watchdogs": 0,
+        "screen_fault_updates": 0,
+        "serial_message": "",
+        "autotemp_enabled": true
+      }
+    },
+    {
+      "heater": "hotend",
+      "scenario": "off",
+      "observation": {
+        "kills": 0,
+        "before_kills": 0,
+        "last_heater": 99,
+        "period_seconds": 40,
+        "next_ms": 0,
+        "watch_target": 22,
+        "now": 41000,
+        "nozzle_target": 0,
+        "bed_target": 60,
+        "nozzle_pwm": 100,
+        "bed_pwm": 100,
+        "nozzle_pin": 1,
+        "bed_pin": 1,
+        "watchdogs": 0,
+        "screen_fault_updates": 0,
+        "serial_message": "",
+        "autotemp_enabled": true
+      }
+    },
+    {
+      "heater": "bed",
+      "scenario": "no_rise",
+      "observation": {
+        "kills": 1,
+        "before_kills": 0,
+        "last_heater": -1,
+        "period_seconds": 180,
+        "next_ms": 181000,
+        "watch_target": 22,
+        "now": 181000,
+        "nozzle_target": 0,
+        "bed_target": 0,
+        "nozzle_pwm": 0,
+        "bed_pwm": 0,
+        "nozzle_pin": 0,
+        "bed_pin": 0,
+        "watchdogs": 1,
+        "screen_fault_updates": 1,
+        "serial_message": "HEATING FAILED",
+        "autotemp_enabled": false
+      }
+    },
+    {
+      "heater": "bed",
+      "scenario": "wrap",
+      "observation": {
+        "kills": 1,
+        "before_kills": 0,
+        "last_heater": -1,
+        "period_seconds": 180,
+        "next_ms": 178999,
+        "watch_target": 22,
+        "now": 178999,
+        "nozzle_target": 0,
+        "bed_target": 0,
+        "nozzle_pwm": 0,
+        "bed_pwm": 0,
+        "nozzle_pin": 0,
+        "bed_pin": 0,
+        "watchdogs": 1,
+        "screen_fault_updates": 1,
+        "serial_message": "HEATING FAILED",
+        "autotemp_enabled": false
+      }
+    },
+    {
+      "heater": "bed",
+      "scenario": "zero_deadline",
+      "observation": {
+        "kills": 1,
+        "before_kills": 0,
+        "last_heater": -1,
+        "period_seconds": 180,
+        "next_ms": 1,
+        "watch_target": 22,
+        "now": 1,
+        "nozzle_target": 0,
+        "bed_target": 0,
+        "nozzle_pwm": 0,
+        "bed_pwm": 0,
+        "nozzle_pin": 0,
+        "bed_pin": 0,
+        "watchdogs": 1,
+        "screen_fault_updates": 1,
+        "serial_message": "HEATING FAILED",
+        "autotemp_enabled": false
+      }
+    },
+    {
+      "heater": "bed",
+      "scenario": "insufficient",
+      "observation": {
+        "kills": 1,
+        "before_kills": 0,
+        "last_heater": -1,
+        "period_seconds": 180,
+        "next_ms": 181000,
+        "watch_target": 22,
+        "now": 181000,
+        "nozzle_target": 0,
+        "bed_target": 0,
+        "nozzle_pwm": 0,
+        "bed_pwm": 0,
+        "nozzle_pin": 0,
+        "bed_pin": 0,
+        "watchdogs": 1,
+        "screen_fault_updates": 1,
+        "serial_message": "HEATING FAILED",
+        "autotemp_enabled": false
+      }
+    },
+    {
+      "heater": "bed",
+      "scenario": "later_stall",
+      "observation": {
+        "kills": 1,
+        "before_kills": 0,
+        "last_heater": -1,
+        "period_seconds": 180,
+        "next_ms": 361000,
+        "watch_target": 24,
+        "now": 361000,
+        "nozzle_target": 0,
+        "bed_target": 0,
+        "nozzle_pwm": 0,
+        "bed_pwm": 0,
+        "nozzle_pin": 0,
+        "bed_pin": 0,
+        "watchdogs": 1,
+        "screen_fault_updates": 1,
+        "serial_message": "HEATING FAILED",
+        "autotemp_enabled": false
+      }
+    },
+    {
+      "heater": "bed",
+      "scenario": "repeat",
+      "observation": {
+        "kills": 1,
+        "before_kills": 1,
+        "last_heater": -1,
+        "period_seconds": 180,
+        "next_ms": 181000,
+        "watch_target": 22,
+        "now": 181000,
+        "nozzle_target": 0,
+        "bed_target": 0,
+        "nozzle_pwm": 0,
+        "bed_pwm": 0,
+        "nozzle_pin": 0,
+        "bed_pin": 0,
+        "watchdogs": 2,
+        "screen_fault_updates": 2,
+        "serial_message": "HEATING FAILED",
+        "autotemp_enabled": false
+      }
+    },
+    {
+      "heater": "bed",
+      "scenario": "enough_rise",
+      "observation": {
+        "kills": 0,
+        "before_kills": 0,
+        "last_heater": 99,
+        "period_seconds": 180,
+        "next_ms": 361000,
+        "watch_target": 24,
+        "now": 181000,
+        "nozzle_target": 200,
+        "bed_target": 60,
+        "nozzle_pwm": 100,
+        "bed_pwm": 100,
+        "nozzle_pin": 1,
+        "bed_pin": 1,
+        "watchdogs": 0,
+        "screen_fault_updates": 0,
+        "serial_message": "",
+        "autotemp_enabled": true
+      }
+    },
+    {
+      "heater": "bed",
+      "scenario": "near_target",
+      "observation": {
+        "kills": 0,
+        "before_kills": 0,
+        "last_heater": 99,
+        "period_seconds": 180,
+        "next_ms": 0,
+        "watch_target": 22,
+        "now": 181000,
+        "nozzle_target": 200,
+        "bed_target": 60,
+        "nozzle_pwm": 100,
+        "bed_pwm": 100,
+        "nozzle_pin": 1,
+        "bed_pin": 1,
+        "watchdogs": 0,
+        "screen_fault_updates": 0,
+        "serial_message": "",
+        "autotemp_enabled": true
+      }
+    },
+    {
+      "heater": "bed",
+      "scenario": "off",
+      "observation": {
+        "kills": 0,
+        "before_kills": 0,
+        "last_heater": 99,
+        "period_seconds": 180,
+        "next_ms": 0,
+        "watch_target": 22,
+        "now": 181000,
+        "nozzle_target": 200,
+        "bed_target": 0,
+        "nozzle_pwm": 100,
+        "bed_pwm": 100,
+        "nozzle_pin": 1,
+        "bed_pin": 1,
+        "watchdogs": 0,
+        "screen_fault_updates": 0,
+        "serial_message": "",
+        "autotemp_enabled": true
+      }
+    }
+  ],
+  "baseline_failure": {
+    "firmware_commit": "a5c1cabc478e52c5e2ec00a00686e2b573a912e4",
+    "failed_cases": [
+      "hotend-zero_deadline",
+      "bed-zero_deadline"
+    ],
+    "observed_kill_calls": 0,
+    "expected_kill_calls": 1,
+    "failed_test_report_sha256": "594dd27ea41ef75dd3b4b2ff9ec984150c43bd26359f0da179b173aedeb90701"
+  },
+  "f401_build": {
+    "passed": true,
+    "binary_sha256": "85f7bab4cbb3b79a0c2f91d67bf3d97aa4c6a3af91424b14c3084eb59e0a6e36",
+    "bytes": 165408,
+    "build_log_sha256": "bad9463c80d15f387555f3ca4ff1e26addb69c64eef73d6297338a237d426b17",
+    "flashed": false
+  },
+  "patch_applies_to_pinned_creality_base": true,
+  "regression_suite": {
+    "tests": 752,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "elapsed_seconds": 68.76
+  }
+}

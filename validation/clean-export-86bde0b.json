@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "source_commit": "86bde0b8e49b62a43ba5b304ecbb55f0097d6bf5",
+  "exported_files": 151,
+  "export_manifest_sha256": "0ae2a846ca3c26080c4c0f34719674abf85cd0efd4bd942d68c96ae5dae3698a",
+  "source_files_unchanged_after_tests": true,
+  "host_git_history_included": false,
+  "test_result": {
+    "tests": 716,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "elapsed_seconds": 68.926,
+  "python_version": "3.11.13",
+  "locked_packages": 99,
+  "dependency_lock_sha256": "72095c4af50910df0b2ff4554473e01b01ea182b468fdfd47996ebc203c85458",
+  "firmware": {
+    "schema_version": 1,
+    "upstream_commit": "7fffa9270ff8fb5ee208a5b04f832e20bab19c60",
+    "commit": "a5c1cabc478e52c5e2ec00a00686e2b573a912e4",
+    "tree": "fbd322f08cde2eb184cd6d8122d134abf9df46df",
+    "publication_status": "local-only; supply the reviewed firmware repository explicitly"
+  },
+  "environment": "new virtual environment; local package cache and reviewed local firmware repository",
+  "physical_printer_qualified": false,
+  "public_fork_reproduction": false,
+  "firmware_binary_rebuilt": false,
+  "paid_model_calls": 0
+}

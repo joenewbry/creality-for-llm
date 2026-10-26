@@ -1,0 +1,29 @@
+From 7c3c9ee84de78d3cb59b377a518beee507bf7970 Mon Sep 17 00:00:00 2001
+From: Joe Newbry <joe@digitalsurfacelabs.com>
+Date: Sun, 25 Oct 2026 17:26:58 -0700
+Subject: [PATCH] =?UTF-8?q?=F0=9F=90=9B=20Preserve=20heater=20watch=20acro?=
+ =?UTF-8?q?ss=20a=20zero-valued=20deadline?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ Marlin/src/module/temperature.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Marlin/src/module/temperature.h b/Marlin/src/module/temperature.h
+index 30397e5..bbec7e6 100644
+--- a/Marlin/src/module/temperature.h
++++ b/Marlin/src/module/temperature.h
+@@ -527,6 +527,8 @@ struct HeaterWatch {
+     if (tgt && curr < tgt - HYSTERESIS) {
+       target = _MIN(curr + INCREASE, tgt - HYSTERESIS);
+       next_ms = millis() + SEC_TO_MS(PERIOD);
++      // Zero means disabled. Preserve an armed watch across timer wraparound.
++      if (!next_ms) next_ms = 1;
+     }
+     else
+       next_ms = 0;
+-- 
+2.39.5 (Apple Git-154)
+

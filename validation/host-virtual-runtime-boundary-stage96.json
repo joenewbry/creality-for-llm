@@ -1,0 +1,173 @@
+{
+  "schema_version": 1,
+  "boundary": "H2f",
+  "depends_on": "H2e",
+  "source_commit": "03804fc62493ef14ded20c8c098f6eb151c0797c",
+  "tested_source_commit": "59023272d616c2d9b8d43c22d6a42063c735a6af",
+  "changed_since_tests": [
+    "README.md: distinguish service shutdown from confirmed heater stop"
+  ],
+  "all_other_mapped_files_byte_identical_to_tested_snapshot": true,
+  "review_commit": "b7d305c47c95d9ec9a10c06d9f8a28c23295f08f",
+  "review_tree": "52538d01aecf660ad27781e418f1bcda87fcfbbb",
+  "parent_review_commit": "4753a2e6bfc345aeb9ed93d70d7289be9d8a55f5",
+  "mapped_files": 96,
+  "manifest_sha256": "8a27b5d782d2ec5fe1814315471e8af5bfe8b9b2a4015ecd5a3a82ff401dcfb8",
+  "initial_invocation_failure": {
+    "tests": 577,
+    "failures": 7,
+    "errors": 0,
+    "skipped": 0,
+    "junit_sha256": "a88e687d095eb66fe8bfa470c2168b4a4fd33ba181f7acf74b79fc70d9d0b43d"
+  },
+  "source_tests": {
+    "tests": 577,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "junit_sha256": "db2eccbe8dbb923159d2e8c50ac98da5b5724fdea3aa9f1cf020896b7564a500"
+  },
+  "installed_tests": {
+    "tests": 577,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "junit_sha256": "50f2c23051824e87679b6bf8de61726a49e3a111505f74dede6d8cbebe5fef1d"
+  },
+  "scenario_reports": [
+    {
+      "run": "source",
+      "scenario": "resume",
+      "physical_serial_open_attempts": 0,
+      "report_sha256": "01fa7e54e55b3724e25c8dad012d91f31eeb8a003390969f14bd298db681fe9b"
+    },
+    {
+      "run": "source",
+      "scenario": "unified_prompt",
+      "physical_serial_open_attempts": 0,
+      "report_sha256": "e5f900a33ef4a5c09bc66a5624383c3391ae53d31d8b6d19335378b59c3585ed"
+    },
+    {
+      "run": "source",
+      "scenario": "hot_resume_managed",
+      "physical_serial_open_attempts": 0,
+      "report_sha256": "dbb8d683418b6a47de514f1e24fee36941963f7d5b3db619f2d9e777f06dd7e3"
+    },
+    {
+      "run": "source",
+      "scenario": "hot_resume_twice",
+      "physical_serial_open_attempts": 0,
+      "report_sha256": "a4cfa1fc103747264a5f99671b5a12c7a8a12b045b48bbc7db61c300962dde21"
+    },
+    {
+      "run": "source",
+      "scenario": "hot_resume_managed_cancel",
+      "physical_serial_open_attempts": 0,
+      "report_sha256": "1cfee1f5c9e48edb3357a2f26647b86cc01cf50af870aa7e6f1a3696a968962a"
+    },
+    {
+      "run": "source",
+      "scenario": "hot_resume_managed_shutdown",
+      "physical_serial_open_attempts": 0,
+      "report_sha256": "ee2818c2c1b0a4f99508fc38da10373e519dbb412feaf17d018c3d0995b82e94"
+    },
+    {
+      "run": "source",
+      "scenario": "hot_pause_disconnect",
+      "physical_serial_open_attempts": 0,
+      "report_sha256": "c93893986692aef84ef2b0f43621a1128426f54183adf9f7a003e771c967e089"
+    },
+    {
+      "run": "source",
+      "scenario": "active_reset",
+      "physical_serial_open_attempts": 0,
+      "report_sha256": "cd1c07f3c088b184baa9935669d0c1d885b02fac6ee1290d88236e8aae2d4ce3"
+    },
+    {
+      "run": "source",
+      "scenario": "resend_checksum",
+      "physical_serial_open_attempts": 0,
+      "report_sha256": "5d3da1ca1beb42326da985a42a7c999c7b83175de5e28f10a5a4f38284aa59e2"
+    },
+    {
+      "run": "source",
+      "scenario": "thermal_fault",
+      "physical_serial_open_attempts": 0,
+      "report_sha256": "c7147b2dd84e5289884372a63fd92ed077815d80a0953a6cf7343d57f0469099"
+    },
+    {
+      "run": "installed",
+      "scenario": "resume",
+      "physical_serial_open_attempts": 0,
+      "report_sha256": "8e6617511a7872f97c29cc553af0eeef231bf68f846b854e29d5af59d0cbaea2"
+    },
+    {
+      "run": "installed",
+      "scenario": "unified_prompt",
+      "physical_serial_open_attempts": 0,
+      "report_sha256": "5c960a35b3701def20f70b3f36648733d3c8636b5127b131f5d8a0d21d4f589b"
+    },
+    {
+      "run": "installed",
+      "scenario": "hot_resume_managed",
+      "physical_serial_open_attempts": 0,
+      "report_sha256": "ee0882d759c301af3993c46369555916577898d6986037c5a20f2ef1f0ef43cd"
+    },
+    {
+      "run": "installed",
+      "scenario": "hot_resume_twice",
+      "physical_serial_open_attempts": 0,
+      "report_sha256": "9c0d2d1bc5fc08b6974ef07aea6998ec56398f33b31176cb8822ee9e24744442"
+    },
+    {
+      "run": "installed",
+      "scenario": "hot_resume_managed_cancel",
+      "physical_serial_open_attempts": 0,
+      "report_sha256": "482506f91967397f22458bb97cc7559a0c31e0fe1f4ca4dfe342add0b2cc55fc"
+    },
+    {
+      "run": "installed",
+      "scenario": "hot_resume_managed_shutdown",
+      "physical_serial_open_attempts": 0,
+      "report_sha256": "4b26872f55d2a123834ad58a50c2b685e46e5e5912b656ffcd8ca77d8e551209"
+    },
+    {
+      "run": "installed",
+      "scenario": "hot_pause_disconnect",
+      "physical_serial_open_attempts": 0,
+      "report_sha256": "623890f61926a5b3636e849bfca61496454e75f56b4da3e243135b5396c387a9"
+    },
+    {
+      "run": "installed",
+      "scenario": "active_reset",
+      "physical_serial_open_attempts": 0,
+      "report_sha256": "1b73cc49a71edfce83073c510a2bc961de0051f86cdd88218f2d4794a08cea1f"
+    },
+    {
+      "run": "installed",
+      "scenario": "resend_checksum",
+      "physical_serial_open_attempts": 0,
+      "report_sha256": "8e109acc80c01f5e0cfbb7f732ab2b06929b617b52c8a406344dcf4396dfea4b"
+    },
+    {
+      "run": "installed",
+      "scenario": "thermal_fault",
+      "physical_serial_open_attempts": 0,
+      "report_sha256": "6f584e7e9fa113375c394de54d0a5901a9fdeeae35f54d346d6dcfa8befe1869"
+    }
+  ],
+  "package_built_and_installed": true,
+  "installed_import_from_site_packages": true,
+  "review_worktree_clean": true,
+  "private_host_history_included": false,
+  "physical_access": false,
+  "paid_model_calls": 0,
+  "public_pr_created": false,
+  "limits": [
+    "scripted temperatures and virtual continuity proofs",
+    "service shutdown does not confirm heater shutdown",
+    "installed tests reuse pinned native fixture",
+    "MCP/model adapters excluded; optional runner switches require later boundary",
+    "physical commissioning and production transport unqualified"
+  ]
+}

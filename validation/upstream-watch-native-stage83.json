@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "upstream_commit": "a49fef81141d91d4b261a64479e46a00092ea05a",
+  "candidate_commit": "2e93c507baa1acefac579597539261125fc20e3f",
+  "candidate_tree": "22cc6d934970bf8e23490d16f186c497983961ea",
+  "native_host": "Linux aarch64",
+  "compiler": "GCC 11.4.0",
+  "platformio": "6.1.18",
+  "unity": "2.6.1",
+  "native_command": "make unit-test-single-local UNIT_TEST_CONFIG=default",
+  "native_configuration": "test/001-default.ini",
+  "native_before": {
+    "tests": 168,
+    "failed": 2,
+    "passed": 166,
+    "variant": "candidate with only zero-deadline guard removed; timestamp argument and tests present",
+    "log_sha256": "2c07f409b2f4bbaaaffca0801883710d3618e68253ae68bd2d31bfa091ba20ef"
+  },
+  "native_after": {
+    "tests": 168,
+    "failed": 0,
+    "passed": 168,
+    "log_sha256": "95ac0ed7b8af9d7b9ad1e189cb8939021c459650d113f6bcbe7f5a740ed1a2b3"
+  },
+  "new_regression_tests": 5,
+  "timestamp_argument": "optional now defaults to millis(); tests supply deterministic timestamps",
+  "cross_builds": [
+    {
+      "environment": "mega2560",
+      "result": "passed",
+      "artifact_sha256": "5be17e17600be0102059beacbbbc7bfe8128a5d85ad6c8c364d45e610b6854b8",
+      "log_sha256": "759df1b32dca6b648bdf185fecf08d9b0523c20a98b11530359615aca76a2290"
+    },
+    {
+      "environment": "DUE",
+      "result": "passed",
+      "artifact_sha256": "3d5b226c126117ab16e7b5166985153b22debf6e88acd4d64411344cb8ab4bf4",
+      "log_sha256": "fa4d2bbd064ace0dd7b44f36d97d5c76c2bb7520a27babb47bc51722efcdf827"
+    }
+  ],
+  "native_full_simulator_run": false,
+  "physical_access": false,
+  "upstream_pr_published": false,
+  "other_native_configs_run": false,
+  "patch_sha256": {
+    "marlin-heater-watch-zero.patch": "e09660f9dd4771420350eb2297bfafea21e5a7c85c2952e18e3417d45416812b",
+    "marlin-heater-watch-native-tests.patch": "5644060ab4838e80c0ea8cba2950866f1d5dc352f6b837bc8e8e6348f188b074"
+  },
+  "remote_candidate_worktree_clean_after_test": true
+}

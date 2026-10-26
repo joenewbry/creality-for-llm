@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "boundary": "H1",
+  "source_commit": "0acf2f53b77f72a3241cb162f44fc073fc986d02",
+  "review_commit": "91e1d4b9022fbc059cb3c5a4726dadfd2da023e3",
+  "review_tree": "c637d7f52a9b336dbd53b3cc6710686f34e79d1a",
+  "files": 21,
+  "manifest_sha256": "9206b77b7139b3d359c2e6972ef123b1a5ba731402fd8034ddf683e91f29a17e",
+  "source_tests": {
+    "tests": 79,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "junit_sha256": "d980a1def0773b01481ddb626d632aa03f2d7d34e7a7b5faf951bfaba6ac2402"
+  },
+  "installed_tests": {
+    "tests": 79,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "junit_sha256": "663819ca73884fff94422729d9966c713a3019589a5c9e0dc9d7ce2a6556492d"
+  },
+  "python_version": "3.11.13",
+  "pytest_version": "8.3.5",
+  "package_built_and_installed": true,
+  "installed_import_from_site_packages": true,
+  "source_files_unchanged": true,
+  "review_worktree_clean": true,
+  "private_host_history_included": false,
+  "physical_access": false,
+  "paid_model_calls": 0,
+  "public_pr_created": false,
+  "limits": [
+    "H1 core only; fake backend",
+    "later boundaries not assembled",
+    "thermal/restore hooks present but integration absent",
+    "local package cache available",
+    "OS controller lock tests on macOS; production USB unqualified"
+  ]
+}

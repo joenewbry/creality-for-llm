@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "scope": "hot simulator continuous serial observations",
+  "recovery_authority": false,
+  "physical_access": false,
+  "default_retention_events": 10000,
+  "pending_capacity_bytes": 262144,
+  "new_recorder_cases": 13,
+  "external_hot_client_cases": 3,
+  "regression_suite": {
+    "tests": 775,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "elapsed_seconds": 174.664
+  },
+  "regression_xml_sha256": "054c5aa4592e6975ee91fa3080ef481c4b47674e320a7a713d6cbdef8aae7b67",
+  "source_hashes": {
+    "printer_control/machine_events.py": "7e974ea82669f55b23bc5b815c5eac0abf8bbca5420e4912d0b3f1289831ff4c",
+    "printer_control/tools.py": "fd0220a03ebb9ce2f163da72352f261c14594e75a933436b77b304416d82dd8a",
+    "tests/octoprint_virtual_smoke.py": "730b1708c0adfc6d87e6bf8d121e46e515a2f8a1f2404756e45c606f6def8296",
+    "tests/test_machine_events.py": "9c876afccac212f365d295630800ef514e9511976f3fe2f860dcb41e3d1a527d",
+    "tests_print_mcp/test_hot_console_mcp.py": "705aae8f9150166d4a43c6bfadb1849b0c7f5a1bd0e841f85a0ace964a3cce0d"
+  },
+  "limits": [
+    "capture begins after service ownership and bootstrap",
+    "process crash can lose queued observations",
+    "generation IDs are protocol-observer diagnostics",
+    "retention bounds rows, not a complete permanent audit",
+    "physical adapter and controlled reconnect/reset remain unqualified"
+  ]
+}
