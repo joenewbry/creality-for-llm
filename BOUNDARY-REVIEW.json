@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "boundary": "H2f",
-  "source_commit": "03804fc62493ef14ded20c8c098f6eb151c0797c",
+  "boundary": "H3",
+  "source_commit": "868ffd088504d88dd1d8f7054c2b1a84949974e2",
   "publication_ready": false,
   "files": [
     {
@@ -18,9 +18,9 @@
     },
     {
       "path": "README.md",
-      "source_path": "contributions/host-virtual-runtime/README.md",
-      "sha256": "5bb3767df19cf243f4447333f1ac9dae81e2abb49436022922c6460ed9d89146",
-      "bytes": 2208
+      "source_path": "contributions/host-llm-interface/README.md",
+      "sha256": "fa1f1c530ced66b8c6d7e63f68017f45416291eaf43648067ab22f88e01bf0af",
+      "bytes": 2432
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -105,6 +105,12 @@
       "source_path": "printer_control/machine_events.py",
       "sha256": "7d37ce653939bf4349f39c97e1d74cea22f28b0c2ee5667f1587cdb1313c5749",
       "bytes": 7409
+    },
+    {
+      "path": "printer_control/mcp_adapter.py",
+      "source_path": "printer_control/mcp_adapter.py",
+      "sha256": "a529429e48b064dd3af20a4393a01657be11b1b52fe9114f144bf23805000ab6",
+      "bytes": 2374
     },
     {
       "path": "printer_control/modal.py",
@@ -258,15 +264,21 @@
     },
     {
       "path": "pyproject.toml",
-      "source_path": "contributions/host-virtual-runtime/pyproject.toml",
-      "sha256": "86fee09423011be1812abf24104d2b9a9501bd2dda383bb19be522b8eb24708b",
-      "bytes": 528
+      "source_path": "contributions/host-llm-interface/pyproject.toml",
+      "sha256": "cbf30a9ec2f02827e29407fa005e28bbca480a52caa2ce49f4b841a1dc042325",
+      "bytes": 599
     },
     {
       "path": "requirements-octoprint.lock",
       "source_path": "requirements-octoprint.lock",
       "sha256": "4e96a576b47cdcdce4ad30d4992567a49b87c03b6f4b266b4c6ac1ccf29e2c6e",
       "bytes": 1347
+    },
+    {
+      "path": "requirements-print-mcp.lock",
+      "source_path": "requirements-print-mcp.lock",
+      "sha256": "72095c4af50910df0b2ff4554473e01b01ea182b468fdfd47996ebc203c85458",
+      "bytes": 1790
     },
     {
       "path": "scripts/prepare_firmware.py",
@@ -303,6 +315,24 @@
       "source_path": "tests/marlin_modal_virtual.py",
       "sha256": "245b771eddf4b889e068f5f0c7bd8f59a8b3e9235a26b98a5c4b1386d0ba2887",
       "bytes": 4852
+    },
+    {
+      "path": "tests/model_hot_scenario.py",
+      "source_path": "tests/model_hot_scenario.py",
+      "sha256": "51c37c2d38873483d420aa030b9bf439f40626be3084b3bf5e1068307acd25b6",
+      "bytes": 3717
+    },
+    {
+      "path": "tests/model_job_scenario.py",
+      "source_path": "tests/model_job_scenario.py",
+      "sha256": "25d80546dc2c9002af95038d76fbccc3df8a39b88527a1170063fb78e7c5a462",
+      "bytes": 4469
+    },
+    {
+      "path": "tests/model_prompt_demo.py",
+      "source_path": "tests/model_prompt_demo.py",
+      "sha256": "0835423a721ce8269c8ca0d6fc3537d65301fa77fa5e45da80bcd89eda7f7492",
+      "bytes": 12603
     },
     {
       "path": "tests/native_harness.py",
@@ -579,6 +609,108 @@
       "source_path": "tests/thermal_serial_scenario.py",
       "sha256": "7fe2d133f6b6be341733355b13daedbe4c679ded06432ba4b8577fd2f41f3600",
       "bytes": 8301
+    },
+    {
+      "path": "tests_mcp/test_native_mcp.py",
+      "source_path": "tests_mcp/test_native_mcp.py",
+      "sha256": "d654fd0aeea5f6b58bed7fa64f7e46dff37cfea4811b624915b76ebcf1306521",
+      "bytes": 3434
+    },
+    {
+      "path": "tests_model/test_hot_evaluator.py",
+      "source_path": "tests_model/test_hot_evaluator.py",
+      "sha256": "59ace2f371161405eb82de0bd1d7d837218649ef7852a408cfe7d0a8f173e296",
+      "bytes": 3166
+    },
+    {
+      "path": "tests_model/test_job_evaluator.py",
+      "source_path": "tests_model/test_job_evaluator.py",
+      "sha256": "a03f867d3ab13b2e136458ef8ba2f379e5a825e3565fd917d43307445f4e5778",
+      "bytes": 3654
+    },
+    {
+      "path": "tests_model/test_model_demo_guards.py",
+      "source_path": "tests_model/test_model_demo_guards.py",
+      "sha256": "f0772115632ca32e33335810711618fbe000e8bb245900d4f0525b16203cabe5",
+      "bytes": 1301
+    },
+    {
+      "path": "tests_print_mcp/test_active_disconnect.py",
+      "source_path": "tests_print_mcp/test_active_disconnect.py",
+      "sha256": "5b317fb362f38147f65b61bf952465e26ec43fa6cfa152e7a715b919da02eca6",
+      "bytes": 1062
+    },
+    {
+      "path": "tests_print_mcp/test_combined_mcp.py",
+      "source_path": "tests_print_mcp/test_combined_mcp.py",
+      "sha256": "4f15fbeac82738cbbdd02a2785a72a815018732d6ca61b56fbab844b0b0b9d50",
+      "bytes": 10147
+    },
+    {
+      "path": "tests_print_mcp/test_hot_console_mcp.py",
+      "source_path": "tests_print_mcp/test_hot_console_mcp.py",
+      "sha256": "705aae8f9150166d4a43c6bfadb1849b0c7f5a1bd0e841f85a0ace964a3cce0d",
+      "bytes": 7336
+    },
+    {
+      "path": "tests_print_mcp/test_hot_resume.py",
+      "source_path": "tests_print_mcp/test_hot_resume.py",
+      "sha256": "adadd2c846593dc31741ce23535c38d3388d7e87aa1ef692115b236c8977af6d",
+      "bytes": 5762
+    },
+    {
+      "path": "tests_print_mcp/test_pause_policy.py",
+      "source_path": "tests_print_mcp/test_pause_policy.py",
+      "sha256": "fd69b6d346eedcf4f6061dea24de941ffcc8abc3fbb0c4b6da1cad151bf99cdf",
+      "bytes": 1010
+    },
+    {
+      "path": "tests_print_mcp/test_resend_stream.py",
+      "source_path": "tests_print_mcp/test_resend_stream.py",
+      "sha256": "d103813bb3ff3770218e63460571b4296fec4bcbf08d5056ec597b2855de28cb",
+      "bytes": 1619
+    },
+    {
+      "path": "tests_print_mcp/test_restore_serial.py",
+      "source_path": "tests_print_mcp/test_restore_serial.py",
+      "sha256": "aedede75c74e65953cf721bc63402d92438b9be804a2a4e8ac62653b872f1ce0",
+      "bytes": 1008
+    },
+    {
+      "path": "tests_print_mcp/test_streamed_native_prompt.py",
+      "source_path": "tests_print_mcp/test_streamed_native_prompt.py",
+      "sha256": "bffc74eaaff3cbd9709aca34d2bc2cdafb99a809733fa61f1b73d79705b7bf40",
+      "bytes": 1837
+    },
+    {
+      "path": "tests_print_mcp/test_thermal_serial.py",
+      "source_path": "tests_print_mcp/test_thermal_serial.py",
+      "sha256": "4a88147860934e5ccc042d03e625131460cee71be4aca60d2e205ef703ceb1fe",
+      "bytes": 922
+    },
+    {
+      "path": "tests_print_mcp/test_virtual_faults.py",
+      "source_path": "tests_print_mcp/test_virtual_faults.py",
+      "sha256": "3d644de4968a226d3e23209afb27890c1aa434c0b9526e0cdd5034369346ac92",
+      "bytes": 1750
+    },
+    {
+      "path": "tests_print_mcp/test_virtual_job_mcp.py",
+      "source_path": "tests_print_mcp/test_virtual_job_mcp.py",
+      "sha256": "19317a575086c3fc6d73f898e5e2d5d73da823b39b909dd11d3d3190243c1001",
+      "bytes": 3957
+    },
+    {
+      "path": "tests_print_mcp/test_virtual_setup_mcp.py",
+      "source_path": "tests_print_mcp/test_virtual_setup_mcp.py",
+      "sha256": "3a359d93393cef35a6ee629611160573912369c0c048de232b6ecc9b8dc40b50",
+      "bytes": 4316
+    },
+    {
+      "path": "tests_print_mcp/test_virtual_stop_evidence.py",
+      "source_path": "tests_print_mcp/test_virtual_stop_evidence.py",
+      "sha256": "f64b4a3994ad63522d40211adb11a74a606f3fd48d09c284d523fb5bd5dd12fd",
+      "bytes": 1551
     }
   ]
 }
