@@ -31,5 +31,16 @@
   "source_sha256": {
     "printer_control/camera.py": "f252c1a3a7fd98f1190deafb4e5878acf871e573ad17c37488ad8b2b580eabd1",
     "tests/test_camera.py": "d09f1f566f87527a459b6db896b82551c4bd3fd67c96f55baefeb0f16fb4f89c"
+  },
+  "installed_wheel": {
+    "passed": 83,
+    "skipped": 0,
+    "scope": "camera, shared tool and operation-service tests; exporter tests require source and are counted separately",
+    "source_import_excluded": true,
+    "module_location_asserted_in_fresh_environment": true,
+    "dependencies": "pinned requirements-print-mcp.lock",
+    "python": "3.11.13",
+    "platform": "macOS arm64",
+    "command": "python -m pytest -q --import-mode=importlib -o pythonpath= EXPORT/tests/test_camera.py EXPORT/tests/test_tools.py EXPORT/tests/test_service.py"
   }
 }
