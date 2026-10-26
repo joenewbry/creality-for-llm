@@ -161,8 +161,8 @@
   ],
   "physical_commissioning_complete": false,
   "camera_capture_implemented": false,
-  "latest_branch": "stack/h8-capture-owner-http",
-  "note": "First ten trees are identical to tested local review trees; parent history is a clean public bootstrap. Later runtime/test bytes match the qualified source export. Self commit is resolved from latest_branch.",
+  "latest_branch": "stack/h9-capture-owner-api",
+  "note": "First ten public trees preserve their tested local review trees. Later PRs carry separate qualification records; the 876-case Linux run predates the camera additions. Resolve the current delivery head from latest_branch.",
   "host_prs": [
     {
       "key": "H1",
@@ -316,6 +316,15 @@
       "isDraft": true,
       "state": "OPEN",
       "url": "https://github.com/joenewbry/creality-for-llm/pull/17"
+    },
+    {
+      "key": "H9",
+      "title": "Capture-owner API with atomic frame and control evidence",
+      "baseRefName": "stack/h8-capture-owner-http",
+      "headRefName": "stack/h9-capture-owner-api",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/creality-for-llm/pull/18"
     }
   ],
   "firmware_prs": [
@@ -374,5 +383,6 @@
       "url": "https://github.com/joenewbry/Ender-3S1-llm/pull/6"
     }
   ],
-  "standalone_upstream_pr": "https://github.com/MarlinFirmware/Marlin/pull/28753"
+  "standalone_upstream_pr": "https://github.com/MarlinFirmware/Marlin/pull/28753",
+  "current_camera_owner_qualification": "validation/camera-owner-api-stage117.json"
 }
