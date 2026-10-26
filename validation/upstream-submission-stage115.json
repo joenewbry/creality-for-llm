@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-26",
+  "candidate_commit": "c8139a8c96a83271bad5fe541ea15b68143fa2a0",
+  "candidate_tree": "b0d2d7b8ee20c6fa6e8723899738e8447cc7db5a",
+  "base_commit": "cce3c1218cba190168f432d5ffbedfb43d95515b",
+  "native": {
+    "host": "Linux aarch64",
+    "compiler": "GCC 11.4.0",
+    "platformio": "6.1.18",
+    "command": "make unit-test-single-local UNIT_TEST_CONFIG=default",
+    "passed": 168,
+    "failed": 0,
+    "heater_watch_regressions_passed": 5,
+    "seconds": 104.702,
+    "source_checkout_fresh": true,
+    "config_restored_worktree_clean": true
+  },
+  "cross_builds": [
+    {
+      "environment": "mega2560",
+      "seconds": 7.135,
+      "passed": true,
+      "configuration": "committed defaults"
+    },
+    {
+      "environment": "DUE",
+      "seconds": 18.392,
+      "passed": true,
+      "configuration": "buildroot/tests/DUE/config-01.ini"
+    }
+  ],
+  "scope": "software native tests and AVR/32-bit builds only",
+  "full_simulator_run": false,
+  "physical_access": false,
+  "duplicate_search": {
+    "queries": [
+      "HeaterWatch",
+      "HeaterWatch zero",
+      "heater watch rollover",
+      "heater zero deadline"
+    ],
+    "equivalent_identified": false,
+    "exhaustive": false
+  },
+  "policy": "Marlin contribution guide explicitly accepts AI-assisted contributions, requires focused changes, builds and honest reporting",
+  "logs": {
+    "stage115-native.log": "a60b385921ef5b67aa90cdc48daf1ee084f1f85b5cc515b5c3ec082f5cd67f5f",
+    "stage115-mega2560.log": "96c9aa2a45874fcdc217e41143fb5b1c23752dc0940edb6806971f16c8eadf24",
+    "stage115-DUE.log": "805063c5100007425b3a31f69d218a0a1c4f9cc10e2027dfc2e6b6a0d4cfa525"
+  },
+  "upstream_pr": {
+    "url": "https://github.com/MarlinFirmware/Marlin/pull/28753",
+    "state": "OPEN",
+    "draft": false,
+    "head": "c8139a8c96a83271bad5fe541ea15b68143fa2a0",
+    "base": "bugfix-2.1.x",
+    "initial_ci": "queued/in progress; not a pass or acceptance"
+  }
+}

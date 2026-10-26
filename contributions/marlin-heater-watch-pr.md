@@ -31,24 +31,23 @@ protection or qualify physical heaters.
 
 ### Configurations
 
-Candidate `36406aafd8029b8375281d298ae983c373c399af` is one focused commit on
-`bugfix-2.1.x` base `b84243d8f3337586ff0d9771a92a7828d5678731`.
+Candidate `c8139a8c96a83271bad5fe541ea15b68143fa2a0` is one focused commit on
+`bugfix-2.1.x` base `cce3c1218cba190168f432d5ffbedfb43d95515b`.
 
 Native validation: Linux aarch64, GCC 11.4.0, PlatformIO 6.1.18 and Unity 2.6.1,
 `make unit-test-single-local UNIT_TEST_CONFIG=default` (`test/001-default.ini`).
 A fresh checkout of this exact candidate passed all 168 cases, including all
-five new heater-watch regressions, in 109.967 seconds. Configuration restoration
+five new heater-watch regressions, in 104.702 seconds. Configuration restoration
 left the worktree clean.
 
 Before/after regression evidence was also collected on predecessor
 `2e93c507baa1acefac579597539261125fc20e3f`: removing only the zero guard yielded
 166 passes and exactly two failures (the zero-deadline cases); restoring it
-passed all 168. Only two upstream distribution-date headers differ between that
-tested tree and this candidate.
+passed all 168. The current candidate reuses the same two-file fix/test diff, rebased onto the October 26 working branch; current-revision native and cross-build results are reported here.
 
 Fresh cross-builds of this candidate passed with committed defaults for
-`mega2560` (10.296 seconds) and upstream `buildroot/tests/DUE/config-01.ini` for
-`DUE` (16.242 seconds, includes a heated chamber). Configuration defaults are
+`mega2560` (7.135 seconds) and upstream `buildroot/tests/DUE/config-01.ini` for
+`DUE` (18.392 seconds, includes a heated chamber). Configuration defaults are
 unchanged by the patch. No physical printer, full simulator or other native
 test configuration has been tested. AI assistance was used for implementation
 and validation.
@@ -65,4 +64,6 @@ Search coverage is not proof that no duplicate exists. Related but distinct:
 - [PR 1309](https://github.com/MarlinFirmware/Marlin/pull/1309) addresses an older
   arithmetic-width problem in thermal runaway timing.
 
-This description is a local review draft; no PR has been submitted.
+Configurations are unchanged. Reproduce the AVR build with `pio run -e mega2560`; for Due, copy the committed `buildroot/tests/DUE/config-01.ini` to `Marlin/config.ini`, then run `pio run -e DUE` and restore configs. No custom printer configuration or binary is required for this fix.
+
+Submitted as [Marlin PR 28753](https://github.com/MarlinFirmware/Marlin/pull/28753) on October 26, 2026. Open for upstream review; not merged. The two smaller historical patches are retained as provenance; the combined patch pins this submitted candidate.

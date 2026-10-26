@@ -21,8 +21,7 @@ flowchart LR
 The host repository contains the tool service, journal, assignment gates,
 simulators, native test harnesses, read-only Mac discovery, Linux descriptor I/O
 and camera/mount design. The firmware fork contains changes to the pinned
-Creality/Marlin controller source. A separately prepared focused Marlin fix is
-intended for upstream review. No OctoPrint upstream submission is made because
+Creality/Marlin controller source. A standalone focused heater-watch fix is submitted as [Marlin PR 28753](https://github.com/MarlinFirmware/Marlin/pull/28753); review and acceptance remain upstream decisions. No OctoPrint upstream submission is made because
 its contribution rules exclude this generated adapter; installed OctoPrint is
 used as a dependency with preserved attribution.
 
