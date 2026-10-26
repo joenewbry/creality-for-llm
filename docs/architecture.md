@@ -13,7 +13,7 @@ flowchart LR
     S --> J[Durable journal and receipts]
     S --> W[One serial writer and receive path]
     W --> F[Marlin firmware candidate and touchscreen]
-    C[Planned camera broker and monitor] -. fresh observations .-> S
+    C[Camera broker and owner API; live capture/vision pending] -. fresh observations .-> S
     S -. capability gated camera requests .-> C
     U[Assigned Logitech webcam] -. separate USB camera connection .-> C
 ```
