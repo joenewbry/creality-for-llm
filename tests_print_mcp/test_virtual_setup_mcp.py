@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_cold_home_and_jog_use_verified_barrier_and_reject_unsafe_requests(tmp_path):
     async def scenario():
         params = StdioServerParameters(command=sys.executable,
-            args=[str(ROOT/'tests/octoprint_virtual_smoke.py'), '--mcp', '--journal', str(tmp_path/'setup.sqlite')], cwd=str(ROOT))
+            args=[str(ROOT/'tests/octoprint_virtual_smoke.py'), '--mcp', '--model-fixture', '--journal', str(tmp_path/'setup.sqlite')], cwd=str(ROOT))
         async with stdio_client(params) as (incoming, outgoing):
             async with ClientSession(incoming, outgoing, read_timeout_seconds=20.) as client:
                 await client.initialize()
@@ -24,17 +24,26 @@ def test_cold_home_and_jog_use_verified_barrier_and_reject_unsafe_requests(tmp_p
                 number = 0
                 async def submit(name, args, expected='completed'):
                     nonlocal number
-                    number += 1
-                    status = await call('printer.status', {})
-                    request = dict(request_id=f'setup-{number}', printer_id=status['printer_id'],
-                        connection_generation=status['connection_generation'], expected_state_version=status['state_version'],
-                        deadline=time.time()+10, arguments=args)
-                    if expected == 'schema_error':
-                        response = await client.call_tool(name, request)
-                        assert response.is_error
-                        assert response.structured_content['error']['message'] == 'invalid_tool_arguments'
-                        return response.structured_content
-                    result = await call(name, request)
+                    deadline = time.time()+10
+                    for attempt in range(5):
+                        number += 1
+                        status = await call('printer.status', {})
+                        request = dict(request_id=f'setup-{number}', printer_id=status['printer_id'],
+                            connection_generation=status['connection_generation'], expected_state_version=status['state_version'],
+                            deadline=deadline, arguments=args)
+                        if expected == 'schema_error':
+                            response = await client.call_tool(name, request)
+                            assert response.is_error
+                            assert response.structured_content['error']['message'] == 'invalid_tool_arguments'
+                            return response.structured_content
+                        result = await call(name, request)
+                        if result['status'] == 'rejected' and result['result'].get('reason') == 'stale_state':
+                            assert await call(name, request) == result
+                            assert time.time() < deadline, result
+                            continue
+                        break
+                    else:
+                        raise AssertionError('state kept changing before dispatch')
                     end = time.monotonic()+12
                     while result['status'] == 'running' and time.monotonic() < end:
                         await asyncio.sleep(.01)

@@ -167,6 +167,7 @@ include tests/test_shared_receiver.py
 include tests/test_shared_writer.py
 include tests/test_shutdown_grant.py
 include tests/test_stream_witness.py
+include tests/test_streamed_host_restart.py
 include tests/test_thermal_pause.py
 include tests/test_tools.py
 include tests/test_tty_ownership.py
@@ -208,12 +209,14 @@ include validation/host-prompt-transport-boundary-stage92.json
 include validation/host-qualification-boundary-stage98.json
 include validation/host-virtual-adapters-boundary-stage95.json
 include validation/host-virtual-runtime-boundary-stage96.json
+include validation/linux-package-stage111.json
 include validation/machine-events-stage84.json
 include validation/macos-discovery-stage108.json
 include validation/model-hot-stage75.json
 include validation/native-handoff-stage81.json
 include validation/native-thermal-stage78.json
 include validation/native-watch-stage79.json
+include validation/streamed-host-restart-stage109.json
 include validation/transport-readiness-stage110.json
 include validation/tty-ownership-stage89.json
 include validation/upstream-native-stage88.json

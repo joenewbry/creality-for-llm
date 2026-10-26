@@ -1,0 +1,24 @@
+{
+  "scope": "SIGKILL actual virtual sender process at running, completed pause, resume-dispatched boundaries; fresh simulator after restart",
+  "base_source": "c5737c3986326ffd510e41c42a09b454d84f26b7",
+  "tests": {
+    "tests": "3",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "9.256"
+  },
+  "junit_sha256": "2439953f2f330a03580efffb51a8d0099eac2c1b6b5902abc8915f9dd72e5f66",
+  "test_source_sha256": "ac0b2566ba0231383a7c5a10ff34d823f6ca7ed06b45044ce07f5d90cb1db8ec",
+  "physical_serial_open_attempts": 0,
+  "pending_resume_becomes_unknown": true,
+  "completed_receipts_preserved": true,
+  "stale_requests_do_not_replay": true,
+  "fresh_start_and_resume_without_staging_or_checkpoint_rejected": true,
+  "new_simulator_job_moves_after_restart": 0,
+  "limits": [
+    "original virtual device dies with host",
+    "surviving printer state, buffered movement, heaters and physical recovery not tested",
+    "cold software profile; managed thermal restart tested separately at component level"
+  ]
+}

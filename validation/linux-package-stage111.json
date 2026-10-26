@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "scope": "Linux supported-Python installed-package software qualification; not physical USB commissioning",
+  "source_commit": "1a72ba734e0e403ea45460710de52a242620b63c",
+  "python": "3.11.13",
+  "os": "Linux-5.15.148-tegra-aarch64-with-glibc2.35",
+  "machine": "aarch64",
+  "compiler": "Ubuntu Clang 15.0.7, rootless task-local extraction",
+  "locked_packages_verified": 99,
+  "installed_suite": {
+    "tests": "876",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "283.941",
+    "junit_sha256": "720c82b56567a68eaf57730067b3534a520da0cd8e4939785d9b077c844945d1"
+  },
+  "source_files_verified": 219,
+  "installed_runtime_bytes_match_export": true,
+  "installed_imports_from_site_packages": true,
+  "test_corpus_outside_source_tree": true,
+  "native_firmware_commit": "98aa03248337b8039a09bbc1a29f33432aed08ca",
+  "native_firmware_tree": "70ec40fa273bd88cfbda442935ac275cbf9f981b",
+  "firmware_clean": true,
+  "source_archive_sha256": "6251d66be436bb11d72e06f704470f0b88e8a06a9a949fc7ad957adc65b8c4d0",
+  "initial_missing_clang_run": {
+    "tests": "876",
+    "failures": "3",
+    "errors": "62",
+    "skipped": "18",
+    "time": "265.843",
+    "junit_sha256": "7aa19a8db04df172917f33ca87d9fc224ce874b4d47053ff7a6c782c41acfcee"
+  },
+  "native_recheck_with_clang": {
+    "tests": "62",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "8.756",
+    "junit_sha256": "a6bb27b464b166ca55cfd82f982ffeb1e95dccf3720247618bf07c6afaf2ef3b"
+  },
+  "corrected_client_tests_macos": {
+    "tests": "4",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "31.332",
+    "junit_sha256": "0ebb67b8aa1f2fea7c67c2526162afccebcfb6257b3e2ae8cbac1e9b42b81d25"
+  },
+  "physical_access": false,
+  "paid_model_calls": 0,
+  "public_pr_created": false,
+  "limits": [
+    "native firmware uses hardware substitutes, not full controller or screen execution",
+    "software terminals do not qualify actual USB driver or deployment isolation",
+    "original failed run omitted required Clang; separate client timing assumptions also corrected",
+    "Mac actual driver and physical commissioning remain incomplete",
+    "public firmware/host stack and final PR links remain unpublished"
+  ]
+}
