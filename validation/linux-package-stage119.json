@@ -1,0 +1,39 @@
+{
+  "source_commit": "3abe54678ee9a48af3d783e1eb04e5872cdec94a",
+  "source_files": 253,
+  "source_hashes_unchanged": true,
+  "installed_runtime_bytes_match_export": true,
+  "installed_imports_from_site_packages": true,
+  "python": "3.11.13 (main, Jun 12 2025, 12:27:40) [GCC 6.3.0 20170516]",
+  "os": "Linux-5.15.148-tegra-aarch64-with-glibc2.35",
+  "machine": "aarch64",
+  "locked_packages_verified": 99,
+  "firmware_commit": "98aa03248337b8039a09bbc1a29f33432aed08ca",
+  "firmware_tree": "70ec40fa273bd88cfbda442935ac275cbf9f981b",
+  "firmware_clean": true,
+  "physical_access": false,
+  "paid_model_calls": 0,
+  "schema_version": 1,
+  "scope": "exact public-snapshot installed Linux software qualification; no physical commissioning",
+  "public_code_snapshot": "https://github.com/joenewbry/creality-for-llm/tree/3abe54678ee9a48af3d783e1eb04e5872cdec94a",
+  "compiler": "Ubuntu Clang 15.0.7, rootless task-local compiler",
+  "installed_suite": {
+    "tests": "1004",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "309.782"
+  },
+  "junit_sha256": "f5a2e5745232bb081a684457b31ceadc05f31a11a16f54e8c72550c25592c2a7",
+  "log_sha256": "0ec4e9ddf117f9591148ef3d0632a450ddd77c2376d510ab22774caaca1e697e",
+  "command": "python -I -m pytest -q -o pythonpath=. tests tests_mcp tests_model tests_print_mcp",
+  "test_corpus_outside_source_tree": true,
+  "later_delivery_changes": "runtime, tests, pyproject and locked dependency inputs remain identical; documentation/qualification records and source-archive manifest changed",
+  "prior_full_attempt": {
+    "source_commit": "be3753df0832f2263e1a03d7cfab196c61fd356d",
+    "passed": 1003,
+    "failed": 1,
+    "diagnosis": "virtual job completed before pause request; saved tool transcript confirms completed state; bounded simulator queue and explicit pause handshake replace timing assumption",
+    "junit_sha256": "70bc63145bf1171d39f50d678933b672dff2fd4c0f2fcba8654ee5e68a2f0fe8"
+  }
+}

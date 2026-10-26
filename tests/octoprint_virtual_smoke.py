@@ -14,6 +14,7 @@ import logging
 from pathlib import Path
 import tempfile
 import time
+import threading
 import sys
 import faulthandler
 from types import SimpleNamespace
@@ -92,6 +93,9 @@ class RecordingVirtualPrinter(VirtualPrinter):
         super().__init__(*args, **kwargs)
 
     def _performMove(self, line):
+        gate = getattr(self, 'fixture_pause_gate', None)
+        if gate is not None and line.startswith('G1 X6 '):
+            assert gate.wait(10), 'fixture pause handshake timed out'
         super()._performMove(line)
         time.sleep(getattr(self, "model_move_delay", 0))
         self.completed_moves.append(line.strip())
@@ -109,6 +113,12 @@ def main(scenario='resume', use_service=False, console=False, journal_path=None,
         faulthandler.dump_traceback_later(45)
     logging.basicConfig(level=logging.WARNING)
     denied = []
+    # Keep these fault scenarios running until their pause has been requested.
+    # A short virtual job can otherwise finish between MODEL_005 and submission.
+    # Hold only the simulator's motion worker, never a sender/service lock.
+    pause_fixture_gate = (threading.Event() if use_service and not console and
+                          scenario in ('thermal_fault', 'disconnect', *FAULT_REPORTS)
+                          else None)
 
     def no_physical(*args, **kwargs):
         denied.append('physical_serial_open_attempt')
@@ -125,6 +135,7 @@ def main(scenario='resume', use_service=False, console=False, journal_path=None,
         profiles = PrinterProfileManager()
         defaults = VirtualPrinterPlugin().get_settings_defaults()
         defaults.update({'enabled': True, 'throttle': .02, 'simulated_errors': [], 'sendWait': False})
+        if pause_fixture_gate is not None:defaults['commandBuffer']=4
         if scenario in HOT_SCENARIOS:defaults['enable_eeprom']=True
         if scenario == 'missing_position':
             defaults['m114FormatString'] = 'position unavailable'
@@ -161,6 +172,7 @@ def main(scenario='resume', use_service=False, console=False, journal_path=None,
                 device._simulateTemps = lambda *a, **k: None
                 device.temp[0], device.bedTemp = 200., 60.
                 device.model_move_delay = .25 if model_fixture else .02
+            device.fixture_pause_gate = pause_fixture_gate
             virtual.append(device)
             return device
 
@@ -364,6 +376,7 @@ def main(scenario='resume', use_service=False, console=False, journal_path=None,
                 pause_request = request('job.pause', 'pause-1')
                 accepted = tool_submit(pause_request)
                 assert accepted['status'] == 'running', accepted
+                if pause_fixture_gate is not None:pause_fixture_gate.set()
                 assert tool_submit(pause_request) == accepted
                 if scenario == 'unified_prompt':
                     from native_wait_bridge import recover_native_wait
@@ -540,6 +553,7 @@ def main(scenario='resume', use_service=False, console=False, journal_path=None,
             faulthandler.cancel_dump_traceback_later()
             print(json.dumps(result, indent=2))
         finally:
+            if pause_fixture_gate is not None:pause_fixture_gate.set()
             if machine_events is not None:
                 recorder, machine_events = machine_events, None
                 recorder.close()

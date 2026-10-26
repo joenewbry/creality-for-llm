@@ -5,8 +5,8 @@
 response shape: reason 2, one shown button, choice zero, exact prompt generation
 and an asserted firmware wait flag. Other shapes are rejected before dispatch.
 The adapter now supplies typed prompt operations and read tools to `ToolRouter`;
-see `tools.md`. No physical transport factory or autonomous model integration is
-provided. The job and prompt backends remain separate.
+see `tools.md`. An explicit, uncommissioned Linux descriptor factory is described below. The job
+and prompt backends remain separate; this is not a production print sender.
 
 The service validates and durably claims the request before the adapter writes.
 The original request deadline is passed through the backend dispatch contract to
@@ -71,3 +71,31 @@ The host may report the retained intervention requirement while
 `prompt_snapshot` is absent and `snapshot_fresh` is false. The initial profile
 has no tool for declaring material reloaded or clearing this requirement; those
 physical checks and a qualified recovery procedure remain separate work.
+
+## Assigned Linux descriptor integration
+
+`TTYPromptBackend.open` composes the assigned terminal, one `SharedFrameWriter`
+and `PromptChannel` with the same journal lease acquired by
+`OperationService.from_backend_factory`. Validate identity and protocol options
+before acquiring a descriptor. A fresh random host generation does not authorize
+reset, rebind or replay of an existing firmware session. The receive path is the
+sole prompt consumer; future job integration needs one coordinated receive fanout,
+not a second reader. Default launchers remain virtual-only.
+
+Native tests use Linux software terminals connected to the actual compiled pinned
+firmware handlers. Journal claims precede each wire frame; exact duplicate calls
+produce no extra frame. Runout remains a physical intervention, lost receipts and
+disconnects become unknown, and changed assignment identity permanently faults
+the transport. Receipt processing resamples the clock after the bounded blocking
+read, preventing late bytes from being backdated before the request deadline.
+
+Linux terminal release can raise after a peer disconnect even though its owned
+descriptor closed. Service close reports that error and retains its journal lease;
+an explicit repeated close finishes resource cleanup without replaying any I/O.
+This path is tested with a disconnected software terminal.
+
+Qualification is software only. No real serial node was opened by these tests.
+Actual board/processor/screen identity, USB isolation and reset behavior, readiness
+review and clogged-nozzle diagnosis remain prerequisites for physical commissioning.
+Heating, motion, extrusion and physical job streaming are not exposed by this
+prompt-only adapter. See `validation/tty-prompt-stage119.json`.

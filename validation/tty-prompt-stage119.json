@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-26",
+  "scope": "prompt-only assigned Linux terminal integration with compiled firmware; no USB access",
+  "source_sha256": {
+    "printer_control/prompt_backend.py": "fd5388d50c6911c030a6312c09e0eab545b677882b027563c0987cf8d4dd25fd",
+    "printer_control/tty_prompt.py": "d8a46700c5d0a6e4512d37f92a1b723e6ecf2800cc394d4289c266e2ec1a7541",
+    "tests/test_prompt_backend.py": "07530806120ab0ab064afd943b27b90bf56387d816c82b1ed9764a20153530a7",
+    "tests/test_tty_prompt.py": "2effe0384d44f44994e1ca88ec40a619f41779d60ba996595e9fed2963d09bbe"
+  },
+  "linux_focused": {
+    "passed": 34,
+    "skipped": 0,
+    "junit_sha256": "25abb021248f20963cb21521827f223f881bc403862e0dd97f63a738ca6e262e"
+  },
+  "firmware_commit": "98aa03248337b8039a09bbc1a29f33432aed08ca",
+  "physical_device_access": false,
+  "production_sender_implemented": false,
+  "default_launchers_virtual_only": true,
+  "deadline_regression": "failed before fix; passes after resampling clock following blocking receive",
+  "limits": [
+    "software terminals do not qualify physical USB ownership, reset, driver or screen behavior",
+    "no job sender, automatic reconnect, firmware reset or physical commissioning",
+    "terminal release failure retains journal lease until explicit cleanup retry"
+  ],
+  "linux_full_qualification": "linux-package-stage119.json",
+  "mac_focused": {
+    "passed": 38,
+    "skipped": 5,
+    "scope": "prompt/backend and publication export tests; Linux-only terminal cases skipped",
+    "junit_sha256": "f6f343a68ef565a69fbc2813d1d8de9ffa08da6f761bd193230e0623d495fbe2"
+  }
+}

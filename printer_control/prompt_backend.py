@@ -66,15 +66,20 @@ class PromptBackend:
     def context(self):
         now = self.clock()
         self.channel.tick(now)
+        lost = False
         try:
             data = self.pump()
         except OSError:
-            # Read loss cannot leave an old prompt snapshot actionable. Keep
-            # status/receipt reads available so callers see the uncertain result.
+            lost, data = True, b''
+        # A bounded receive may wait. Never backdate its bytes to the clock
+        # sampled before that wait, including when a receipt deadline expires.
+        now = self.clock()
+        if lost:
             self.channel.invalidate('receive_stream_unavailable', now=now)
-            data = b''
-        if data:
+        elif data:
             self.channel.feed(data, now=now)
+        else:
+            self.channel.tick(now)
         transaction = self.channel.latest
         if (transaction is not None and transaction.status == 'rejected'
                 and transaction.command.kind == 'respond' and transaction.receipt is not None

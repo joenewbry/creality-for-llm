@@ -784,7 +784,11 @@
         "docs/goal-audit.md": "docs/goal-audit.md",
         "docs/printing-qualification-plan.md": "docs/printing-qualification-plan.md",
         "validation/service-startup-stage118.json": "validation/service-startup-stage118.json",
-        "validation/linux-package-stage118.json": "validation/linux-package-stage118.json"
+        "validation/linux-package-stage118.json": "validation/linux-package-stage118.json",
+        "printer_control/tty_prompt.py": "printer_control/tty_prompt.py",
+        "tests/test_tty_prompt.py": "tests/test_tty_prompt.py",
+        "validation/tty-prompt-stage119.json": "validation/tty-prompt-stage119.json",
+        "validation/linux-package-stage119.json": "validation/linux-package-stage119.json"
       }
     }
   }
