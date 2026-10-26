@@ -28,6 +28,15 @@ class TTYOwnership:
             raise ValueError('terminal ownership is closed')
         return self._fd
 
+    def transfer(self):
+        """Consume this handle and transfer responsibility without reopening.
+
+        Transfer must occur before I/O starts; callers must not retain raw fds.
+        """
+        fd = self.fileno()
+        self._fd = None
+        return TTYOwnership(fd)
+
     def close(self):
         if self._fd is None:
             return

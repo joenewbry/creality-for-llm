@@ -51,6 +51,7 @@ RESEND_SCENARIOS = {
 FAULT_REPORTS = {
     'homing_fault': 'Homing failed, printer halted',
     'probe_fault': 'Probing failed, printer halted',
+    'probe_no_halt_fault': 'Probing Failed',
     'heating_fault': 'Heating failed, system stopped! Heater_ID: 0',
 }
 
@@ -458,7 +459,8 @@ def main(scenario='resume', use_service=False, console=False, journal_path=None,
             else:
                 if scenario in FAULT_REPORTS:
                     virtual[0]._send('Error:' + FAULT_REPORTS[scenario])
-                    virtual[0]._send('Error:Printer halted. kill() called!')
+                    if scenario != 'probe_no_halt_fault':
+                        virtual[0]._send('Error:Printer halted. kill() called!')
                 else:
                     virtual[0]._debugTrigger('trigger_fatal_error_marlin' if scenario == 'thermal_fault' else 'drop_connection')  # simulator-only injection
                 wait_for(lambda: sender.getState() in (sender.STATE_CLOSED, sender.STATE_CLOSED_WITH_ERROR), 'connection loss')
@@ -501,7 +503,8 @@ def main(scenario='resume', use_service=False, console=False, journal_path=None,
                 result['arbitrary_old_line_resend_qualified'] = False
             if scenario in FAULT_REPORTS:
                 result['fault_injection'] = {'scope': 'synthetic_serial_report_while_paused',
-                    'message': FAULT_REPORTS[scenario], 'firmware_fault_detection_tested': False}
+                    'message': FAULT_REPORTS[scenario], 'halt_report_injected': scenario != 'probe_no_halt_fault',
+                    'firmware_fault_detection_tested': False}
             if scenario == 'expired':
                 result['pause_policy_observations'] = [eligible, expired, corrected]
                 result['policy_clock_shift_sequence_seconds'] = [0, 61, 0]

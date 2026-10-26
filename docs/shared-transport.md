@@ -304,3 +304,73 @@ complete all 80 moves once through pause/resume. This supersedes the stage40
 unresolved gap only for the pinned virtual profile. Physical firmware variants,
 other acknowledgment conventions, lost acknowledgments and multi-command retry
 windows remain unqualified; this is not general transport recovery support.
+
+## Linux descriptor I/O foundation
+
+`TTYTransport` consumes an existing `TTYOwnership` handle without reopening the
+path. The original handle becomes inert. It configures 115200 baud, eight data
+bits, no parity, one stop bit and raw byte I/O, matching the candidate baud rate.
+It does not flush buffers, explicitly toggle modem lines, retry a write, reset
+or reconnect. Opening/configuring an actual driver can still change hardware
+signals; no physical-driver behavior is qualified by these software tests.
+
+All writes must pass through `SharedFrameWriter`. The descriptor transport makes
+one nonblocking write attempt after bounded readiness waiting. Partial writes
+latch uncertainty and return their actual count so the frame writer also faults.
+Interrupted I/O, EOF and disconnect likewise prohibit further I/O. A normal
+read-poll timeout returns empty bytes without a fault. Kernel acceptance of
+bytes never proves command execution. Raw reads still need the enclosing
+protocol parser, receive fan-out and generation checks.
+
+Read/write and close share a lock to prevent descriptor reuse during I/O. Lock
+wait and readiness wait are each at most 100 ms; this is not a real-time system
+or an end-to-end emergency-stop latency guarantee. A busy close reports failure
+and may be retried; a command may not be replayed. Close releases ownership in a
+finally block even if the disconnected terminal reports an ioctl error.
+
+Sixty focused tests pass on Linux aarch64 software terminals using Python
+3.10.12. This validates the exercised stdlib primitive there, not installation
+of the complete package (which declares Python >=3.11). On Mac/Python 3.11.13,
+53 device/writer/exporter tests pass and 16 Linux-only cases skip. No physical
+port is opened. An initial isolated test bundle omitted a helper dependency;
+its collection failure is retained separately from the corrected run.
+
+This module is not wired into a printer tool or production sender. Deployment
+permissions must still prevent pre-existing or privileged competing opens and
+the open-to-exclusion race. Controller-lease lifetime, topology revalidation,
+startup/reset reconciliation, actual driver tests and hardware commissioning
+remain necessary before physical use. No qualified Mac transport is provided.
+
+## Assigned descriptor factory
+
+`open_assigned_transport` now joins the descriptor primitive to `Assignment` and
+a caller-owned `ControllerLease`. It rejects invalid/expired/protected identity
+and a missing lease before opening, then uses the existing busy-owner and
+pre/post-open topology checks. It checks the lease again before configuration
+and checks both lease and assignment after configuration. Setup failure closes
+the claimed descriptor without sending a command. Configuration itself may
+affect real hardware signals; it is not a physically inert probe.
+
+Every subsequent read/write checks lease ownership, assignment expiry and the
+current discovery snapshot while holding the transport I/O lock. A failed check
+latches `authority_lost`; restoring metadata cannot revive that connection. Close
+remains possible without authority. The caller must close transport before
+releasing its lease. Discovery callbacks must use bounded, read-only metadata
+queries; descriptor timeouts do not bound an arbitrary callback implementation.
+No discovery implementation, commissioning record or device policy is supplied
+by this factory, and it is not exposed through an LLM tool.
+
+The focused Linux software-terminal suite passes 71 cases, including protected,
+expired, moved and busy admission, topology change during configuration, lease
+closure/replacement, reconnect and expiry before I/O, and valid round-trip bytes.
+The runtime remains Python 3.10.12 for these stdlib tests; complete package
+installation on supported Linux/Python >=3.11 remains a separate check. The Mac
+focused suite passes 58 cases with 22 Linux skips. No physical connection or
+recovery behavior is established by these results.
+
+Immutable timeout options are validated before terminal acquisition, as well as
+by the descriptor constructor. The invalid-option regression uses an opener
+that fails if called: eight invalid values previously reached acquisition and
+now reject before it, leaving the caller-owned lease intact. Hardware opening
+can itself change signals, so closing after configuration rejection is not an
+equivalent substitute for pre-open validation.

@@ -430,3 +430,29 @@ directly follows H2f `b7d305c47c95d9ec9a10c06d9f8a28c23295f08f`; its worktree is
 clean. [Qualification record](../validation/host-llm-interface-boundary-stage97.json).
 H4's remaining qualification/release packaging, physical commissioning and final
 public branches/PR/page delivery are unfinished. No public PR is open.
+
+## H4a: qualification package, not a commissioned release
+
+H4a collects the remaining native firmware-protection tests, Linux terminal
+ownership primitive, release/recovery documentation, research, sanitized evidence
+and contribution preparation. It explicitly leaves hardware qualification and
+public delivery incomplete.
+
+```sh
+python3 scripts/prepare_review_boundary.py --revision bd83169 --boundary H4a --destination /path/to/new-h4a-review
+```
+
+Fresh source and installed-package runs each pass 795 tests with six Linux-only
+skips on macOS. The four ownership source/test hashes match their earlier Linux
+qualification exactly. No physical access or new model API call occurred. Review
+commit `4e4392b5ffac95cffa0fdbfb05f88f0bb4fc0dea` directly follows H3
+`75e55da7e4e624f733da7a9a6009343b2a91c610`. All nine local review commits have
+verified linear ancestry, without private development history. The top commit
+successfully re-exports its 209 allowlisted files. [Evidence](../validation/host-qualification-boundary-stage98.json).
+
+Build/test qualification does not complete manual privacy/attribution review,
+firmware publication, production USB integration, board/recovery validation,
+physical non-printing checks, or final PR/page delivery. No public PR is open.
+Later evidence additions update the explicit H4a mapping; the command above pins
+the tested snapshot rather than claiming every subsequent documentation revision
+was tested as a new release.

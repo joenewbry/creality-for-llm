@@ -209,6 +209,13 @@
     "contributions/host-llm-interface/pyproject.toml",
     "validation/host-llm-interface-boundary-stage97.json",
     "contributions/host-qualification/README.md",
-    "contributions/host-qualification/pyproject.toml"
+    "contributions/host-qualification/pyproject.toml",
+    "validation/host-qualification-boundary-stage98.json",
+    "MANIFEST.in",
+    "tests/native_motion_fault_harness.py",
+    "tests/test_native_motion_faults.py",
+    "printer_control/tty_transport.py",
+    "tests/test_tty_transport.py",
+    "tests/test_assigned_transport.py"
   ]
 }

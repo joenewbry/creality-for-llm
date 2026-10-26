@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "boundary": "H4a",
-  "source_commit": "bd831691bc89b6c1485725eae57f12841c3c6a95",
+  "source_commit": "140ea498cbf7880fc8b3ab20d3f4df2ad27e485b",
   "publication_ready": false,
   "files": [
     {
@@ -17,10 +17,16 @@
       "bytes": 34520
     },
     {
+      "path": "MANIFEST.in",
+      "source_path": "MANIFEST.in",
+      "sha256": "58855fcf269b0c9a373e4a940998a84e8accaae07c32b2c5a739e31ef85e201b",
+      "bytes": 8882
+    },
+    {
       "path": "README.md",
       "source_path": "contributions/host-qualification/README.md",
-      "sha256": "4a01b6cacb5e6437679eb40a8dd1f8781ddeb205d2b43d7df6d5098ba0690d77",
-      "bytes": 3022
+      "sha256": "3b5a7ef5499750eddd3417050037568e9456e97fb4654ecb8b00838b38f72fa3",
+      "bytes": 3093
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -97,8 +103,8 @@
     {
       "path": "contributions/host-qualification/README.md",
       "source_path": "contributions/host-qualification/README.md",
-      "sha256": "4a01b6cacb5e6437679eb40a8dd1f8781ddeb205d2b43d7df6d5098ba0690d77",
-      "bytes": 3022
+      "sha256": "3b5a7ef5499750eddd3417050037568e9456e97fb4654ecb8b00838b38f72fa3",
+      "bytes": 3093
     },
     {
       "path": "contributions/host-qualification/pyproject.toml",
@@ -163,14 +169,14 @@
     {
       "path": "docs/blocker-matrix.md",
       "source_path": "docs/blocker-matrix.md",
-      "sha256": "74e6571f42b6fd08cff085c45cbb9f139ff9bdda728f1dfd360ba9d3f88a1ee6",
-      "bytes": 16456
+      "sha256": "51983881f0581f18c72a354ce7049df457c276fc868e0f171f02484d7dec159a",
+      "bytes": 18420
     },
     {
       "path": "docs/contributions.md",
       "source_path": "docs/contributions.md",
-      "sha256": "a4b42a6c32dc8b6a31807a4e891246083843a495768992bac57db3741d732452",
-      "bytes": 28180
+      "sha256": "8ddeec932894cef0db20224ad16d177ed28e911accfeecc5dac50187bb03c82e",
+      "bytes": 29644
     },
     {
       "path": "docs/firmware-stack-builds.md",
@@ -235,8 +241,8 @@
     {
       "path": "docs/publication.md",
       "source_path": "docs/publication.md",
-      "sha256": "02b3cdc203b442d863827f4e1876ba69b4276bc641faaaf8d02208d78091aadb",
-      "bytes": 2092
+      "sha256": "76931e1b08b72c5286d8fe79caa0bf01ec47daa465480b7836a6c648c1262c5b",
+      "bytes": 2962
     },
     {
       "path": "docs/recovery.md",
@@ -259,8 +265,8 @@
     {
       "path": "docs/shared-transport.md",
       "source_path": "docs/shared-transport.md",
-      "sha256": "ce47b1038bc7173c3ae1afb951a500cd8a8fb130bfe151c6e722b0d7a29d5dde",
-      "bytes": 19184
+      "sha256": "4bac29bdcfb0fa0c87fe9cc7a563710e39112153811d73b4999b2a65b24f9474",
+      "bytes": 23600
     },
     {
       "path": "docs/source-audit.md",
@@ -283,8 +289,8 @@
     {
       "path": "host-review-boundaries.json",
       "source_path": "host-review-boundaries.json",
-      "sha256": "8bf57c27405126ea2901ada8a147f673371a2725a515893395001479f613b915",
-      "bytes": 52438
+      "sha256": "72dcb61851814a8ca1f118888f4b4487b4bf2875503bf39324d83d5e10dc6340",
+      "bytes": 52996
     },
     {
       "path": "licenses/Marlin-GPL-3.0.txt",
@@ -493,8 +499,14 @@
     {
       "path": "printer_control/tty_ownership.py",
       "source_path": "printer_control/tty_ownership.py",
-      "sha256": "d1b9448cb2991e2133fa28c57fafc8c079a6dc2158cd24ef54b78ba4bd244a16",
-      "bytes": 2675
+      "sha256": "682b15226e0abce1dbe0936505b09303552c1b80fec3f42cdd6cbd8dd84a2f22",
+      "bytes": 2954
+    },
+    {
+      "path": "printer_control/tty_transport.py",
+      "source_path": "printer_control/tty_transport.py",
+      "sha256": "c16522ad833f6851aa78b62e0850f149c59d8a581b20455bb37a5e5487b0a768",
+      "bytes": 6602
     },
     {
       "path": "printer_control/virtual_calibration.py",
@@ -517,8 +529,8 @@
     {
       "path": "publication-files.json",
       "source_path": "publication-files.json",
-      "sha256": "8a978f5ff1fc4a18d47dce1e20062f2374961497cf3fe639666bc2dc1e204dc3",
-      "bytes": 8287
+      "sha256": "475e8a12209c37baa54ad3645e744fe2b6281e809d8bdc1d54f30a6ec5125685",
+      "bytes": 8566
     },
     {
       "path": "pyproject.toml",
@@ -659,6 +671,12 @@
       "bytes": 5717
     },
     {
+      "path": "tests/native_motion_fault_harness.py",
+      "source_path": "tests/native_motion_fault_harness.py",
+      "sha256": "361159721d3a4953a19575bddbeee2738360c9080ef1813fcd4f48544305f79a",
+      "bytes": 5459
+    },
+    {
       "path": "tests/native_prompt_console.py",
       "source_path": "tests/native_prompt_console.py",
       "sha256": "6b65417fd2f41eba8935f1afa01ab1c6c4fb97912e140dd281ab94df1841f76e",
@@ -691,8 +709,8 @@
     {
       "path": "tests/octoprint_virtual_smoke.py",
       "source_path": "tests/octoprint_virtual_smoke.py",
-      "sha256": "730b1708c0adfc6d87e6bf8d121e46e515a2f8a1f2404756e45c606f6def8296",
-      "bytes": 36475
+      "sha256": "4de633962635546dc6d23da3a4699ca1944e594aa799451ce7da4f4bf9a34a79",
+      "bytes": 36661
     },
     {
       "path": "tests/restore_serial_scenario.py",
@@ -705,6 +723,12 @@
       "source_path": "tests/stream_disconnect_scenario.py",
       "sha256": "2fab0a1b87b308b31578d52d626456dd7e5a112627477a89569f455552ac9d29",
       "bytes": 4225
+    },
+    {
+      "path": "tests/test_assigned_transport.py",
+      "source_path": "tests/test_assigned_transport.py",
+      "sha256": "548b6585c6419ce41a6fb64cdca3df8992cf02b756ed95c71b5ea7ec8987a3a9",
+      "bytes": 5357
     },
     {
       "path": "tests/test_checkpoint.py",
@@ -739,8 +763,8 @@
     {
       "path": "tests/test_export_review.py",
       "source_path": "tests/test_export_review.py",
-      "sha256": "c26faa82f934080843cb90260571ef5cea9f03e31819da99c91a5cccd7101cd4",
-      "bytes": 3038
+      "sha256": "e015a3a4d44c5370c2ed75140aeba2e1ece31d2b8d8ffc7d5b03a65d6426102e",
+      "bytes": 3494
     },
     {
       "path": "tests/test_firmware_host_actions.py",
@@ -789,6 +813,12 @@
       "source_path": "tests/test_native_heating_wait.py",
       "sha256": "c4953b0a1618c9baa87eca31d3c9f535154edbfd562edb24bc8e4a5df659bb2b",
       "bytes": 2388
+    },
+    {
+      "path": "tests/test_native_motion_faults.py",
+      "source_path": "tests/test_native_motion_faults.py",
+      "sha256": "d1f1566a336ee65cfd0c5bde2f2c10100cd54c5fccfeafebd99ec3f9d61f091a",
+      "bytes": 2568
     },
     {
       "path": "tests/test_native_prompt_console.py",
@@ -977,6 +1007,12 @@
       "bytes": 4220
     },
     {
+      "path": "tests/test_tty_transport.py",
+      "source_path": "tests/test_tty_transport.py",
+      "sha256": "887eee60d6b3cda71885f22816338fcf80dde301a1593c6d614c346839aed859",
+      "bytes": 5958
+    },
+    {
       "path": "tests/test_virtual_assignment.py",
       "source_path": "tests/test_virtual_assignment.py",
       "sha256": "efe1b54857a67142bc8b6653ba205963af9ba23aa279e441389618a040ab1d11",
@@ -1093,8 +1129,8 @@
     {
       "path": "tests_print_mcp/test_virtual_faults.py",
       "source_path": "tests_print_mcp/test_virtual_faults.py",
-      "sha256": "3d644de4968a226d3e23209afb27890c1aa434c0b9526e0cdd5034369346ac92",
-      "bytes": 1750
+      "sha256": "7801d091d9efee9291eb1494926da866869197b293a3cdae7df7cc90149f5bcc",
+      "bytes": 1891
     },
     {
       "path": "tests_print_mcp/test_virtual_job_mcp.py",
@@ -1179,6 +1215,12 @@
       "source_path": "validation/host-prompt-transport-boundary-stage92.json",
       "sha256": "b41b48c8544057e3fe3c49f77d9f2f18e0b78c76cba8bff156e34fc4177edc69",
       "bytes": 1749
+    },
+    {
+      "path": "validation/host-qualification-boundary-stage98.json",
+      "source_path": "validation/host-qualification-boundary-stage98.json",
+      "sha256": "b57946d9b1bdc2379374be49da722bcfd6f4e8d30ab9738d9f18b8f9f12e589a",
+      "bytes": 2685
     },
     {
       "path": "validation/host-virtual-adapters-boundary-stage95.json",
