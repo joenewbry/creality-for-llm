@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-26",
+  "scope": "in-process capture owner and ASGI endpoint software; no native acquisition or production deployment",
+  "passed": 147,
+  "skipped": 0,
+  "command": "python -m pytest -q tests/test_camera_owner.py tests/test_camera_http.py tests/test_camera.py tests/test_tools.py tests/test_service.py tests/test_export_review.py",
+  "covered": [
+    "actual HTTP broker/client exchange with real owner core and ASGI handlers behind test server",
+    "authorization before owner metadata/body access",
+    "atomic generation/version-bound frame publication",
+    "view/job/control changes invalidate prior frame and capture context",
+    "one-attempt controls with context fence before write and readback confirmation",
+    "uncertain readback blocks owner calls",
+    "absolute two-second request body deadline",
+    "malformed/oversized/interrupted context rejection",
+    "existing application fallback preserved",
+    "blocked control callback does not block unrelated application route",
+    "new owner process/session produces new generation",
+    "inherited process identity rejected before locks or driver callbacks",
+    "oversized body rejected before buffer copy; 2 MiB preallocated chunk adds less than 256 KiB traced allocation"
+  ],
+  "physical_device_access": false,
+  "production_owner_modified_or_restarted": false,
+  "remaining": [
+    "verified camera assignment and capture-clock/profile metadata",
+    "embedding in real acquisition owner with qualified callbacks",
+    "actual camera driver isolation and live controls",
+    "physical mount/view qualification and visual detection"
+  ],
+  "source_sha256": {
+    "printer_control/camera_owner.py": "7c8283565b8e1a3b6d76887bcac86bdaaa5a80ae7b12a1bce73fe9cf2a1a214e",
+    "printer_control/camera_owner_api.py": "fbce0fef0a44c91a66c37284123a365bf7b59956a42abf14422e59018c185144",
+    "tests/test_camera_owner.py": "faa769c51fbead55e8a33ace149b0c93f69453ab8933371943c36287c8d74ab0"
+  },
+  "regression_before_fix": "Oversized ASGI chunk was copied before length rejection; 2 MiB fixture produced ~2 MiB traced allocation. New regression failed before moving limit check ahead of buffer extension.",
+  "clean_export": {
+    "file_count": 245,
+    "passed": 147,
+    "skipped": 0
+  },
+  "installed_wheel": {
+    "passed": 138,
+    "skipped": 0,
+    "source_import_excluded": true,
+    "module_paths_and_bytes_asserted": true,
+    "platform": "macOS arm64",
+    "python": "3.11.13",
+    "dependencies": "requirements-print-mcp.lock",
+    "scope": "camera owner/API/HTTP/broker/tool/service; nine source-only exporter cases separate"
+  }
+}
