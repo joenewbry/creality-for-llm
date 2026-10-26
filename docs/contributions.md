@@ -1,6 +1,6 @@
 # Contribution delivery and review stack
 
-Updated October 26, 2026. Twenty-four host and six firmware pull requests are open as drafts in the owner's repositories. Each PR names its predecessor and validation evidence. They are review candidates, not merged releases or accepted upstream contributions.
+Updated October 26, 2026. Twenty-five host and six firmware pull requests are open as drafts in the owner's repositories. Each PR names its predecessor and validation evidence. They are review candidates, not merged releases or accepted upstream contributions.
 
 ## Repository relationships
 
@@ -36,6 +36,7 @@ Updated October 26, 2026. Twenty-four host and six firmware pull requests are op
 | [H13](https://github.com/joenewbry/creality-for-llm/pull/22) | One assigned receive owner and dispatch failure gate | `stack/h12-receive-arrival-age` |
 | [H14](https://github.com/joenewbry/creality-for-llm/pull/23) | Pinned sender attachment and fair bounded connection admission | `stack/h13-shared-receive-owner` |
 | [H15](https://github.com/joenewbry/creality-for-llm/pull/24) | Journaled assigned job/prompt tools and scoped evidence | `stack/h14-assigned-sender` |
+| [H16](https://github.com/joenewbry/creality-for-llm/pull/25) | Source-bound serial reports, arrival age and capture lifecycle | `stack/h15-assigned-job-tools` |
 
 ## Firmware stack
 
@@ -50,7 +51,7 @@ Updated October 26, 2026. Twenty-four host and six firmware pull requests are op
 
 ## Validation and physical limits
 
-The exact public snapshot `b9e70ca7fa9c4a4f360a515fff4585627a80902f` passes the complete installed-package Linux aarch64/Python 3.11.13 suite: **1103 passed, zero skips**. The test corpus is outside the source tree, runtime bytes match the frozen export, and all 99 pinned dependencies are verified. [Current qualification](../validation/linux-package-stage123.json) includes the journaled assigned job/prompt adapter. Linux focused checks pass 31; Mac checks pass 27 with four Linux-only skips, plus nine exporter cases. Two tool-driven owned-terminal jobs finish all 80 modeled moves once after source mutation, one resolving a compiled native wait during pending pause. Cancel and refused-start cases also pass. Typed evidence binds identities/operation/phase/time/scope, and ordinary progress no longer stales pause requests while paused stream changes still invalidate them. The provider reads virtual-peer state; no hardware provider or physical qualification is supplied. The prior 1072-case record remains historical. Later delivery changes are documentation/qualification/source-archive metadata; tested runtime/tests/dependency inputs remain identical.
+The exact public snapshot `2e9013aad30496316c6bf9bc96f637a4ce6e366c` passes the complete installed-package Linux aarch64/Python 3.11.13 suite: **1130 passed, zero skips**. Tests run outside the source tree; installed runtime bytes and all 99 locked dependencies are verified. [Current qualification](../validation/linux-package-stage124.json) includes source-bound assigned serial reports and journaled job/prompt tools. Mac focused checks pass 142 with 12 Linux-only skips; exporter checks pass nine. Sender/terminal cases preserve exact reply source and arrival age through pause/resume, a native wait and cancellation. A focused fixture admission deadline was corrected by establishing dispatch before advancing its test clock; production deadlines remain unchanged. The transition/checkpoint provider remains software-only, and the serial reports cannot qualify physical sensors, position or readiness. Prior records remain historical; later delivery changes are documentation/qualification/source-archive metadata with tested runtime/tests/dependency inputs unchanged.
 
 The first ten public review trees preserve their originally tested trees. [The goal audit](goal-audit.md) lists unmet requirements, and [the printing plan](printing-qualification-plan.md) separates post-repair physical testing from software qualification. The readiness-admission reference does not certify hardware or clear unknown receipts.
 

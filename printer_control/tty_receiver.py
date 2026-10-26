@@ -6,7 +6,7 @@ must be chosen before connection construction; this is not a job backend.
 import threading
 import time
 from collections import deque
-from .shared_receiver import SharedReceiveBuffer
+from .shared_receiver import SharedReceiveBuffer,ObservedBytes
 
 
 class _OrderedGate:
@@ -56,6 +56,7 @@ class TTYReceiveHub:
         self._copy_jobs=copy_jobs
         self._capacity=capacity
         self._jobs=bytearray()
+        self._job_arrivals=deque()
         self._lock=_OrderedGate()
         self._fault=None
         self._job_reader_claimed=False
@@ -71,6 +72,7 @@ class TTYReceiveHub:
     def _invalidate(self,reason):
         self._fault=self._fault or reason
         self._jobs.clear()
+        self._job_arrivals.clear()
         self._prompt.close()
 
     def _check(self):
@@ -89,6 +91,7 @@ class TTYReceiveHub:
             self._check()  # A blocking read cannot outlive assignment authority.
             if not data:return
             if self._copy_jobs:
+                if len(self._job_arrivals)>=4096:raise ValueError('job arrival metadata overflow')
                 if len(self._jobs)+len(data)>self._capacity:
                     raise ValueError('job receive copy overflow')
                 # Validate before copying. No fabricated newline or truncated line.
@@ -96,7 +99,9 @@ class TTYReceiveHub:
                     raise ValueError('job receive line too long')
             self._prompt.received_hook(None,data.decode('ascii',errors='strict'))
             if self._prompt.fault:raise OSError('prompt receive copy lost')
-            if self._copy_jobs:self._jobs.extend(data)
+            if self._copy_jobs:
+                self._jobs.extend(data)
+                self._job_arrivals.append((len(data),self._arrived_at))
         except BaseException:
             self._invalidate('receive_stream_lost')
             raise
@@ -126,18 +131,28 @@ class TTYReceiveHub:
         finally:self._lock.release()
 
     def job_readline(self):
-        """One complete LF line, or empty on a bounded poll; never invent an ack."""
+        """Byte compatibility view; evidence consumers use the observed form."""
+        return self.job_readline_observed().data
+
+    def job_readline_observed(self):
+        """A complete LF line and its oldest constituent byte arrival time."""
         if not self._copy_jobs:raise ValueError('job receive lane not enabled')
         if not self._lock.acquire(timeout=.2):raise TimeoutError('receive owner busy')
         try:
             self._check()
             if b'\n' not in self._jobs:self._pump()
             end=self._jobs.find(b'\n')
-            if end<0:return b''
+            if end<0:return ObservedBytes(b'',None)
             line=bytes(self._jobs[:end+1])
+            observed_at=self._job_arrivals[0][1]
             self._check()
             del self._jobs[:end+1]
-            return line
+            remaining=end+1
+            while remaining:
+                length,stamp=self._job_arrivals.popleft()
+                used=min(length,remaining);remaining-=used
+                if used<length:self._job_arrivals.appendleft((length-used,stamp))
+            return ObservedBytes(line,observed_at)
         finally:self._lock.release()
 
     def write_frame(self,write,data):

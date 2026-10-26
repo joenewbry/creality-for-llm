@@ -172,3 +172,21 @@ def test_expired_gate_waiter_does_not_block_a_successor():
         if gate.acquire(timeout=.5):acquired.set();gate.release()
     second=threading.Thread(target=successor);second.start();gate.release()
     second.join(1);assert not second.is_alive() and acquired.is_set()
+
+
+def test_job_line_observations_preserve_each_read_and_first_fragment_age():
+    hub,_,now,_=make([b'old\npartial',b'-new\nlatest\n'])
+    assert hub.prompt_pump().data==b'old\npartial'
+    now[0]=20.
+    assert hub.prompt_pump().data==b'-new\nlatest\n'
+    batches=[hub.job_readline_observed() for _ in range(3)]
+    assert [(b.data,b.observed_at) for b in batches]==[(b'old\n',10.),(b'partial-new\n',10.),(b'latest\n',20.)]
+    assert hub.job_readline_observed().observed_at is None
+
+
+def test_arrival_metadata_overflow_is_bounded_and_invalidates_both_copies():
+    hub,_,now,_=make([b'\n']*4097)
+    for i in range(4096):
+        now[0]=float(i+10);assert hub.prompt_pump().data==b'\n'
+    with pytest.raises(ValueError,match='metadata'):hub.prompt_pump()
+    with pytest.raises(OSError):hub.job_readline_observed()

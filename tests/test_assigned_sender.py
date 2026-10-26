@@ -15,6 +15,7 @@ def endpoint():
     writes=[];chunks=[b'ok\n']
     hub=TTYReceiveHub(lambda:chunks.pop(0) if chunks else b'',lambda:None,lambda:10.,copy_jobs=True)
     backend=TTYPromptBackend.__new__(TTYPromptBackend)
+    backend.printer_id='unit-fixture';backend.channel=SimpleNamespace(generation='unit-g1')
     backend.receive_hub=hub
     backend.frame_writer=SharedFrameWriter(lambda data:hub.write_frame(lambda d:writes.append(d) or len(d),data))
     return AssignedSerialEndpoint(backend),writes,chunks
@@ -105,3 +106,23 @@ def test_pinned_sender_does_not_retry_a_partial_frame_or_emit_its_suffix(endpoin
     sender._do_send_without_checksum(b'M400')
     assert calls==[b'M400\n'] and closed==[{'is_error':True}]
     assert hub.fault=='write_interrupted' and serial.backend.frame_writer.fault
+
+
+def test_endpoint_observation_is_bound_to_read_sequence_identity_and_arrival(endpoint):
+    serial,_,_=endpoint;serial.claim()
+    assert serial.readline()==b'ok\n'
+    packet=serial.last_observation
+    assert packet.sequence==1 and packet.printer_id=='unit-fixture' and packet.connection_generation=='unit-g1'
+    assert packet.received.data==b'ok\n' and packet.received.observed_at==10.
+    assert serial.readline()==b'' and serial.last_observation is None and serial.read_sequence==1
+
+
+def test_another_thread_cannot_consume_the_assigned_reader_stream(endpoint):
+    import threading
+    serial,_,_=endpoint;serial.claim();errors=[]
+    def other():
+        try:serial.readline()
+        except OSError as exc:errors.append(str(exc))
+    thread=threading.Thread(target=other);thread.start();thread.join(1)
+    assert not thread.is_alive() and len(errors)==1 and serial.read_sequence==0
+    assert serial.readline()==b'ok\n'

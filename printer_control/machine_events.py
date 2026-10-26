@@ -42,24 +42,41 @@ class MachineEventRecorder:
         self._fault = self._fault or reason
         self._condition.notify_all()
 
+    @property
+    def fault(self):
+        with self._condition:return self._fault
+
+    @property
+    def capturing(self):
+        with self._condition:return not self._closing and not self._closed and self._fault is None
+
+    def _enqueue(self,data,now,provenance=None):
+        with self._condition:
+            if self._closing or self._fault is not None:return False
+            try:
+                if type(data) is not bytes:raise ValueError('received bytes required')
+                Journal._time(now)
+            except Exception:
+                self._invalidate('invalid_receive_observation')
+                return False
+            if len(data)>self.capacity-self._size or len(self._queue)>=4096:
+                self._invalidate('receive_capture_overflow')
+                return False
+            if data:
+                self._queue.append((data,now,provenance))
+                self._size+=len(data);self._last_received=now
+                self._condition.notify()
+            return True
+
     def received_hook(self, sender, line, *args, **kwargs):
         with self._condition:
-            if not self._closing and self._fault is None:
-                try:
-                    if type(line) is not str:
-                        raise ValueError('invalid line')
-                    data, now = line.encode('utf-8'), self.clock()
-                    Journal._time(now)
-                except Exception:
-                    self._invalidate('invalid_receive_observation')
-                else:
-                    if len(data) > self.capacity - self._size:
-                        self._invalidate('receive_capture_overflow')
-                    elif data:
-                        self._queue.append((data, now))
-                        self._size += len(data)
-                        self._last_received = now
-                        self._condition.notify()
+            if self._closing or self._fault is not None:return line
+        try:
+            if type(line) is not str:raise ValueError('invalid line')
+            data,now=line.encode('utf-8'),self.clock()
+        except Exception:
+            with self._condition:self._invalidate('invalid_receive_observation')
+        else:self._enqueue(data,now)
         return line
 
     def _persist(self, events):
@@ -89,9 +106,15 @@ class MachineEventRecorder:
                         break
                     if not self._queue and self._closing:
                         break
-                    data, now = self._queue.popleft()
+                    data, now, provenance = self._queue.popleft()
                     self._size -= len(data)
-                self._persist([asdict(event) for event in self.observer.feed(data, now)])
+                generation=self.observer.generation
+                events=[asdict(event) for event in self.observer.feed(data,now)]
+                if provenance is not None:
+                    for event in events:event['data']['receive_provenance']=dict(provenance)
+                    events.insert(0,dict(kind='serial_line_received',generation=generation,observed_at=now,
+                        data={'text':data.decode('ascii'),'receive_provenance':dict(provenance)}))
+                self._persist(events)
             now = self.clock()
             final_events = self.observer.end_capture(now)
             with self._condition:

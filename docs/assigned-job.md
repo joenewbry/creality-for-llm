@@ -70,8 +70,9 @@ The test provider reads private virtual-peer state and labels its scope
 `software_only_virtual_peer`. Its true motor/part/configuration flags are model
 facts, not physical qualification. See `validation/assigned-job-stage123.json`.
 
-A real provider with source-timed serial observations, independent physical
-continuity and qualified controller/screen/configuration facts is unfinished.
+The optional [source-bound serial recorder](assigned-observations.md) now retains
+actual sender line provenance and arrival age. A real provider with independent
+physical continuity and qualified controller/screen/configuration facts is unfinished.
 Restart/reconnect, actual acknowledgment/resend/queue saturation, shutdown,
 physical pause policy, setup/calibration, heated printing and camera association
 still need integration/qualification on this path. Existing virtual hot-pause and

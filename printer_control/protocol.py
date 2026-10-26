@@ -5,6 +5,7 @@ for remote responses. The typed controller must negotiate token support first.
 """
 from dataclasses import dataclass, asdict
 import re
+import math
 import uuid
 from .prompt_wire import PromptWireReceipt
 
@@ -117,10 +118,20 @@ class ProtocolObserver:
         temperatures = re.findall(r"(?:^|\s)(T\d*|B):\s*(-?\d+(?:\.\d+)?)\s*/\s*(-?\d+(?:\.\d+)?)", line)
         if temperatures:
             values = {key: {"actual": float(actual), "target": float(target)} for key, actual, target in temperatures}
+            if any(not math.isfinite(v) for pair in values.values() for v in pair.values()):
+                return [self._event('protocol_error',now,reason='nonfinite_temperature')]
             events.append(self._event("temperature", now, values=values))
             # Negative ambient values on this bench are diagnostic, not hidden by clamping.
             if any(v["actual"] < 0 for v in values.values()):
                 events.append(self._event("sensor_suspect", now, reason="negative_temperature", heating_permitted=False))
+        number=r'([+-]?(?:\d+(?:\.\d*)?|\.\d+))'
+        position=re.fullmatch(r'(?:ok\s+)?X:'+number+r'\s+Y:'+number+r'\s+Z:'+number+r'\s+E:'+number+r'(?:\s+Count\b.*)?',line)
+        if position:
+            values=dict(zip(('x','y','z','e'),map(float,position.groups())))
+            if not all(math.isfinite(v) for v in values.values()):
+                return [self._event('protocol_error',now,reason='nonfinite_reported_position')]
+            events.append(self._event('reported_position',now,position=values,units=None,
+                position_kind='controller_report',independent_measurement=False,homing_state=None,planner_completion=None))
         resend = re.fullmatch(r"(?:Resend:\s*|rs\s+)(\d+)", line, re.I)
         if resend:
             return [self._event("resend_requested", now, line_number=int(resend[1]))]

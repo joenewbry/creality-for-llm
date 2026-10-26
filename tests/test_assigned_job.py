@@ -194,3 +194,36 @@ def test_corrupt_staged_file_cannot_block_cancellation_of_the_owned_job(runtime)
     runtime[1].path.chmod(0o600);runtime[1].path.write_bytes(b'changed during job')
     receipt=runtime[0].submit(request(runtime,'job.cancel'))
     assert receipt['status']=='running' and runtime[7]==['stage','start','cancel']
+
+
+def test_attached_capture_loss_invalidates_job_authority(runtime):
+    complete(runtime,'job.stage');complete(runtime,'job.start')
+    backend=runtime[1]
+    backend.machine_events=SimpleNamespace(capturing=False,snapshot=lambda:{'capturing':False},close=lambda:None)
+    assert backend.inspect()['job_state']=='outcome_unknown'
+    assert backend.inspect()['blocking_fault']['reason']=='assigned_receive_capture_lost'
+    assert runtime[0].submit(request(runtime,'job.pause'))['status']=='rejected'
+
+
+def test_machine_capture_must_close_before_transport_and_lease(runtime):
+    service,backend,_,sender,*_=runtime;order=[]
+    sender.close=lambda:order.append('sender')
+    backend.prompt.close=lambda:order.append('transport')
+    def capture_close():
+        service.lease.check();order.append('capture')
+    backend.machine_events=SimpleNamespace(close=capture_close)
+    service.close()
+    assert order==['sender','capture','transport']
+    backend.machine_events=None  # Fixture cleanup may safely repeat close.
+    service.lease.acquire()
+
+
+def test_capture_close_failure_retains_lease_and_transport(runtime):
+    service,backend,_,_,_,_,_,actions,_=runtime
+    def fail():raise TimeoutError('capture still writing')
+    backend.machine_events=SimpleNamespace(close=fail)
+    backend.prompt.close=lambda:actions.append('transport_closed')
+    with pytest.raises(TimeoutError):service.close()
+    service.lease.check()
+    assert 'transport_closed' not in actions and not backend._closed
+    backend.machine_events=None

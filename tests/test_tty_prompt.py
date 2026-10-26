@@ -163,9 +163,16 @@ def test_assignment_change_invalidates_pending_receipt_and_restoring_metadata_do
 
 
 def test_lost_receipt_expires_without_wire_replay(connection):
-    _,router,native,_,_=connection
+    service,router,native,_,_=connection
     bind(router);native.drop=True
-    req,pending=submit(router,'prompt.respond',{'prompt':1,'choice':0},deadline=time.time()+.25)
+    deadline=time.time()+3
+    req,pending=submit(router,'prompt.respond',{'prompt':1,'choice':0},deadline=deadline)
+    assert pending['status']=='running'  # Establish dispatch before testing receipt expiry.
+    # Advance only controller/operation time after dispatch. A short wall-clock
+    # admission deadline can expire during journal/metadata work under load.
+    # Keep the advanced fixture clock through teardown; restoring wall time
+    # before disconnect would itself be a backward-clock fault.
+    service.clock=service.backend.clock=lambda:deadline+.01
     result=finish(router,pending)
     assert result['status']=='outcome_unknown' and result['result']['reason']=='receipt_deadline_expired'
     assert router.call('prompt.respond',req)==result
