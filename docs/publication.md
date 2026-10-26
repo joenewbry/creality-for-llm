@@ -34,3 +34,18 @@ Historical local progress logs are excluded. Test commands may create new local
 `evidence` files, but those files are not part of the publication allowlist.
 Some documentation references historical evidence that remains local; final
 release evidence must be separately sanitized and included explicitly.
+
+## Python source archives
+
+`MANIFEST.in` first excludes automatic file discovery, then explicitly includes
+the publication allowlist. Keep its include entries synchronized with
+`publication-files.json`; the exporter tests check this contract. This preserves
+test helpers, dependency locks, firmware-fetch tooling and review documentation
+in a source distribution. Setuptools also creates its package metadata files.
+The wheel contains the host package and retained license notices; it does not
+contain the complete qualification suite or firmware checkout.
+
+Build distribution artifacts from a sanitized review checkout, not the private
+working tree. Inspect archive members and compare their bytes to the reviewed
+source. Firmware remains separately fetched and pinned; an archive does not
+make the unpublished firmware source available or qualify physical operation.

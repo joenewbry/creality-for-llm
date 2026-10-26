@@ -76,3 +76,12 @@ def test_committed_symlink_cannot_import_unlisted_contents(tmp_path):
     command(root, 'commit', '-qm', 'symlink fixture')
     with pytest.raises(ValueError, match='regular file'):
         export(root, 'HEAD', tmp_path/'export')
+
+
+def test_source_archive_manifest_tracks_publication_allowlist():
+    root = Path(__file__).resolve().parents[1]
+    policy = json.loads((root / 'publication-files.json').read_text())
+    directives = [line for line in (root / 'MANIFEST.in').read_text().splitlines()
+                  if line and not line.startswith('#')]
+    assert directives[0] == 'global-exclude *'
+    assert directives[1:] == ['include ' + name for name in sorted(policy['files'])]

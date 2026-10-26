@@ -187,3 +187,35 @@ and explicitly starts the watch. It does not execute the full manager, ADC,
 interrupts, real target setters, PID, physical outputs or terminal kill. Chamber
 and adaptive-fan behavior are not exercised by the single-nozzle/bed profile.
 The updated firmware has not been flashed to either printer.
+
+## Native homing validation and probe-result handling
+
+Stage 101 compiles the unchanged `Endstops::validate_homing_move` and
+`Probe::probe_at_point` functions from pinned firmware `98aa032`. Eight cases
+exercise trigger present/absent, unreachable coordinates, deploy failure, an
+invalid probe measurement, stow failure, normal success and initially triggered
+BLTouch reset. The fixture selects RTS screen and BLTouch high-speed branches,
+with G29 retry/recover disabled. It supplies trigger bits, probe results,
+reachability, deployment, movement, screen writes and a throwing kill stub.
+Message macros are fixture labels, not a rendered/translated screen test.
+
+A missing homing trigger sets screen error state 2 and calls terminal kill; a
+valid trigger clears the hit. Probe deploy/measurement/stow failures return NaN,
+set screen error state 3/page 41, attempt stow and report an error, but this
+function does not call kill. Unreachable coordinates return NaN before motion
+or the error-report branch. Callers must interpret that result; an invalid
+measurement alone does not prove terminal shutdown.
+
+These tests qualify the extracted functions only. G28/G29 caller handling,
+endstop interrupt sampling, physical probe timing and movement, terminal-kill
+internals and real screen rendering remain unqualified. Existing synthetic
+probe-plus-halt tests do not represent every firmware probe-error path.
+
+The added `probe_no_halt_fault` host scenario injects only the pinned English
+serial message `Error:Probing Failed`, without a fabricated halt line, into an
+already paused virtual job. The actual sender closes the connection under its
+configured error policy; typed job tools retain the fault, reject resume/cancel
+and report outcome unknown. All six host fault scenarios pass, with zero
+physical serial-open attempts. This is host handling of a synthetic report,
+not a probe command executed by the virtual printer or a firmware-to-host
+integration test.

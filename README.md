@@ -3,7 +3,7 @@
 H4a collects the software qualification, source/build references, prior-art
 research, contribution preparation and recovery candidate documentation for the
 preceding host stack. It includes native firmware protection regressions and a
-Linux-only terminal-ownership primitive. This is not a commissioned development
+Linux-only descriptor transport with assignment and controller-lease checks. This is not a commissioned development
 release, and no physical printer migration is authorized by these artifacts.
 
 ## Reproduce software evidence
@@ -24,8 +24,9 @@ Native tests compile actual or extracted source functions with substituted
 physical dependencies. They are not complete firmware simulation or hardware
 qualification. The normal suite calls no paid model API.
 
-Six Linux terminal-exclusivity tests are skipped on macOS. They require a Linux
-run to qualify that layer; the adapter rejects macOS before opening a device.
+Linux terminal-exclusivity, descriptor I/O and assigned-factory tests are skipped
+on macOS. They require a Linux run to qualify those layers; the adapter rejects
+macOS before opening a device.
 The Linux tests use software terminals, not printers. Exclusion does not evict
 existing descriptors or replace device permissions and identity checks.
 

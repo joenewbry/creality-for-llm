@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "boundary": "H4a",
+  "depends_on": "H3",
+  "source_commit": "bd831691bc89b6c1485725eae57f12841c3c6a95",
+  "review_commit": "4e4392b5ffac95cffa0fdbfb05f88f0bb4fc0dea",
+  "review_tree": "2b27cd2a13d658a8181caa94b9871b181d110ece",
+  "parent_review_commit": "75e55da7e4e624f733da7a9a6009343b2a91c610",
+  "ordered_review_stack": [
+    "91e1d4b9022fbc059cb3c5a4726dadfd2da023e3",
+    "374913bf12ae1529f83330bc87e1b77e324eb2c9",
+    "d54d5eebe4b4ad8229e59950f63f43c8d5a51e27",
+    "1de3b57d698b7f09ea70da528e30d980a3d41b71",
+    "7f7b494aa27073b8eb6f3055600dd585bac47866",
+    "4753a2e6bfc345aeb9ed93d70d7289be9d8a55f5",
+    "b7d305c47c95d9ec9a10c06d9f8a28c23295f08f",
+    "75e55da7e4e624f733da7a9a6009343b2a91c610",
+    "4e4392b5ffac95cffa0fdbfb05f88f0bb4fc0dea"
+  ],
+  "mapped_files": 209,
+  "manifest_sha256": "cd0569ccb6ff797c22b908fd2f3a246368f1e333550d75f05bf31c46e4b9087e",
+  "source_tests": {
+    "tests": 801,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 6,
+    "junit_sha256": "2345fd4826df266caca735d089d54ea4ec8d4fc56973e259339832723baaef57"
+  },
+  "installed_tests": {
+    "tests": 801,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 6,
+    "junit_sha256": "32c60da97e992b8e08e2e8bcf62dffc1ee038e6f5a6ffd233a037915f93dfb7e"
+  },
+  "python_version": "3.11.13",
+  "locked_dependencies": 99,
+  "firmware": {
+    "schema_version": 1,
+    "upstream_commit": "7fffa9270ff8fb5ee208a5b04f832e20bab19c60",
+    "commit": "98aa03248337b8039a09bbc1a29f33432aed08ca",
+    "tree": "70ec40fa273bd88cfbda442935ac275cbf9f981b",
+    "publication_status": "local-only; supply the reviewed firmware repository explicitly"
+  },
+  "package_built_and_installed": true,
+  "installed_import_from_site_packages": true,
+  "source_files_unchanged": true,
+  "parent_code_unchanged": true,
+  "review_worktree_clean": true,
+  "reexport_from_review_git_commit": {
+    "files": 209,
+    "manifest_sha256": "ecf6d81638fc29140e8f084508a1a130a96b0d1277d0447455d22bcc14ad5428",
+    "publication_ready": false
+  },
+  "linux_ownership_evidence": "tty-ownership-stage89.json; all four source/test hashes verified unchanged",
+  "private_host_history_included": false,
+  "physical_access": false,
+  "paid_model_calls": 0,
+  "public_pr_created": false,
+  "development_release_qualified": false,
+  "limits": [
+    "six Linux ownership cases skipped on Mac, separately qualified on Linux",
+    "installed tests reuse native firmware fixture",
+    "local dependency cache and reviewed local firmware required",
+    "manual privacy/attribution review not completed",
+    "production USB adapter and physical commissioning unfinished",
+    "recovery remains an unqualified candidate"
+  ]
+}
