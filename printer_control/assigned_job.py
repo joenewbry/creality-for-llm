@@ -67,6 +67,7 @@ class AssignedJobBackend:
         self.sha256=hashlib.sha256(data).hexdigest()
         self.path=self.source_path
         self._staging=tempfile.TemporaryDirectory(prefix='assigned-staged-job-')
+        self.machine_events=None
         self._lock=threading.RLock();self._closed=False;self._fault=None
         self._phase='available';self._revision=0;self._signature=None
         self._staged=False;self._stage_revision=0;self._started=False;self._printing=0
@@ -75,9 +76,22 @@ class AssignedJobBackend:
         self._callback=_CallbackTap(sender._callback,self._events)
         sender._callback=self._callback
 
+    def attach_machine_events(self,recorder):
+        from .assigned_observations import AssignedMachineEventRecorder
+        with self._lock:
+            if (type(recorder) is not AssignedMachineEventRecorder
+                    or recorder.endpoint is not self.sender._assigned_endpoint):
+                raise TypeError('capture must belong to this assigned endpoint')
+            if self.machine_events is not None or self._closed or recorder.endpoint._claimed or not recorder.capturing:
+                raise ValueError('attach one capture before sender starts')
+            self.machine_events=recorder
+            self.supported_reads=type(self).supported_reads+('printer.machine_events',)
+
     def guard(self):return self._lock
 
     def _drain(self):
+        if self.machine_events is not None and not self.machine_events.capturing:
+            self._fault=self._fault or {'reason':'assigned_receive_capture_lost'}
         while True:
             try:event,value=self._events.get_nowait()
             except queue.Empty:break
@@ -295,7 +309,8 @@ class AssignedJobBackend:
                     job_id=self.job_id,file_sha256=self.sha256,job_state=self._phase,staged=self._staged,
                     sender_state=self.sender.getStateString(),evidence_scope=self.evidence_kind,
                     resumable=paused and not blockers,resume_blockers=blockers,blocking_fault=self._fault,
-                    physical_control_qualified=False,external_evidence_provider_required=True)
+                    physical_control_qualified=False,external_evidence_provider_required=True,
+                    serial_reports=self.machine_events.snapshot() if self.machine_events is not None else None)
 
     def capabilities(self):
         return dict(scope='experimental_assigned_job_adapter',physical_control_qualified=False,
@@ -304,6 +319,7 @@ class AssignedJobBackend:
     def close(self):
         if not self._closed:
             self.sender.close()
+            if self.machine_events is not None:self.machine_events.close()
             if self.sender._callback is self._callback:self.sender._callback=self._callback.original
             self.prompt.close()
             self._staging.cleanup();self._closed=True

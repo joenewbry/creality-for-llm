@@ -272,6 +272,10 @@
     "tests/test_assigned_job.py",
     "docs/assigned-job.md",
     "validation/assigned-job-stage123.json",
-    "validation/linux-package-stage123.json"
+    "validation/linux-package-stage123.json",
+    "printer_control/assigned_observations.py",
+    "tests/test_assigned_observations.py",
+    "docs/assigned-observations.md",
+    "validation/assigned-observations-stage124.json"
   ]
 }

@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-26",
+  "scope": "source-bound actual sender line capture on owned software terminals; no physical qualification",
+  "source_sha256": {
+    "printer_control/assigned_observations.py": "af5dc8a9ad33f713c412539a0bbe63ac11b86a19c7c892cac20766d730c71ac1",
+    "printer_control/assigned_sender.py": "84d7f050141015738c340965f5bad5e0164767578c8f84a060c15b2fc0d65338",
+    "printer_control/assigned_job.py": "9ec4ff5b68becf9a4109deb4f32bb70b47f4d6022f8ebcc936fb81e56009ff43",
+    "printer_control/tty_receiver.py": "8894b10c301d2b9a67b86520137d6c1425e5067b1bbf7338ca8adeda2ecbdb42",
+    "printer_control/tty_prompt.py": "efa3c77a03b72cb95f3cfef0f3e58220589fac1ebeceb531c931adfc5f03281a",
+    "printer_control/machine_events.py": "25ba9e8ec931acdbf7a104e299f56fc8452450461cbb4d65bcd30f79c9284e2b",
+    "printer_control/protocol.py": "5a21efa655a378749239a2bf4df71ee8d4dd6a188a9848cfd76315fc383389e5",
+    "tests/test_assigned_observations.py": "15d98dc21e4f1f5ef57f05c40d2c3be08c25f11d40869b861e70ab800c04c47f",
+    "tests/assigned_job_smoke.py": "7311ad8006467b2c76a0ba0c1378b5e60b0cdd4137576716b4237b62c8c3d456",
+    "tests/test_assigned_job.py": "041917eb70b3587060eded80ef70b1cecc76702bd5c0def06f245c5ad60370e0",
+    "tests/test_assigned_sender.py": "a8378921bf8a567c953a297e8e07651d5814f375c11d4693d00b7e73ae53bbbd",
+    "tests/test_tty_receiver.py": "6ec85999489aa903c71b5c6b4d6c52317f662ea9a33a311861750d53aaa337dd",
+    "tests/test_tty_prompt.py": "1d9d7aff5f20d6c6dddfccf0a50831c588ea5ccc8710af07dc73efab4570d311",
+    "tests/test_protocol.py": "f4990b9fac210c45990d09361852727a2935cc2a39221bed8ea1670ca48cc1b3"
+  },
+  "mac_focused": {
+    "passed": 142,
+    "skipped": 12,
+    "junit_sha256": "1bb7d771e1e52f518e5fa3193d82ab1b0b558db0e2b4612bec9fd454e34c96c9"
+  },
+  "linux_focused": {
+    "passed": 153,
+    "failed": 1,
+    "junit_sha256": "b3134cc46b785c0b9eeae845a8d5d419e50b54791c76b9abc5123aac9a382005",
+    "failure": "fixture quarter-second request deadline could expire before dispatch under load; not a lost-receipt result"
+  },
+  "linux_corrected_regression": {
+    "passed": 1,
+    "skipped": 0,
+    "junit_sha256": "edd42fe973620e464d0c6fbb6f2d618f23439415d87a3ba9a437330d851dd2d3",
+    "change": "establish running dispatch with normal deadline, then advance the fixture controller clock past receipt deadline and retain it through teardown"
+  },
+  "prior_linux_integration": {
+    "passed": 131,
+    "skipped": 0,
+    "scope": "before final explicit connection-lease association and three cleanup tests; includes all four journaled software-terminal scenarios"
+  },
+  "covered": [
+    "per-line oldest-byte host-read arrival survives fragmented/queued replies",
+    "exact sender endpoint, reader Thread object, process, sequence, identity and line-byte source checks",
+    "raw line hash/provenance and bounded durable capture; reset clears old report cache",
+    "position reports have unknown units/homing/planner and no independent physical measurement",
+    "invalid clocks, source loss and closed capture cannot grant fresh facts or job authority",
+    "sender then recorder then transport close; recorder timeout retains controller lease",
+    "capture must use the actual connection owner lease and canonical controller journal"
+  ],
+  "physical_device_access": false,
+  "physical_readiness_qualified": false,
+  "physical_evidence_provider_implemented": false,
+  "default_launchers_virtual_only": true,
+  "paid_model_calls": 0,
+  "limits": [
+    "actual sensor validity, position/part/motor continuity, configuration and board/display identity are unqualified",
+    "physical USB isolation, job policy/recovery and real capture/mount visibility remain unfinished",
+    "source provenance is controller-report evidence, not an authenticated firmware attestation or a physical readiness certificate"
+  ]
+}

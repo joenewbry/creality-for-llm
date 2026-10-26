@@ -38,6 +38,7 @@ class TTYPromptBackend(PromptBackend):
                     raise OSError('assigned_prompt_receive_unavailable') from None
             backend=cls(channel,printer_id=printer_id,clock=now,pump=pump,close_transport=transport.close)
             backend.transport=transport
+            backend.controller_lease=lease
             backend.frame_writer=writer
             backend.receive_hub=receiver
             return backend

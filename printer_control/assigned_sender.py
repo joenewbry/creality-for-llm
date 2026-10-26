@@ -3,11 +3,31 @@
 No port discovery/open, reset, reconnect, physical launcher or job tool backend.
 The enclosing controller retains transport and lease ownership through cleanup.
 """
+from dataclasses import dataclass
+import os
+import threading
 import math
 import re
 from octoprint.util.comm import MachineCom
 from .octoprint_sender import PositionWakeMixin
 from .tty_prompt import TTYPromptBackend
+from .shared_receiver import ObservedBytes
+
+
+@dataclass(frozen=True)
+class AssignedSerialObservation:
+    sequence: int
+    printer_id: str
+    connection_generation: str
+    received: ObservedBytes
+
+    def __post_init__(self):
+        if type(self.sequence) is not int or self.sequence<=0:raise ValueError('positive source sequence required')
+        for value in (self.printer_id,self.connection_generation):
+            if type(value) is not str or not value or len(value)>128:raise ValueError('bounded source identity required')
+        if (type(self.received) is not ObservedBytes or not self.received.data
+                or len(self.received.data)>2049 or not self.received.data.endswith(b'\n') or self.received.data.count(b'\n')!=1):
+            raise ValueError('one complete observed line required')
 
 
 class AssignedSerialEndpoint:
@@ -26,6 +46,10 @@ class AssignedSerialEndpoint:
         self._timeout=.05
         self._claimed=False
         self._closed=False
+        self._pid=os.getpid()
+        self._reader_thread=None
+        self._read_sequence=0
+        self._last_observation=None
 
     @property
     def port(self):return self._port
@@ -50,22 +74,37 @@ class AssignedSerialEndpoint:
     def is_open(self):return not self._closed
 
     def _check(self):
+        if os.getpid()!=self._pid:raise OSError('assigned endpoint belongs to another process')
         if self._closed:raise OSError('assigned endpoint closed')
         if self.backend.receive_hub.fault or self.backend.frame_writer.fault:
             raise OSError('assigned connection uncertain')
         # Authority is checked inside the hub gate on claim/read/write. A
         # separate descriptor check here races the sender's bounded read.
 
+    @property
+    def read_sequence(self):return self._read_sequence
+
+    @property
+    def last_observation(self):return self._last_observation
+
     def claim(self):
         self._check()
         if self._claimed:raise ValueError('endpoint already claimed')
         self.backend.receive_hub.claim_job_reader()
         self._claimed=True
+        self._reader_thread=threading.current_thread()
 
     def readline(self):
         self._check()
         if not self._claimed:raise OSError('sender has not claimed endpoint')
-        return self.backend.receive_hub.job_readline()
+        if self._reader_thread is not threading.current_thread():raise OSError('assigned reader belongs to another thread')
+        batch=self.backend.receive_hub.job_readline_observed()
+        self._last_observation=None
+        if batch.data:
+            self._read_sequence+=1
+            self._last_observation=AssignedSerialObservation(self._read_sequence,self.backend.printer_id,
+                self.backend.channel.generation,batch)
+        return batch.data
 
     def write(self,data):
         self._check()
@@ -75,9 +114,11 @@ class AssignedSerialEndpoint:
         return self.backend.frame_writer.write_job(data)
 
     def close(self):
+        if os.getpid()!=self._pid:raise OSError('assigned endpoint belongs to another process')
         if not self._closed:
             self.backend.receive_hub.close()
             self._closed=True
+            self._last_observation=None
         # The controller closes the descriptor and releases its journal lease.
 
 

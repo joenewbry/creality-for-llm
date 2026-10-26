@@ -71,3 +71,23 @@ def test_unknown_action_is_observation_not_permission():
     event, = feed(p, "//action:resume\n")
     assert event.kind == "host_action" and event.data["verified"] is False
 
+
+
+def test_controller_position_is_a_report_without_homing_or_planner_authority():
+    event,=feed(ProtocolObserver('g'),'X:1.25 Y:-2 Z:.5 E:+4 Count X:100 Y:-160 Z:200\n')
+    assert event.kind=='reported_position'
+    assert event.data==dict(position=dict(x=1.25,y=-2.,z=.5,e=4.),units=None,
+        position_kind='controller_report',independent_measurement=False,homing_state=None,planner_completion=None)
+
+
+def test_huge_numbers_are_protocol_errors_instead_of_nonfinite_json():
+    for line,reason in [('T:'+('9'*400)+' /0\n','nonfinite_temperature'),
+                        ('X:'+('9'*400)+' Y:0 Z:0 E:0\n','nonfinite_reported_position')]:
+        event,=feed(ProtocolObserver('g'),line)
+        assert event.kind=='protocol_error' and event.data['reason']==reason
+
+
+def test_position_can_share_a_line_with_protocol_ack():
+    events=feed(ProtocolObserver('g'),'ok X:1 Y:2 Z:3 E:4 Count: A:100 B:200 C:300\n')
+    assert [event.kind for event in events]==['ack','reported_position']
+    assert events[1].data['position']['x']==1.

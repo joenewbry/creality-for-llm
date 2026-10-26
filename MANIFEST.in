@@ -30,6 +30,7 @@ include contributions/marlin-heater-watch-zero.patch
 include dependency-notices.json
 include docs/architecture.md
 include docs/assigned-job.md
+include docs/assigned-observations.md
 include docs/blocker-matrix.md
 include docs/camera-interface.md
 include docs/contributions.md
@@ -70,6 +71,7 @@ include licenses/openai-LICENSE.txt
 include licenses/pytest-LICENSE.txt
 include printer_control/__init__.py
 include printer_control/assigned_job.py
+include printer_control/assigned_observations.py
 include printer_control/assigned_sender.py
 include printer_control/camera.py
 include printer_control/camera_http.py
@@ -147,6 +149,7 @@ include tests/octoprint_virtual_smoke.py
 include tests/restore_serial_scenario.py
 include tests/stream_disconnect_scenario.py
 include tests/test_assigned_job.py
+include tests/test_assigned_observations.py
 include tests/test_assigned_sender.py
 include tests/test_assigned_transport.py
 include tests/test_camera.py
@@ -228,6 +231,7 @@ include tests_print_mcp/test_virtual_job_mcp.py
 include tests_print_mcp/test_virtual_setup_mcp.py
 include tests_print_mcp/test_virtual_stop_evidence.py
 include validation/assigned-job-stage123.json
+include validation/assigned-observations-stage124.json
 include validation/assigned-sender-stage122.json
 include validation/camera-broker-stage114.json
 include validation/camera-owner-api-stage117.json

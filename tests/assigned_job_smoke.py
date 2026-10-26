@@ -15,6 +15,7 @@ from octoprint.plugins.virtual_printer import VirtualPrinterPlugin
 from octoprint.plugins.virtual_printer import virtual as virtual_module
 from octoprint.util import comm
 from printer_control.assigned_sender import AssignedSerialEndpoint,AssignedSender
+from printer_control.assigned_observations import AssignedMachineEventRecorder
 from printer_control.assigned_job import AssignedJobBackend,AssignedJobEvidence
 from printer_control.devices import Assignment,Device
 from printer_control.service import OperationService,StartupAdmission
@@ -61,7 +62,7 @@ class FixtureEvidence:
 
 
 def main(scenario):
-    denied=[];service=sender=peer=bridge=None;master=None;drain_thread=None
+    denied=[];service=sender=peer=bridge=recorder=None;master=None;drain_thread=None
     drain_stop=threading.Event();drain_errors=[];gate=threading.Event();witness=StreamWitness()
     def forbidden(*a,**k):denied.append('forbidden_open_or_discovery');raise AssertionError('no physical serial access')
     with tempfile.TemporaryDirectory(prefix='assigned-job-fixture-') as temp,ExitStack() as stack:
@@ -73,6 +74,7 @@ def main(scenario):
         virtual_settings=octoprint.plugin.plugin_settings('virtual_printer',defaults=defaults,settings=config)
         def get_hooks(name):
             if name=='octoprint.comm.transport.serial.factory':return {'forbidden':forbidden}
+            if name=='octoprint.comm.protocol.gcode.received':return {'source_capture':lambda sender,line:recorder.received_hook(sender,line) if recorder is not None else line}
             if name in ('octoprint.comm.protocol.gcode.queuing','octoprint.comm.protocol.gcode.queued','octoprint.comm.protocol.gcode.sending','octoprint.comm.protocol.gcode.sent'):
                 return {'witness':witness.hook}
             return {}
@@ -102,7 +104,10 @@ def main(scenario):
                 evidence=FixtureEvidence(peer,sender,witness,expected,denied=scenario=='denied')
                 return AssignedJobBackend(sender,job_path=job,job_id='fixture-job',witness=witness,evidence=evidence,clock=time.time)
             service=OperationService.from_backend_factory(journal,factory,readiness_check=lambda _:StartupAdmission('software-peer-only',False))
-            backend=service.backend;bridge=PeerBridge(master,peer);sender.start()
+            backend=service.backend
+            recorder=AssignedMachineEventRecorder(service.journal,endpoint=sender._assigned_endpoint,lease=service.lease,clock=time.time)
+            backend.attach_machine_events(recorder)
+            bridge=PeerBridge(master,peer);sender.start()
             def drain():
                 try:
                     while not drain_stop.wait(.005):
@@ -154,10 +159,17 @@ def main(scenario):
                 assert router.call('job.inspect',{})['job_state']=='cancelled' and len(peer.completed_moves)<80
             assert not denied and not bridge.errors and not drain_errors
             assert not backend.capabilities()['physical_control_qualified']
+            wait_for(lambda:'reported_position' in recorder.snapshot()['reports'],'durable assigned position report')
+            page=router.call('printer.machine_events',{'after':0,'limit':1000})
+            assert page['health']['fault'] is None and not page['physical_readiness_qualified']
+            assert any(row['event']['kind']=='serial_line_received' for row in page['events'])
+            report=recorder.snapshot()['reports']['reported_position']
+            assert report['data']['receive_provenance']['printer_id']==backend.printer_id
+            assert not report['data']['independent_measurement']
             print(json.dumps({'scenario':scenario,'scope':'journaled assigned tools with software-only evidence provider',
                 'moves_completed':len(peer.completed_moves),'moves_at_pause':len(before),'receipts':len(receipts),
                 'native_prompt_frames':len(peer.prompt_writes) if scenario=='native_prompt' else 0,
-                'physical_serial_open_or_discovery_attempts':len(denied),'source_changed_after_stage':True,'physical_provider_implemented':False}))
+                'physical_serial_open_or_discovery_attempts':len(denied),'source_changed_after_stage':True,'physical_provider_implemented':False,'source_bound_serial_capture':True}))
         finally:
             gate.set();drain_stop.set()
             if drain_thread:drain_thread.join(2);assert not drain_thread.is_alive()
