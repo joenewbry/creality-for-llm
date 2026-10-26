@@ -456,3 +456,25 @@ physical non-printing checks, or final PR/page delivery. No public PR is open.
 Later evidence additions update the explicit H4a mapping; the command above pins
 the tested snapshot rather than claiming every subsequent documentation revision
 was tested as a new release.
+
+## H4b follow-up assembled locally
+
+Local review commit `0620dbbd0fe9718e5d78f984a887c6058bc376c1` follows H4a
+`4e4392b5ffac95cffa0fdbfb05f88f0bb4fc0dea`. It incorporates explicit source
+archive contents, native motion-fault tests, a probe-error report without an
+assumed halt, bounded Linux descriptor I/O and assignment/lease validation.
+The local stack now has ten commits. No public branch or PR is created.
+
+The complete export at source `7157c45` passes 819 tests with 22 Linux-only
+skips, both from source and from a wheel installed in a fresh Python 3.11.13
+environment. The installed run occurs outside the source tree and reuses the
+pinned native firmware fixture. The final review export at `140ea49` differs
+only in two README files correcting the transport description; all other
+mapped bytes match the tested export. All 216 allowlisted files match source
+archive bytes and all runtime modules match wheel bytes.
+
+The ten-commit stack has verified ancestry and a verified self-contained Git
+bundle restore. These local artifact checks do not complete manual publication
+review, supported Linux package qualification, production physical transport,
+commissioning or final public source/PR delivery. The current printer cables
+are on a Mac, whose physical exclusive-access path remains unqualified.

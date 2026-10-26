@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "model": "55 degree diagonal pinhole at 16:9; uncalibrated nominal optics",
+  "horizontal_fov_deg": 48.808874951732385,
+  "vertical_fov_deg": 28.63411147729593,
+  "bed_motion_mm": [
+    -110,
+    110
+  ],
+  "build_volume_mm": [
+    220,
+    220,
+    270
+  ],
+  "physical_plate_assumption_mm": [
+    235,
+    235
+  ],
+  "machine_keepout_assumption_mm": [
+    [
+      -280,
+      280
+    ],
+    [
+      -350,
+      350
+    ]
+  ],
+  "presets": {
+    "full_height": {
+      "camera_mm": [
+        -650,
+        -850,
+        500
+      ],
+      "look_at_mm": [
+        0,
+        0,
+        135
+      ],
+      "print_height_mm": 270,
+      "lens_to_target_mm": 1130.5861311726762,
+      "maximum_normalized_frame_coordinate": 0.8759684002210585,
+      "half_frame_margin_fraction": 0.12403159977894151,
+      "all_12_corners_inside_nominal_frame": true,
+      "reference_keepout_gap_x_mm": 325,
+      "reference_keepout_gap_y_mm": 450
+    },
+    "low_parts": {
+      "camera_mm": [
+        -480,
+        -680,
+        380
+      ],
+      "look_at_mm": [
+        0,
+        0,
+        60
+      ],
+      "print_height_mm": 100,
+      "lens_to_target_mm": 891.7398723843181,
+      "maximum_normalized_frame_coordinate": 0.8514572693575022,
+      "half_frame_margin_fraction": 0.1485427306424978,
+      "all_12_corners_inside_nominal_frame": true,
+      "reference_keepout_gap_x_mm": 155,
+      "reference_keepout_gap_y_mm": 280
+    }
+  },
+  "meshes": {
+    "clamp.stl": {
+      "triangles": 596,
+      "watertight_edges": true,
+      "connected": true,
+      "positive_volume_mm3": 121190.87207915315,
+      "size_mm": [
+        78.0,
+        64.0,
+        44.0
+      ],
+      "sha256": "0599e1d30a6c2660e0e34968dbda86e95c167f82d4c1b9bafa367d6089264e26"
+    },
+    "shoe.stl": {
+      "triangles": 460,
+      "watertight_edges": true,
+      "connected": true,
+      "positive_volume_mm3": 19052.729757463352,
+      "size_mm": [
+        65.0,
+        55.0,
+        26.0
+      ],
+      "sha256": "6b224f637adfb84c46b992335b021065e17d9026c6499b5d4f97e473e9f2dee3"
+    },
+    "pad.stl": {
+      "triangles": 508,
+      "watertight_edges": true,
+      "connected": true,
+      "positive_volume_mm3": 5475.002179709129,
+      "size_mm": [
+        30.0,
+        30.0,
+        8.0
+      ],
+      "sha256": "7910bb8658efd99b585d36b9f9d0e9294731f90af3493a4695ffc2b177d86195"
+    },
+    "clip-fit-4mm.stl": {
+      "triangles": 12,
+      "watertight_edges": true,
+      "connected": true,
+      "positive_volume_mm3": 7699.999999999999,
+      "size_mm": [
+        55.0,
+        35.0,
+        4.0
+      ],
+      "sha256": "905c0757370a24e4b9c0868cadc51296324ca61a8328b7aca7f8b9caf7b5c73f"
+    }
+  },
+  "physical_clearance_verified": false,
+  "physical_visibility_verified": false,
+  "structural_or_print_fit_verified": false,
+  "limitations": [
+    "nominal optics; actual focus/FOV/crop must be checked",
+    "gantry, extruder, cabling and printed object can occlude the view",
+    "desk thickness, camera clip and rod/cable route not measured",
+    "reference keep-out box is a conservative design assumption, not a scanned printer"
+  ]
+}

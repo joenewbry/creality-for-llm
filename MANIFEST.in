@@ -1,6 +1,7 @@
 # Source archive follows the explicit publication allowlist.
 # Update these includes whenever publication-files.json changes.
 global-exclude *
+include .gitattributes
 include .gitignore
 include LICENSE
 include MANIFEST.in
@@ -28,7 +29,9 @@ include contributions/marlin-heater-watch-native-tests.patch
 include contributions/marlin-heater-watch-pr.md
 include contributions/marlin-heater-watch-zero.patch
 include dependency-notices.json
+include docs/architecture.md
 include docs/blocker-matrix.md
+include docs/camera-interface.md
 include docs/contributions.md
 include docs/firmware-stack-builds.md
 include docs/interface.md
@@ -48,6 +51,14 @@ include docs/shared-transport.md
 include docs/source-audit.md
 include docs/tools.md
 include firmware-test-source.json
+include hardware/camera-mount/README.md
+include hardware/camera-mount/c270-mount-20261026.scad
+include hardware/camera-mount/clamp.stl
+include hardware/camera-mount/clip-fit-4mm.stl
+include hardware/camera-mount/pad.stl
+include hardware/camera-mount/shoe.stl
+include hardware/camera-mount/verification.json
+include hardware/camera-mount/verify_design.py
 include host-review-boundaries.json
 include licenses/Marlin-GPL-3.0.txt
 include licenses/OctoPrint-LICENSE.txt

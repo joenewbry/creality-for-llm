@@ -219,10 +219,21 @@
     "tests/test_assigned_transport.py",
     "printer_control/macos_discovery.py",
     "tests/test_macos_discovery.py",
-    "validation/macos-discovery-stage108.json",
-    "validation/transport-readiness-stage110.json",
     "tests/test_streamed_host_restart.py",
     "validation/linux-package-stage111.json",
+    "docs/architecture.md",
+    "docs/camera-interface.md",
+    "hardware/camera-mount/README.md",
+    "hardware/camera-mount/c270-mount-20261026.scad",
+    "hardware/camera-mount/verify_design.py",
+    "hardware/camera-mount/verification.json",
+    "hardware/camera-mount/clamp.stl",
+    "hardware/camera-mount/shoe.stl",
+    "hardware/camera-mount/pad.stl",
+    "hardware/camera-mount/clip-fit-4mm.stl",
+    ".gitattributes",
+    "validation/macos-discovery-stage108.json",
+    "validation/transport-readiness-stage110.json",
     "validation/streamed-host-restart-stage109.json"
   ]
 }
