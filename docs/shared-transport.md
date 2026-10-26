@@ -374,3 +374,60 @@ that fails if called: eight invalid values previously reached acquisition and
 now reject before it, leaving the caller-owned lease intact. Hardware opening
 can itself change signals, so closing after configuration rejection is not an
 equivalent substitute for pre-open validation.
+
+## Mac driver distinction from software terminals
+
+Read-only registry inspection identifies the development connection as
+AppleUSBCHCOM through IOUserSerial and IOSerialBSDClient. No serial port was
+opened. The earlier Mac PTY exclusivity failure does not establish USB-driver
+behavior. In [the matching XNU source tag](https://github.com/apple-oss-distributions/xnu/blob/xnu-11215.61.5/bsd/kern/tty_dev.c#L258),
+`ptsopen` tests the superuser predicate without negation when deciding whether
+exclusive mode rejects an open. The [predicate implementation](https://github.com/apple-oss-distributions/xnu/blob/xnu-11215.61.5/bsd/kern/kern_credential.c#L3278)
+returns true for UID zero. This is consistent with the observed nonroot PTY
+open being accepted; it is source interpretation, not a kernel binary audit.
+
+By contrast, [Apple's published IOSerialBSDClient](https://github.com/apple-oss-distributions/IOSerialFamily/blob/1c12ee3d9ec665bb53d0151644408d25e54fe012/IOSerialFamily.kmodproj/IOSerialBSDClient.cpp#L2049)
+rejects competing nonroot callout opens when exclusive mode is set. The source
+is IOSerialFamily-93 from 2021; installed bundle metadata says version 11 and
+binary equivalence is unproven. This supports investigating the actual Mac
+driver, not enabling it based on PTYs or source alone. Hardware open/configure
+side effects, callout/dialin aliases, pre-existing descriptors and privileged
+access still need development-only qualification and isolation. Existing code
+continues to reject Mac physical transport. No Linux cable move is assumed.
+
+## Read-only Mac USB serial inventory
+
+`discover_macos_usb()` queries IOKit/CoreFoundation registry metadata directly,
+without pyserial, registry-text parsing or opening serial device nodes. It returns
+`Device` records with callout path, USB topology, vendor/product and a connection
+identity combining the boot-session UUID with serial-service and USB-device
+registry IDs. Reusing a port name after reconnect or reboot does not preserve
+assignment identity. Two consecutive snapshots must agree. Missing properties,
+invalid IDs, duplicate paths/topologies and iterator changes cause rejection.
+
+The implementation bounds record count, ancestry depth and string allocation,
+uses explicit ctypes signatures, and releases acquired IOKit and CoreFoundation
+references on success/failure. The boot-session metadata subprocess has a two-
+second timeout. Native registry calls do not have a hard wall-clock deadline;
+an enclosing production service still needs suitable discovery scheduling.
+Discovery is a snapshot, not an atomic guarantee against subsequent hotplug.
+Existing pre/post-open and per-operation revalidation remain necessary.
+
+On this Mac, repeated metadata queries returned two stable USB serial interfaces,
+including the expected development topology. Python device-node open guards
+recorded zero attempts; those guards do not trace framework internals. The code
+uses registry APIs only and never invokes a serial open API. Tests cover malformed
+and ambiguous records, boot/replug invalidation, snapshot changes and owned-
+reference cleanup. Actual device inventories remain local evidence. This does
+not enable Mac transport or qualify driver exclusion, modem/reset behavior,
+operating-system isolation or the development printer's readiness.
+
+Authority is rechecked after readiness waiting as well as before it. Assignment
+expiry or lease/topology loss during the wait must not authorize a later syscall
+or be mistaken for a normal read timeout. Failure latches `authority_lost`; outer
+I/O exception handling preserves that diagnosis. Four injected readiness-race
+cases failed before the correction and pass afterward. Focused Linux software-
+terminal tests pass all 83 cases; Mac passes 61 with 22 Linux-only skips. This
+closes the readiness-wait window, not the unavoidable race between user-space
+metadata checks and later external device changes. Deployment isolation and
+actual driver qualification remain necessary.

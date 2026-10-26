@@ -8,16 +8,17 @@ and an isolated environment. The combined dependency snapshot is
 
 The host repository alone is insufficient for native tests: they compile code
 from our modified firmware. `firmware-test-source.json` pins its exact commit,
-tree and upstream ancestor. The public firmware fork is not published yet.
-Until it is, supply the existing reviewed local firmware Git repository. A clone
+tree and upstream ancestor. The pinned modified firmware is published at
+`https://github.com/joenewbry/Ender-3S1-llm.git` on draft review branches. A clone
 of official Creality alone does not contain our required revision.
 
 From a clean host checkout, with `uv` already installed:
 
 ```sh
+clang++ --version
 uv venv --python 3.11 .venv-print-mcp
 uv pip sync --python .venv-print-mcp/bin/python requirements-print-mcp.lock
-.venv-print-mcp/bin/python scripts/prepare_firmware.py --repository /path/to/reviewed/firmware-repository
+.venv-print-mcp/bin/python scripts/prepare_firmware.py --repository https://github.com/joenewbry/Ender-3S1-llm.git
 .venv-print-mcp/bin/python -m pytest -q tests tests_mcp tests_model tests_print_mcp --junitxml=software-tests.xml
 ```
 
@@ -118,3 +119,24 @@ regressions. It used the local package cache and reviewed local firmware Git
 repository. Public-fork reproduction, independent PR-boundary testing, firmware
 binary rebuilding and physical commissioning are separate outstanding checks.
 No paid model call or physical printer test was performed.
+
+## Linux installed-package qualification
+
+Export `1a72ba7` passed all **876 tests with zero skips** on Linux aarch64,
+CPython 3.11.13 and Clang 15.0.7. All 99 locked dependency versions were verified.
+The package was built and installed, and the complete suite ran outside the
+source checkout with imports verified from site-packages. All installed runtime
+module bytes matched the reviewed export; all 219 exported source hashes remained
+unchanged. The pinned native firmware checkout was independently prepared and
+verified clean at `98aa032`/tree `70ec40f`.
+
+The first run lacked the explicitly required Clang compiler: 62 native setup
+errors and 18 skips are retained, alongside three external-client timing failures.
+A task-local Clang extraction resolved native setup. External test clients now
+use the existing slower virtual fixture and refresh only explicitly rejected
+stale-state requests under bounded deadlines with new IDs. They do not retry
+uncertain operations. The corrected clients pass on Mac too.
+
+[Exact qualification record](../validation/linux-package-stage111.json). This
+closes the earlier supported-Python Linux test gap for this export. It does not
+qualify a physical USB connection, surviving-printer recovery or firmware flash.

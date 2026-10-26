@@ -12,7 +12,7 @@ ROOT=Path(__file__).resolve().parents[1]
 def test_external_hot_client_controls_pause_and_finish(tmp_path,finish):
     async def run():
         params=StdioServerParameters(command=sys.executable,args=[str(ROOT/'tests/octoprint_virtual_smoke.py'),
-            '--mcp','--scenario','hot_console','--journal',str(tmp_path/'hot.sqlite')],cwd=str(ROOT))
+            '--mcp','--model-fixture','--scenario','hot_console','--journal',str(tmp_path/'hot.sqlite')],cwd=str(ROOT))
         async with stdio_client(params) as (incoming,outgoing):
             async with ClientSession(incoming,outgoing,read_timeout_seconds=20.) as client:
                 await client.initialize()
@@ -23,15 +23,24 @@ def test_external_hot_client_controls_pause_and_finish(tmp_path,finish):
                 number=0
                 async def submit(name,arguments=None,expected='completed'):
                     nonlocal number
-                    number+=1
-                    status=await call('job.inspect')
-                    args={} if name=='printer.stop' else {'job_id':status['job_id']}
-                    if arguments is not None:args=arguments
-                    if name=='job.stage':args['file_sha256']=status['file_sha256']
-                    request=dict(request_id=f'{name}-{number}',printer_id=status['printer_id'],
-                        connection_generation=status['connection_generation'],expected_state_version=status['state_version'],
-                        deadline=time.time()+15,arguments=args)
-                    result=await call(name,request)
+                    deadline=time.time()+15
+                    for attempt in range(5):
+                        number+=1
+                        status=await call('job.inspect')
+                        args={} if name=='printer.stop' else {'job_id':status['job_id']}
+                        if arguments is not None:args=dict(arguments)
+                        if name=='job.stage':args['file_sha256']=status['file_sha256']
+                        request=dict(request_id=f'{name}-{number}',printer_id=status['printer_id'],
+                            connection_generation=status['connection_generation'],expected_state_version=status['state_version'],
+                            deadline=deadline,arguments=args)
+                        result=await call(name,request)
+                        if result['status']=='rejected' and result['result'].get('reason')=='stale_state':
+                            assert await call(name,request)==result
+                            assert time.time()<deadline,result
+                            continue  # Rejected before dispatch; new observation and request ID.
+                        break
+                    else:
+                        pytest.fail('state kept changing before dispatch')
                     end=time.monotonic()+15
                     while result['status']=='running' and time.monotonic()<end:
                         await asyncio.sleep(.02)
@@ -98,7 +107,7 @@ def test_external_hot_client_controls_pause_and_finish(tmp_path,finish):
                 elif finish=='job.cancel':
                     assert result['result']['heater_targets_zero']
                 else:
-                    end=time.monotonic()+10
+                    end=time.monotonic()+30
                     while True:
                         status=await call('job.inspect')
                         if status['job_state']=='completed':break

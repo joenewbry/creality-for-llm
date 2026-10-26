@@ -220,6 +220,9 @@
     "printer_control/macos_discovery.py",
     "tests/test_macos_discovery.py",
     "validation/macos-discovery-stage108.json",
-    "validation/transport-readiness-stage110.json"
+    "validation/transport-readiness-stage110.json",
+    "tests/test_streamed_host_restart.py",
+    "validation/linux-package-stage111.json",
+    "validation/streamed-host-restart-stage109.json"
   ]
 }
