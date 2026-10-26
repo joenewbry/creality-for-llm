@@ -794,7 +794,8 @@
         "printer_control/tty_receiver.py": "printer_control/tty_receiver.py",
         "tests/test_tty_receiver.py": "tests/test_tty_receiver.py",
         "docs/tty-sender-integration.md": "docs/tty-sender-integration.md",
-        "validation/tty-receive-hub-stage121.json": "validation/tty-receive-hub-stage121.json"
+        "validation/tty-receive-hub-stage121.json": "validation/tty-receive-hub-stage121.json",
+        "validation/linux-package-stage121.json": "validation/linux-package-stage121.json"
       }
     }
   }

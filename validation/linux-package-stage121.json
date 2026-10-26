@@ -1,0 +1,32 @@
+{
+  "source_commit": "e05080aae70cf5270e07c97c384d911d1f7f96ca",
+  "source_files": 260,
+  "source_hashes_unchanged": true,
+  "installed_runtime_bytes_match_export": true,
+  "installed_imports_from_site_packages": true,
+  "python": "3.11.13 (main, Jun 12 2025, 12:27:40) [GCC 6.3.0 20170516]",
+  "os": "Linux-5.15.148-tegra-aarch64-with-glibc2.35",
+  "machine": "aarch64",
+  "locked_packages_verified": 99,
+  "firmware_commit": "98aa03248337b8039a09bbc1a29f33432aed08ca",
+  "firmware_tree": "70ec40fa273bd88cfbda442935ac275cbf9f981b",
+  "firmware_clean": true,
+  "physical_access": false,
+  "paid_model_calls": 0,
+  "schema_version": 1,
+  "scope": "exact public-snapshot installed Linux software qualification; no physical commissioning",
+  "public_code_snapshot": "https://github.com/joenewbry/creality-for-llm/tree/e05080aae70cf5270e07c97c384d911d1f7f96ca",
+  "compiler": "Ubuntu Clang 15.0.7, rootless task-local compiler",
+  "installed_suite": {
+    "tests": "1044",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "316.775"
+  },
+  "junit_sha256": "9d60bd4ce5ef9b5d23ad67c1917b875bdeec684b1f4908bb715d3e509efbf7ae",
+  "log_sha256": "385d2f3aa1ee5e5d1ec2240f6495a9b5f9a5ed96b22b53def98fbccec4877cae",
+  "command": "python -I -m pytest -q -o pythonpath=. tests tests_mcp tests_model tests_print_mcp",
+  "test_corpus_outside_source_tree": true,
+  "later_delivery_changes": "runtime, tests, pyproject and locked dependency inputs remain identical; documentation/qualification records and source-archive manifest changed"
+}

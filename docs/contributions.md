@@ -1,6 +1,6 @@
 # Contribution delivery and review stack
 
-Updated October 26, 2026. Twenty-one host and six firmware pull requests are open as drafts in the owner's repositories. Each PR names its predecessor and validation evidence. They are review candidates, not merged releases or accepted upstream contributions.
+Updated October 26, 2026. Twenty-two host and six firmware pull requests are open as drafts in the owner's repositories. Each PR names its predecessor and validation evidence. They are review candidates, not merged releases or accepted upstream contributions.
 
 ## Repository relationships
 
@@ -33,6 +33,7 @@ Updated October 26, 2026. Twenty-one host and six firmware pull requests are ope
 | [H10](https://github.com/joenewbry/creality-for-llm/pull/19) | Lease-first backend startup and full goal audit | `stack/h9-capture-owner-api` |
 | [H11](https://github.com/joenewbry/creality-for-llm/pull/20) | Assigned Linux prompt connection and post-read receipt deadlines | `stack/h10-startup-and-audit` |
 | [H12](https://github.com/joenewbry/creality-for-llm/pull/21) | Preserve buffered arrival age without weakening deadlines | `stack/h11-assigned-prompt-transport` |
+| [H13](https://github.com/joenewbry/creality-for-llm/pull/22) | One assigned receive owner and dispatch failure gate | `stack/h12-receive-arrival-age` |
 
 ## Firmware stack
 
@@ -47,7 +48,7 @@ Updated October 26, 2026. Twenty-one host and six firmware pull requests are ope
 
 ## Validation and physical limits
 
-The exact public snapshot `905d0ebf19c9e01986f06bb8da8481bea476cc36` passes the complete installed-package Linux aarch64/Python 3.11.13 suite: **1019 passed, zero skips**. The test corpus is outside the source tree, every installed runtime file matches the frozen export, and all 99 locked dependencies are verified. [Current qualification](../validation/linux-package-stage120.json) includes the buffered receive-age fix. Mac focused prompt/transport and combined-policy/export checks pass 152 cases, with five Linux-only skips. A native regression failed on the prior implementation: a reply received at time 10 was stamped time 16 when drained. Arrival age now survives queueing and split lines; deadlines still use current processing time. The prior 1004-case record retains its original scope. Later delivery commits change documentation, qualification records and the source-archive manifest; runtime, tests, pyproject and locked dependency inputs remain identical.
+The exact public snapshot `e05080aae70cf5270e07c97c384d911d1f7f96ca` passes the complete installed-package Linux aarch64/Python 3.11.13 suite: **1044 passed, zero skips**. The test corpus is outside the source tree, every installed runtime file matches the frozen export, and all 99 locked dependencies are verified. [Current qualification](../validation/linux-package-stage121.json) includes the shared receive/dispatch owner. Linux focused checks pass 57 cases; Mac focused checks pass 41 with 16 Linux-only skips, plus nine exporter cases. The job consumer reads the compiled firmware receipt first without consuming the prompt copy. Concurrent receive loss fences queued dispatch, and both lanes refuse stale ownership or partial-write recovery. The prior 1019-case record remains historical. The real sender and physical job backend are not attached or commissioned. Later delivery commits change documentation, qualification records and source-archive inclusion metadata; tested runtime/tests/dependency inputs remain identical.
 
 The first ten public review trees preserve their originally tested trees. [The goal audit](goal-audit.md) lists unmet requirements, and [the printing plan](printing-qualification-plan.md) separates post-repair physical testing from software qualification. The readiness-admission reference does not certify hardware or clear unknown receipts.
 

@@ -241,6 +241,7 @@ include validation/linux-package-stage111.json
 include validation/linux-package-stage118.json
 include validation/linux-package-stage119.json
 include validation/linux-package-stage120.json
+include validation/linux-package-stage121.json
 include validation/machine-events-stage84.json
 include validation/macos-discovery-stage108.json
 include validation/model-hot-stage75.json

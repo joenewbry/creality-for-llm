@@ -35,5 +35,6 @@
     "not an attached production sender, serial compatibility wrapper or physical job backend",
     "no physical USB, board/screen, camera or mount qualification",
     "read and identity callbacks must be bounded; software limits are not physical timing guarantees"
-  ]
+  ],
+  "linux_full_qualification": "linux-package-stage121.json"
 }
