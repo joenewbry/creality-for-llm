@@ -799,7 +799,8 @@
         "printer_control/assigned_sender.py": "printer_control/assigned_sender.py",
         "tests/assigned_sender_smoke.py": "tests/assigned_sender_smoke.py",
         "tests/test_assigned_sender.py": "tests/test_assigned_sender.py",
-        "validation/assigned-sender-stage122.json": "validation/assigned-sender-stage122.json"
+        "validation/assigned-sender-stage122.json": "validation/assigned-sender-stage122.json",
+        "validation/linux-package-stage122.json": "validation/linux-package-stage122.json"
       }
     }
   }

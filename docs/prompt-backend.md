@@ -31,7 +31,7 @@ use a generated generic wait in the actual native firmware handler, never a
 physical UART. Heating, extrusion and screen-wide recovery remain unqualified.
 The existing service owner lease is not a substitute for exclusive serial access.
 
-Validation: 269 software tests pass, including a live native subprocess whose
+Early validation: 269 software tests passed, including a live native subprocess whose
 writer asserts the journal already contains the running claim before any bytes
 are sent. Tests exercise complete wait evidence, acceptance without resolution,
 partial writes, deadlines, duplicate requests, restart recovery and invalid
@@ -46,7 +46,7 @@ connection generation, observation time and parsed diagnostic), and
 sensor-suspect report inhibits the prompt channel. An unresolved journal
 operation returns outcome_unknown with the actual invalidation reason rather
 than a misleading prior acceptance reason. See prompt-channel.md for tested
-ordering, fragmentation and physical limits. The latest suite passes 319 tests;
+ordering, fragmentation and physical limits. The stage 20 suite passed 319 tests;
 `evidence/tests-stage20.xml` contains the result.
 
 ## Prompt guidance and physical intervention
@@ -79,7 +79,8 @@ and `PromptChannel` with the same journal lease acquired by
 `OperationService.from_backend_factory`. Validate identity and protocol options
 before acquiring a descriptor. A fresh random host generation does not authorize
 reset, rebind or replay of an existing firmware session. The receive owner now provides coordinated timestamped prompt and optional job
-line copies; the actual job sender attachment remains unfinished. See
+line copies; the pinned sender attachment is software-tested, while the journaled
+physical job backend remains unfinished. See
 [assigned sender integration](tty-sender-integration.md). Default launchers remain virtual-only.
 
 Native tests use Linux software terminals connected to the actual compiled pinned

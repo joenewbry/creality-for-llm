@@ -56,5 +56,6 @@
     "physical job backend needs immutable staging, state/sensor/configuration gates, observations/checkpoints and qualified shutdown/restart",
     "endpoint timeout field is logical sender deadline configuration; actual reads are bounded transport polls",
     "actual board/processor/screen/recovery, sensor, clearance, USB isolation, camera and mount remain unqualified"
-  ]
+  ],
+  "linux_full_qualification": "linux-package-stage122.json"
 }

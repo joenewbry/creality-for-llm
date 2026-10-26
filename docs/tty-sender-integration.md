@@ -30,8 +30,8 @@ software bounds, not measured physical USB response guarantees. Queue capacity
 is bounded, default 64 KiB per copy, and job line content is at most 2048 bytes.
 An enabled job copy needs an active consumer; unread overflow is an explicit fault.
 Both enabled copies must be drained independently of LLM tool-call frequency.
-The future sender attachment needs a coordinated prompt-processing loop; this
-module creates no background consumer. A receive fault is not evidence that
+The enclosing controller needs a coordinated prompt-processing loop; the
+receive hub creates no background consumer. A receive fault is not evidence that
 motion or heaters stopped.
 
 ## Evidence
