@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "upstream_commit": "7fffa9270ff8fb5ee208a5b04f832e20bab19c60",
+  "commit": "98aa03248337b8039a09bbc1a29f33432aed08ca",
+  "tree": "70ec40fa273bd88cfbda442935ac275cbf9f981b",
+  "publication_status": "local-only; supply the reviewed firmware repository explicitly"
+}

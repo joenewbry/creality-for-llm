@@ -1,42 +1,39 @@
-# Printer control operation core
+# Printer observations and prompt protocol
 
-This is the first review boundary of the LLM printer-control project. It contains
-request validation, durable receipts, single-controller ownership, explicit
-device assignment and immutable powered-pause checkpoints. Backend dispatch is
-an interface; the tests supply a deterministic fake backend. It cannot operate
-a physical printer or complete a print by itself.
+This H2a review boundary builds on H1's typed operation core. It adds bounded
+Marlin serial parsing, prompt-wire encoding/decoding and asynchronous journaled
+machine events. Observations do not grant permission to resume or dismiss a
+fault. Acknowledgments alone do not prove physical completion.
 
-A request binds its ID to printer identity, connection generation, expected state
-version and deadline. Duplicate requests return prior receipts. Dispatch is
-claimed durably before calling a backend; uncertain results are not blindly
-replayed. Completion requires backend evidence. Checkpoints describe conditions
-that must still hold before an in-place resume; they are not replay instructions.
+Capture has a bounded queue and retention window. Overflow, truncated final
+lines and persistence failures are explicit. Closing capture invalidates local
+prompt observations without claiming the firmware closed its prompt. The caller
+must retain controller ownership until the capture worker has stopped.
 
-## Reproduce this boundary
+## Reproduce
 
-Use Python 3.11 on macOS or Linux (controller locking uses POSIX flock):
+Use Python 3.11, Git and `clang++` on macOS or Linux:
 
 ```sh
 uv venv --python 3.11 .venv
 uv pip install --python .venv/bin/python pytest==8.3.5
 uv pip install --python .venv/bin/python --no-deps .
+.venv/bin/python scripts/prepare_firmware.py --repository /path/to/reviewed/firmware-repository
 .venv/bin/python -m pytest -q tests
 ```
 
-Tests exercise identity rejection before open, topology-change cleanup,
-idempotency, stale observations, durable restart behavior, concurrency, ownership
-and checkpoint invalidation. They use no physical serial ports, firmware builds,
-OctoPrint, model service or credentials. The service retains extension slots and
-journal records needed by later thermal/restore adapters; those integrations are
-not present or qualified at this boundary.
+The firmware repository must contain the exact commit and tree in
+`firmware-test-source.json`. The public fork is not yet published. Preparation
+creates an independent checkout and refuses an existing destination; no upload
+or printer connection occurs. The native harness compiles copied production
+prompt handlers with substituted hardware dependencies. It checks token/session
+identity, malformed frames, stale responses, supported choices and selected
+screen/wait handlers. This is not a full firmware simulation or touchscreen test.
 
-## Subsequent review boundaries
+The software capture tests require no physical device. No backend connects these
+modules to a physical printer in this boundary. Virtual job execution, powered
+pause/resume integration, setup/maintenance, the LLM tool server and physical
+commissioning remain later review work. No PR has been submitted.
 
-Virtual jobs, native firmware behavior, thermal/restore execution, serial events,
-setup and maintenance adapters follow in H2. LLM tools and model evaluation follow
-in H3. Release evidence, commissioning, rollback and the explanatory page follow
-in H4. These later boundaries are not yet independently assembled or tested.
-
-The AGPL-3.0-or-later license applies to original host code. Third-party notices
-cover the complete project's provenance; dependencies and firmware described
-there are not bundled in this core boundary. No GitHub PR has been submitted.
+Original host source is AGPL-3.0-or-later. Native firmware source retains its own
+GPL terms and is fetched separately; third-party notices remain included.

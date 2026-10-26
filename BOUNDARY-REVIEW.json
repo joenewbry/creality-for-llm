@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "boundary": "H1",
-  "source_commit": "0acf2f53b77f72a3241cb162f44fc073fc986d02",
+  "boundary": "H2a",
+  "source_commit": "3d6553704f16a4e612b470317e68f8667eb596a0",
   "publication_ready": false,
   "files": [
     {
@@ -18,9 +18,9 @@
     },
     {
       "path": "README.md",
-      "source_path": "contributions/host-core/README.md",
-      "sha256": "aee3328cfaee182bb66a1c049516718cbbf7e37ca0e340d1171a59f20d617645",
-      "bytes": 2117
+      "source_path": "contributions/host-observations/README.md",
+      "sha256": "3e2ff477048a035b5ce81ec07bbc2b6adb69a3123c4967539ff830b23df20033",
+      "bytes": 1997
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -33,6 +33,12 @@
       "source_path": "dependency-notices.json",
       "sha256": "6a18c209e9e7d3c483173d25da17d3a85fbfde37422da61339176efb1b8c532e",
       "bytes": 96218
+    },
+    {
+      "path": "firmware-test-source.json",
+      "source_path": "firmware-test-source.json",
+      "sha256": "21adf880167772a39e24e68ba426a06dbec75c0e24ecddecc887777aac6a85a1",
+      "bytes": 291
     },
     {
       "path": "licenses/Marlin-GPL-3.0.txt",
@@ -89,10 +95,28 @@
       "bytes": 13407
     },
     {
+      "path": "printer_control/machine_events.py",
+      "source_path": "printer_control/machine_events.py",
+      "sha256": "7d37ce653939bf4349f39c97e1d74cea22f28b0c2ee5667f1587cdb1313c5749",
+      "bytes": 7409
+    },
+    {
       "path": "printer_control/ownership.py",
       "source_path": "printer_control/ownership.py",
       "sha256": "7064738771a4c87d4fb3e258242b09b88f7eec080cc6be613576ccacdf6a1132",
       "bytes": 2297
+    },
+    {
+      "path": "printer_control/prompt_wire.py",
+      "source_path": "printer_control/prompt_wire.py",
+      "sha256": "b2b671cb6ade66c8d7f52a1e6f93a0608f4ef74f0d206a0a461388905e14d755",
+      "bytes": 6459
+    },
+    {
+      "path": "printer_control/protocol.py",
+      "source_path": "printer_control/protocol.py",
+      "sha256": "e874acd6a8f5e1be28347925f74223849d696fc19c49de471f0da763ab29db19",
+      "bytes": 8346
     },
     {
       "path": "printer_control/service.py",
@@ -107,6 +131,18 @@
       "bytes": 476
     },
     {
+      "path": "scripts/prepare_firmware.py",
+      "source_path": "scripts/prepare_firmware.py",
+      "sha256": "a29346c15238e582c4456acd421e0daa1cd48204ab88ed535fa0110d624ecf5d",
+      "bytes": 2798
+    },
+    {
+      "path": "tests/native_harness.py",
+      "source_path": "tests/native_harness.py",
+      "sha256": "b2a5ca6071cbd4b4fd58749496467ae3569dce832142504a5362b16d7ab1f7e2",
+      "bytes": 14090
+    },
+    {
       "path": "tests/test_checkpoint.py",
       "source_path": "tests/test_checkpoint.py",
       "sha256": "790657e17974dd6834020d7dbae4c9da3353acb5363255a28a3b178a6c1bfc92",
@@ -119,10 +155,40 @@
       "bytes": 2566
     },
     {
+      "path": "tests/test_firmware_host_actions.py",
+      "source_path": "tests/test_firmware_host_actions.py",
+      "sha256": "9f827b8067c6fd772bcfe7bdc36268c6cf3c53cb0b7d4cefe3c8f6d9a3881b36",
+      "bytes": 4376
+    },
+    {
       "path": "tests/test_journal.py",
       "source_path": "tests/test_journal.py",
       "sha256": "337c9d182eabd74de03fa660d799237a4e5895aeb214c472e38ecf397cf36a20",
       "bytes": 3960
+    },
+    {
+      "path": "tests/test_machine_events.py",
+      "source_path": "tests/test_machine_events.py",
+      "sha256": "859aa4fd51de41bc87050cbb1d60a99b320f1a3ccae6441970ba15cec66672fc",
+      "bytes": 7583
+    },
+    {
+      "path": "tests/test_prepare_firmware.py",
+      "source_path": "tests/test_prepare_firmware.py",
+      "sha256": "07d7d1e57116efd5bf0eadd0023e31031e06ce983cec401e849c0a03a2592496",
+      "bytes": 2220
+    },
+    {
+      "path": "tests/test_prompt_wire.py",
+      "source_path": "tests/test_prompt_wire.py",
+      "sha256": "474cc72cca09d68b7c8cf579e66a4098af3b71f51107c1973849e23ca50f62a9",
+      "bytes": 4676
+    },
+    {
+      "path": "tests/test_protocol.py",
+      "source_path": "tests/test_protocol.py",
+      "sha256": "b7b8c44617f29b002eaddf91c0d36057fef959b8bee831a9f2b94df04984df06",
+      "bytes": 3020
     },
     {
       "path": "tests/test_service.py",
