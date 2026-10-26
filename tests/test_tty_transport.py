@@ -166,3 +166,35 @@ def test_master_disconnect_is_not_normal_poll_timeout():
             assert transport._closed
         with pytest.raises(ValueError):
             transport._owner.fileno()
+
+
+@pytest.mark.parametrize('operation,ready', [('read',True),('read',False),('write',True),('write',False)])
+def test_authority_lost_while_waiting_for_readiness_prevents_io(monkeypatch, operation, ready):
+    """No actual fd: readiness changes authority before the syscall boundary."""
+    import threading
+    from types import SimpleNamespace
+    from printer_control.devices import DeviceRejected
+    transport=TTYTransport.__new__(TTYTransport)
+    transport._owner=SimpleNamespace(fileno=lambda:17)
+    transport._lock=threading.Lock()
+    transport._timeout=.1
+    transport._closed=False
+    transport._fault=None
+    state={'expired':False}
+    def check():
+        if state['expired']:raise DeviceRejected('assignment expired during readiness wait')
+    transport._authority_check=check
+    def readiness(readers,writers,*args):
+        state['expired']=True
+        return (readers if ready else [], writers if ready else [], [])
+    monkeypatch.setattr(select,'select',readiness)
+    calls=[]
+    monkeypatch.setattr(os,'read',lambda *args:calls.append('read') or b'ok\n')
+    monkeypatch.setattr(os,'write',lambda fd,data:calls.append('write') or len(data))
+    with pytest.raises(DeviceRejected,match='expired during readiness'):
+        transport.read() if operation=='read' else transport.write(b'M105\n')
+    assert calls==[] and transport.fault=='authority_lost'
+    state['expired']=False
+    with pytest.raises(OSError,match='uncertain'):
+        transport.write(b'M105\n')
+    assert calls==[]

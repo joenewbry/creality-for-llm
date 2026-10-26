@@ -66,6 +66,14 @@ class TTYTransport:
     def fault(self):
         return self._fault
 
+    def _check_authority(self):
+        if self._authority_check is not None:
+            try:
+                self._authority_check()
+            except BaseException:
+                self._fault = 'authority_lost'
+                raise
+
     def _enter(self):
         if not self._lock.acquire(timeout=self._timeout):
             raise TimeoutError('terminal operation busy; no I/O attempted')
@@ -74,12 +82,7 @@ class TTYTransport:
                 raise OSError('terminal transport closed')
             if self._fault is not None:
                 raise OSError('terminal transport uncertain')
-            if self._authority_check is not None:
-                try:
-                    self._authority_check()
-                except BaseException:
-                    self._fault = 'authority_lost'
-                    raise
+            self._check_authority()
             return self._owner.fileno()
         except BaseException:
             self._lock.release()
@@ -90,14 +93,16 @@ class TTYTransport:
             raise ValueError('bounded positive read size required')
         fd = self._enter()
         try:
-            if not select.select([fd], [], [], self._timeout)[0]:
+            ready = select.select([fd], [], [], self._timeout)[0]
+            self._check_authority()
+            if not ready:
                 return b''
             data = os.read(fd, size)
             if not data:
                 raise OSError('terminal EOF')
             return data
         except BaseException:
-            self._fault = 'read_interrupted_or_disconnected'
+            self._fault = self._fault or 'read_interrupted_or_disconnected'
             raise
         finally:
             self._lock.release()
@@ -107,14 +112,16 @@ class TTYTransport:
             raise ValueError('bounded bytes required')
         fd = self._enter()
         try:
-            if not select.select([], [fd], [], self._timeout)[1]:
+            ready = select.select([], [fd], [], self._timeout)[1]
+            self._check_authority()
+            if not ready:
                 raise TimeoutError('terminal write readiness deadline exceeded')
             written = os.write(fd, data)  # One attempt only, including partial writes.
             if written != len(data):
                 self._fault = 'partial_write'
             return written
         except BaseException:
-            self._fault = 'write_interrupted_or_disconnected'
+            self._fault = self._fault or 'write_interrupted_or_disconnected'
             raise
         finally:
             self._lock.release()
