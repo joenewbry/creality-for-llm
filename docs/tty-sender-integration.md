@@ -77,3 +77,12 @@ qualification, plus fixed isolated settings/hooks/scripts. The
 existing virtual backend deliberately refuses this endpoint. No default launcher
 or existing printer service changes. Board/processor/screen/recovery, sensor,
 clearance, actual USB driver/device isolation and camera qualification remain open.
+
+## Journaled adapter on this connection
+
+`AssignedJobBackend` now provides the shared journaled job/prompt path with
+immutable staged bytes and typed external evidence. Its owned-terminal tests use
+a software-only virtual-peer provider; they are separate from the direct sender
+calls described above. See [the job adapter contract](assigned-job.md). A real
+hardware evidence/observation provider and the remaining physical policy/recovery
+qualification are unfinished; this does not commission a printer.
