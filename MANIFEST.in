@@ -1,5 +1,4 @@
 # Source archive follows the explicit publication allowlist.
-# Update these includes whenever publication-files.json changes.
 global-exclude *
 include .gitattributes
 include .gitignore
@@ -102,6 +101,7 @@ include printer_control/stream_witness.py
 include printer_control/thermal_pause.py
 include printer_control/tools.py
 include printer_control/tty_ownership.py
+include printer_control/tty_prompt.py
 include printer_control/tty_transport.py
 include printer_control/virtual_calibration.py
 include printer_control/virtual_setup.py
@@ -192,6 +192,7 @@ include tests/test_streamed_host_restart.py
 include tests/test_thermal_pause.py
 include tests/test_tools.py
 include tests/test_tty_ownership.py
+include tests/test_tty_prompt.py
 include tests/test_tty_transport.py
 include tests/test_virtual_assignment.py
 include tests/test_virtual_calibration.py
@@ -245,6 +246,7 @@ include validation/service-startup-stage118.json
 include validation/streamed-host-restart-stage109.json
 include validation/transport-readiness-stage110.json
 include validation/tty-ownership-stage89.json
+include validation/tty-prompt-stage119.json
 include validation/upstream-native-stage88.json
 include validation/upstream-review-stage87.json
 include validation/upstream-submission-stage115.json

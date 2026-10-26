@@ -278,3 +278,22 @@ def test_diagnostic_rejection_does_not_become_accepted_snapshot(runtime):
     assert state['prompt_snapshot'] is None and not state['snapshot_fresh']
     assert state['prompt_guidance']['requires_physical_action'] is True
     assert state['prompt_guidance']['allowed_responses'] == []
+
+
+def test_receipt_arriving_after_blocking_receive_deadline_is_not_backdated(runtime):
+    service,backend,transport,now=runtime
+    bind(service,backend)
+    req=submit(service,backend,'prompt.respond',{'prompt':1,'choice':0},deadline=11.)
+    pending=service.submit(req)
+    assert select.select([transport.process.stdout],[],[],2)[0]
+    original=transport.pump
+    def delayed_receive():
+        data=original()
+        now[0]=11.
+        return data
+    backend.pump=delayed_receive
+    result=service.poll(pending['operation_id'])
+    assert result['status']=='outcome_unknown'
+    assert result['result']['reason']=='receipt_deadline_expired'
+    assert service.submit(req)==result
+    assert len(transport.writes)==3
