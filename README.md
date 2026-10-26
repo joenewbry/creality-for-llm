@@ -1,21 +1,17 @@
-# Virtual job and setup adapter components
+# Streamed virtual printer runtime
 
-H2e builds on H2d with OctoPrint virtual job/combined-prompt adapters, bounded
-setup operations and resend tracking. The adapter requires the explicit VIRTUAL
-port and OctoPrint's virtual-printer type. It provides no physical port factory.
+H2f connects the preceding host components to OctoPrint's virtual serial sender.
+It adds typed JSON tools, managed resume preparation, pause status, virtual
+thermal effects and calibration. The test runner denies physical serial opens;
+there is no hardware transport factory in this boundary.
 
-Completion needs the expected state transition and drained modeled moves, not
-just an end-of-file callback. Home/jog operations are bounded to the cold test
-profile and require correlated completion evidence. Combined cancellation
-revokes queued pause grants before dispatch. Resend uncertainty cannot silently
-renew an invalidated job. Tests also kill a separate host process at durable
-operation boundaries and verify that startup does not replay its effects.
-
-This boundary qualifies adapter components using controlled sender/device
-substitutes. It does not run the full serial sender or qualify actual motion,
-heaters, homing or USB ownership. Later boundaries add the complete virtual job
-runner and managed pause/resume workflow. The original full-project integration
-tests remain separate from these component results.
+Ten end-to-end scenarios exercise cold resume, a native prompt within the sender,
+managed hot resume, two pauses in one job, cancel and service shutdown while paused, paused
+connection loss, active reset, checksum resend and a thermal-fault report. Each
+scenario's existing assertions check receipts and modeled state. Other component
+and native-function tests remain included. Scripted temperatures, motor/part
+continuity and virtual EEPROM behavior do not qualify real heaters, adhesion,
+position retention or hardware settings persistence.
 
 ## Reproduce
 
@@ -30,12 +26,16 @@ uv pip install --python .venv/bin/python --no-deps .
 .venv/bin/python -m pytest -q tests
 ```
 
-The reviewed firmware must contain the pinned commit/tree in
-`firmware-test-source.json`. The public firmware fork is not yet published.
-Inherited native tests use actual functions with physical stubs. Adapter
-admission tests use inert objects and reject nonvirtual assignments before job
-access; no physical serial port is opened. Model credentials are unnecessary.
+The firmware repository must provide the pinned commit/tree; public publication
+is pending. Native tests substitute physical dependencies. Runtime scenarios
+create local `evidence` reports. Service shutdown does not confirm heater shutdown. The command above makes no paid model calls.
 
-Original host source is AGPL-3.0-or-later; separately fetched firmware and
-installed dependencies retain their licenses. This is our local adapter package,
-not an OctoPrint upstream contribution. No public PR has been submitted.
+The runner has optional MCP/model-fixture switches used by later boundaries;
+the MCP adapter and model client are intentionally absent here. Use ordinary
+`--service` scenarios or the JSON `--console` interface only. The dedicated
+Model Context Protocol (MCP) client/server and model demonstrations follow in H3.
+
+This software-only boundary is not a release or physical qualification. Remaining
+firmware-protection evidence, device access isolation, commissioning, final
+publication and real printing qualification remain separate work. Original host
+source is AGPL-3.0-or-later; dependencies and firmware retain their own licenses.
