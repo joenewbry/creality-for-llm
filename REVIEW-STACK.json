@@ -161,7 +161,7 @@
   ],
   "physical_commissioning_complete": false,
   "camera_capture_implemented": false,
-  "latest_branch": "stack/h7-upstream-contribution",
+  "latest_branch": "stack/h8-capture-owner-http",
   "note": "First ten trees are identical to tested local review trees; parent history is a clean public bootstrap. Later runtime/test bytes match the qualified source export. Self commit is resolved from latest_branch.",
   "host_prs": [
     {
@@ -307,6 +307,15 @@
       "isDraft": true,
       "state": "OPEN",
       "url": "https://github.com/joenewbry/creality-for-llm/pull/16"
+    },
+    {
+      "key": "H8",
+      "title": "Bounded capture-owner HTTP client and frame invalidation",
+      "baseRefName": "stack/h7-upstream-contribution",
+      "headRefName": "stack/h8-capture-owner-http",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/creality-for-llm/pull/17"
     }
   ],
   "firmware_prs": [
