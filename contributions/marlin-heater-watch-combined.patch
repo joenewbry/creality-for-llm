@@ -1,0 +1,115 @@
+From 36406aafd8029b8375281d298ae983c373c399af Mon Sep 17 00:00:00 2001
+From: Joe Newbry <joe@digitalsurfacelabs.com>
+Date: Sun, 25 Oct 2026 17:59:12 -0700
+Subject: [PATCH] =?UTF-8?q?=F0=9F=90=9B=20Preserve=20heater=20watch=20dead?=
+ =?UTF-8?q?lines=20at=20timer=20wraparound?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ Marlin/src/module/temperature.h           |  6 +-
+ Marlin/tests/module/test_heater_watch.cpp | 72 +++++++++++++++++++++++
+ 2 files changed, 76 insertions(+), 2 deletions(-)
+ create mode 100644 Marlin/tests/module/test_heater_watch.cpp
+
+diff --git a/Marlin/src/module/temperature.h b/Marlin/src/module/temperature.h
+index 30397e5..6fa0f44 100644
+--- a/Marlin/src/module/temperature.h
++++ b/Marlin/src/module/temperature.h
+@@ -523,10 +523,12 @@ struct HeaterWatch {
+   inline bool check(const celsius_t curr) { return curr >= target; }
+ 
+   // Keep watching until within HYSTERESIS of the target, where thermal runaway protection takes over
+-  inline void restart(const celsius_t curr, const celsius_t tgt) {
++  inline void restart(const celsius_t curr, const celsius_t tgt, const millis_t now=millis()) {
+     if (tgt && curr < tgt - HYSTERESIS) {
+       target = _MIN(curr + INCREASE, tgt - HYSTERESIS);
+-      next_ms = millis() + SEC_TO_MS(PERIOD);
++      next_ms = now + SEC_TO_MS(PERIOD);
++      // Zero means disabled. Preserve an armed watch across timer wraparound.
++      if (!next_ms) next_ms = 1;
+     }
+     else
+       next_ms = 0;
+diff --git a/Marlin/tests/module/test_heater_watch.cpp b/Marlin/tests/module/test_heater_watch.cpp
+new file mode 100644
+index 0000000..584f83b
+--- /dev/null
++++ b/Marlin/tests/module/test_heater_watch.cpp
+@@ -0,0 +1,72 @@
++/**
++ * Marlin 3D Printer Firmware
++ * Copyright (c) 2024 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
++ *
++ * Based on Sprinter and grbl.
++ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
++ *
++ */
++
++#include "../test/unit_tests.h"
++#include "src/module/temperature.h"
++
++#if WATCH_HOTENDS || WATCH_BED
++
++MARLIN_TEST(heater_watch, zero_deadline_stays_armed) {
++  HeaterWatch<2, 4, 40> watch{};
++  const millis_t now = millis_t(0) - SEC_TO_MS(40);
++  watch.restart(20, 200, now);
++  TEST_ASSERT_EQUAL_UINT32(1, watch.next_ms);
++  TEST_ASSERT_FALSE(watch.elapsed(millis_t(0)));
++  TEST_ASSERT_TRUE(watch.elapsed(millis_t(1)));
++}
++
++MARLIN_TEST(heater_watch, bed_zero_deadline_stays_armed) {
++  HeaterWatch<2, 2, 180> watch{};
++  watch.restart(20, 60, millis_t(0) - SEC_TO_MS(180));
++  TEST_ASSERT_EQUAL_UINT32(1, watch.next_ms);
++  TEST_ASSERT_TRUE(watch.elapsed(millis_t(1)));
++}
++
++MARLIN_TEST(heater_watch, ordinary_deadline_and_temperature_rise) {
++  HeaterWatch<2, 4, 40> watch{};
++  watch.restart(20, 200, 1000);
++  TEST_ASSERT_EQUAL_UINT32(41000, watch.next_ms);
++  TEST_ASSERT_FALSE(watch.elapsed(millis_t(40999)));
++  TEST_ASSERT_TRUE(watch.elapsed(millis_t(41000)));
++  TEST_ASSERT_FALSE(watch.check(21));
++  TEST_ASSERT_TRUE(watch.check(22));
++}
++
++MARLIN_TEST(heater_watch, wrapped_nonzero_deadline) {
++  HeaterWatch<2, 4, 40> watch{};
++  watch.restart(20, 200, millis_t(0) - 1000);
++  TEST_ASSERT_EQUAL_UINT32(39000, watch.next_ms);
++  TEST_ASSERT_FALSE(watch.elapsed(millis_t(38999)));
++  TEST_ASSERT_TRUE(watch.elapsed(millis_t(39000)));
++}
++
++MARLIN_TEST(heater_watch, off_and_near_target_disarm) {
++  HeaterWatch<2, 4, 40> watch{};
++  watch.restart(20, 200, 1000);
++  watch.restart(20, 0, 1000);
++  TEST_ASSERT_EQUAL_UINT32(0, watch.next_ms);
++  TEST_ASSERT_FALSE(watch.elapsed(millis_t(41000)));
++  watch.restart(196, 200, 1000);
++  TEST_ASSERT_EQUAL_UINT32(0, watch.next_ms);
++}
++
++#endif
+-- 
+2.39.5 (Apple Git-154)
+

@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "boundary": "H2c",
+  "depends_on": "H2b",
+  "source_commit": "d04474abecc98e67cfc197c915d3c45a73532e43",
+  "review_commit": "1de3b57d698b7f09ea70da528e30d980a3d41b71",
+  "review_tree": "d5b628089673c8f51b52a1ebc23ba9acbccee095",
+  "parent_review_commit": "d54d5eebe4b4ad8229e59950f63f43c8d5a51e27",
+  "mapped_files": 49,
+  "manifest_sha256": "c59d4876d463f58d787ba8e42c41459f6652e4a110ab8b2caf836b28c080f480",
+  "initial_incomplete_boundary": {
+    "tests": 355,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "junit_sha256": "a6153f861c87ccee2f08ee6b4e47542a83fcf35e75cc719c28d578c1f6092b2d"
+  },
+  "source_tests": {
+    "tests": 355,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "junit_sha256": "aa710eb0b03ddd5f2ee1ee2ecbabde181606e76464caf56bea40b6ef06eaf1bc"
+  },
+  "installed_tests": {
+    "tests": 355,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "junit_sha256": "2e45d9374c1f40e134d6aba6f4f36e68a2cc2fc41e7ce67bb536c43bd4c8dfe9"
+  },
+  "dependency_fix": "include preflight imported inside modal regression",
+  "python_version": "3.11.13",
+  "pytest_version": "8.3.5",
+  "firmware": {
+    "schema_version": 1,
+    "upstream_commit": "7fffa9270ff8fb5ee208a5b04f832e20bab19c60",
+    "commit": "98aa03248337b8039a09bbc1a29f33432aed08ca",
+    "tree": "70ec40fa273bd88cfbda442935ac275cbf9f981b",
+    "publication_status": "local-only; supply the reviewed firmware repository explicitly"
+  },
+  "package_built_and_installed": true,
+  "installed_import_from_site_packages": true,
+  "source_files_unchanged": true,
+  "parent_code_unchanged": true,
+  "review_worktree_clean": true,
+  "private_host_history_included": false,
+  "physical_access": false,
+  "paid_model_calls": 0,
+  "public_pr_created": false,
+  "limits": [
+    "native functions with substituted parser and physical dependencies",
+    "installed tests reuse pinned firmware fixture",
+    "local package cache and reviewed firmware repository required",
+    "thermal/restore command execution and virtual sender not included",
+    "physical pause and heater behavior unqualified"
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "model": "gpt-4.1-mini-2025-04-14",
+  "result": "passed",
+  "model_requests": 32,
+  "model_selected_tool_calls": 31,
+  "tool_counts": {
+    "job_inspect": 15,
+    "job_stage": 1,
+    "job_start": 3,
+    "operation_get": 5,
+    "job_pause": 3,
+    "job_pause_status": 3,
+    "job_resume": 1
+  },
+  "completed_operation_count": 4,
+  "rejected_operation_count": 4,
+  "standby_observation_span_seconds": 2.0242958340095356,
+  "paused_job_moves": 38,
+  "final_job_evidence": {
+    "job_moves": 80,
+    "expected_job_moves": 80,
+    "all_job_moves_once_in_order": true,
+    "model_moves": 82,
+    "physical_serial_open_attempts": 0
+  },
+  "final_heater_targets": {
+    "nozzle": 0.0,
+    "bed": 0.0
+  },
+  "thermal_effects": [
+    {
+      "status": "completed",
+      "nozzle_target": 100,
+      "bed_target": 60.0
+    },
+    {
+      "status": "completed",
+      "nozzle_target": 200.0,
+      "bed_target": 60.0
+    }
+  ],
+  "restoration_state": "resumed",
+  "retired_authority_and_zero_targets_rechecked": true,
+  "reported_usage_cost_estimate_usd": 0.0885944,
+  "reserved_cost_upper_estimate_usd": 0.6009,
+  "raw_record_sha256": "b20180af8627df2162ae21c8999e14fedc84587bdcf29010188144d44e77c457",
+  "scripted_temperatures": true,
+  "synthetic_continuity_proofs": true,
+  "model_fixture_move_delay_seconds": 0.25,
+  "model_fixture_max_pause_seconds": 120,
+  "physical_qualified": false
+}

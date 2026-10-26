@@ -1,0 +1,244 @@
+{
+  "settings": {
+    "THERMAL_PROTECTION_PERIOD": 60,
+    "THERMAL_PROTECTION_HYSTERESIS": 4,
+    "THERMAL_PROTECTION_BED_PERIOD": 180,
+    "THERMAL_PROTECTION_BED_HYSTERESIS": 2
+  },
+  "fixture_tail_sha256": "205479e60370be932f82019214a7d7190da860fb11bfc9a47677bdb8d19e111b",
+  "temperature_file_sha256": "7db381e4cac94969b7214789460507d2d87e75add4c736cf16aef7c6b7f1585a",
+  "header_file_sha256": "dac8fbf82e1dd5e9f3bdc0b1a15cd8364c80d8df7e3f2befd0f7a07e9f6ed2c9",
+  "configuration_adv_sha256": "c5ca67aba1a313c382934089df2ae863fc90ef12d08955d12eaba63f793ac6bc",
+  "declaration_sha256": "038c221c0645a856cd22d3e675144d1b479964a708a6bca1f9ed70cb0b82c90f",
+  "snippet_sha256": {
+    "runaway": "e90bd12be73e742aa6a3b7bbf5d121c859f9c2be68bfc0303008595e33b1d461",
+    "error": "07c91f16f2a88cca7a4444625d1c9f4d15c74c1d27a63232e9c76b31add4b6a9",
+    "disable": "ca3b742625fa2d13f835f11afff4132826fcf3c2e99ff41ce215f527690f4c9f"
+  },
+  "physical_qualified": false,
+  "pin_io": "recording stub",
+  "kill": "recording stub",
+  "sensors": "scripted",
+  "idle_handler": true,
+  "autotemp": true,
+  "target_setters": "recording stubs",
+  "excluded": [
+    "sensor sampling",
+    "interrupts",
+    "full manager",
+    "physical kill",
+    "adaptive fan slowing",
+    "bogus temperature grace period"
+  ],
+  "heating_watch": {
+    "settings": {
+      "WATCH_TEMP_PERIOD": 40,
+      "WATCH_TEMP_INCREASE": 2,
+      "WATCH_BED_TEMP_PERIOD": 180,
+      "WATCH_BED_TEMP_INCREASE": 2,
+      "TEMP_HYSTERESIS": 3,
+      "TEMP_BED_HYSTERESIS": 3
+    },
+    "snippets_sha256": {
+      "template": "8e944edda3f69e973520d4ee53fc24f4667a255401aa049a8e3af99fb49e1bee",
+      "typedefs": "954faffa3945a2144e47c7adaa56f54f741e66cc0030ed561935156e87824741",
+      "hotend_branch": "d5cb418cd751673f0b1ffed8bbb4ff0854779667758ce1c30418607d052aedd3",
+      "bed_branch": "96e1a65ddfd09e429f610f551fac8221b61e6199d7ec2860dfbeeaf3599af847",
+      "start_hotend": "6f7a52e76a61a00968a351fe1dcef50451b854c281750842cb844b155226a160",
+      "start_bed": "2524c7aca467c4afe1d131dae8d2b89427f57c2b517c6f094b106405c10ed004"
+    }
+  },
+  "firmware": {
+    "schema_version": 1,
+    "upstream_commit": "7fffa9270ff8fb5ee208a5b04f832e20bab19c60",
+    "commit": "98aa03248337b8039a09bbc1a29f33432aed08ca",
+    "tree": "70ec40fa273bd88cfbda442935ac275cbf9f981b",
+    "publication_status": "local-only; supply the reviewed firmware repository explicitly"
+  },
+  "cases": [
+    {
+      "heater": "hotend",
+      "scenario": "stall",
+      "observation": {
+        "kills": 1,
+        "now": 80000,
+        "state": 1,
+        "before_drop_state": 1,
+        "before_drop_watch": true,
+        "serial_message": "HEATING FAILED",
+        "nozzle_target": 0,
+        "bed_target": 0,
+        "nozzle_pin": 0,
+        "bed_pin": 0
+      }
+    },
+    {
+      "heater": "hotend",
+      "scenario": "drop",
+      "observation": {
+        "kills": 1,
+        "now": 100000,
+        "state": 3,
+        "before_drop_state": 2,
+        "before_drop_watch": false,
+        "serial_message": "THERMAL RUNAWAY",
+        "nozzle_target": 0,
+        "bed_target": 0,
+        "nozzle_pin": 0,
+        "bed_pin": 0
+      }
+    },
+    {
+      "heater": "hotend",
+      "scenario": "above_drop",
+      "observation": {
+        "kills": 1,
+        "now": 100000,
+        "state": 3,
+        "before_drop_state": 2,
+        "before_drop_watch": false,
+        "serial_message": "THERMAL RUNAWAY",
+        "nozzle_target": 0,
+        "bed_target": 0,
+        "nozzle_pin": 0,
+        "bed_pin": 0
+      }
+    },
+    {
+      "heater": "hotend",
+      "scenario": "boundary_hold",
+      "observation": {
+        "kills": 0,
+        "now": 601000,
+        "state": 2,
+        "before_drop_state": 2,
+        "before_drop_watch": false,
+        "serial_message": "",
+        "nozzle_target": 200,
+        "bed_target": 60,
+        "nozzle_pin": 1,
+        "bed_pin": 1
+      }
+    },
+    {
+      "heater": "hotend",
+      "scenario": "normal",
+      "observation": {
+        "kills": 0,
+        "now": 601000,
+        "state": 2,
+        "before_drop_state": 2,
+        "before_drop_watch": false,
+        "serial_message": "",
+        "nozzle_target": 200,
+        "bed_target": 60,
+        "nozzle_pin": 1,
+        "bed_pin": 1
+      }
+    },
+    {
+      "heater": "bed",
+      "scenario": "stall",
+      "observation": {
+        "kills": 1,
+        "now": 360000,
+        "state": 1,
+        "before_drop_state": 1,
+        "before_drop_watch": true,
+        "serial_message": "HEATING FAILED",
+        "nozzle_target": 0,
+        "bed_target": 0,
+        "nozzle_pin": 0,
+        "bed_pin": 0
+      }
+    },
+    {
+      "heater": "bed",
+      "scenario": "drop",
+      "observation": {
+        "kills": 1,
+        "now": 360000,
+        "state": 3,
+        "before_drop_state": 2,
+        "before_drop_watch": false,
+        "serial_message": "THERMAL RUNAWAY",
+        "nozzle_target": 0,
+        "bed_target": 0,
+        "nozzle_pin": 0,
+        "bed_pin": 0
+      }
+    },
+    {
+      "heater": "bed",
+      "scenario": "above_drop",
+      "observation": {
+        "kills": 1,
+        "now": 360000,
+        "state": 3,
+        "before_drop_state": 2,
+        "before_drop_watch": false,
+        "serial_message": "THERMAL RUNAWAY",
+        "nozzle_target": 0,
+        "bed_target": 0,
+        "nozzle_pin": 0,
+        "bed_pin": 0
+      }
+    },
+    {
+      "heater": "bed",
+      "scenario": "boundary_hold",
+      "observation": {
+        "kills": 0,
+        "now": 601000,
+        "state": 2,
+        "before_drop_state": 2,
+        "before_drop_watch": false,
+        "serial_message": "",
+        "nozzle_target": 200,
+        "bed_target": 60,
+        "nozzle_pin": 1,
+        "bed_pin": 1
+      }
+    },
+    {
+      "heater": "bed",
+      "scenario": "normal",
+      "observation": {
+        "kills": 0,
+        "now": 601000,
+        "state": 2,
+        "before_drop_state": 2,
+        "before_drop_watch": false,
+        "serial_message": "",
+        "nozzle_target": 200,
+        "bed_target": 60,
+        "nozzle_pin": 1,
+        "bed_pin": 1
+      }
+    }
+  ],
+  "upstream_attribution": {
+    "url": "https://github.com/MarlinFirmware/Marlin/pull/28695",
+    "merge_commit": "c27424fa51053dd3b0febde2f03b287499403d39"
+  },
+  "baseline": {
+    "firmware_commit": "126e17173498f9598c9d11188b3aadb456580020",
+    "failed_tests": 8,
+    "passed_tests": 2,
+    "failure_report_sha256": "3324540dd2991b6a9ea059068e0318bf574e8357f3161cfd3da9bed2ab6718ad"
+  },
+  "f401_build": {
+    "passed": true,
+    "bytes": 165456,
+    "sha256": "5acc7c53df0a230d02a1ce70acedba2c52ed355c600f46787863e5588250b90f",
+    "build_log_sha256": "70b989f64926469f4aebf5dd4338f250efd38da8ebc25bedc5b4e5255b580e8d",
+    "flashed": false
+  },
+  "regression_suite": {
+    "tests": 762,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "elapsed_seconds": 76.826
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "schema_version": 1,
+  "targets": [
+    {
+      "repository": "MarlinFirmware/Marlin",
+      "revision": "a49fef81141d91d4b261a64479e46a00092ea05a",
+      "source_url": "https://github.com/MarlinFirmware/Marlin/blob/a49fef81141d91d4b261a64479e46a00092ea05a/Marlin/src/module/temperature.h",
+      "guidance_hashes": {
+        ".github/contributing.md": "360536ee6df7a2326636e058d2f6246e73b0b07ae5b4935bdf3fa960c8c3bbbb",
+        ".github/pull_request_template.md": "999a8657f8643d3438368ccde13e1c59b8a675d5dc140e0bb3349f5fc50866f5",
+        "AGENTS.md": "6a72e12cd6eb8471c9fb537810b2651bc917cb930967fa9ad5e00bddafad6e11"
+      },
+      "reproduction": {
+        "header_sha256": "72538a041a25eb5df37eb7a877875bbe961c2a10d642f44fe25ef592577206cc",
+        "template_sha256": "989671575d18a4a24e6d30db151452a9b50e83cabe8842b2d52b8327f83738ba",
+        "result": "reproduced_and_candidate_passed",
+        "synthetic_parameters": true,
+        "full_firmware_build": false,
+        "physical_test": false,
+        "observations": {
+          "original": [
+            {
+              "period": 40,
+              "zero_armed": 0,
+              "zero_elapsed_at_zero": 0,
+              "zero_elapsed_at_one": 0,
+              "early": 0,
+              "due": 1,
+              "rise": 1,
+              "stall": 0,
+              "off": 1,
+              "wrap_early": 0,
+              "wrap_due": 1
+            },
+            {
+              "period": 180,
+              "zero_armed": 0,
+              "zero_elapsed_at_zero": 0,
+              "zero_elapsed_at_one": 0,
+              "early": 0,
+              "due": 1,
+              "rise": 1,
+              "stall": 0,
+              "off": 1,
+              "wrap_early": 0,
+              "wrap_due": 1
+            }
+          ],
+          "candidate": [
+            {
+              "period": 40,
+              "zero_armed": 1,
+              "zero_elapsed_at_zero": 0,
+              "zero_elapsed_at_one": 1,
+              "early": 0,
+              "due": 1,
+              "rise": 1,
+              "stall": 0,
+              "off": 1,
+              "wrap_early": 0,
+              "wrap_due": 1
+            },
+            {
+              "period": 180,
+              "zero_armed": 1,
+              "zero_elapsed_at_zero": 0,
+              "zero_elapsed_at_one": 1,
+              "early": 0,
+              "due": 1,
+              "rise": 1,
+              "stall": 0,
+              "off": 1,
+              "wrap_early": 0,
+              "wrap_due": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "repository": "ThomasToka/Marlin",
+      "revision": "306bcfdb3b53002da08ae3880de9ce39ca751d2d",
+      "source_url": "https://github.com/ThomasToka/Marlin/blob/306bcfdb3b53002da08ae3880de9ce39ca751d2d/Marlin/src/module/temperature.h",
+      "guidance_hashes": {
+        ".github/contributing.md": "44615e2e0cf31a9c1ddeb1425633dfdb5ac5c7a9ac8afdfe127b3cdb2874ec12",
+        ".github/pull_request_template.md": "999a8657f8643d3438368ccde13e1c59b8a675d5dc140e0bb3349f5fc50866f5"
+      },
+      "reproduction": {
+        "header_sha256": "a29f3778b34e986315f0383b5d30fa5619d3e5d26fe8f96222d292bd1ad6de36",
+        "template_sha256": "2add20af92b979f367e7b5a2866df2a3541d287474e482ba15c3d74b503686fe",
+        "result": "reproduced_and_candidate_passed",
+        "synthetic_parameters": true,
+        "full_firmware_build": false,
+        "physical_test": false,
+        "observations": {
+          "original": [
+            {
+              "period": 40,
+              "zero_armed": 0,
+              "zero_elapsed_at_zero": 0,
+              "zero_elapsed_at_one": 0,
+              "early": 0,
+              "due": 1,
+              "rise": 1,
+              "stall": 0,
+              "off": 1,
+              "wrap_early": 0,
+              "wrap_due": 1
+            },
+            {
+              "period": 180,
+              "zero_armed": 0,
+              "zero_elapsed_at_zero": 0,
+              "zero_elapsed_at_one": 0,
+              "early": 0,
+              "due": 1,
+              "rise": 1,
+              "stall": 0,
+              "off": 1,
+              "wrap_early": 0,
+              "wrap_due": 1
+            }
+          ],
+          "candidate": [
+            {
+              "period": 40,
+              "zero_armed": 1,
+              "zero_elapsed_at_zero": 0,
+              "zero_elapsed_at_one": 1,
+              "early": 0,
+              "due": 1,
+              "rise": 1,
+              "stall": 0,
+              "off": 1,
+              "wrap_early": 0,
+              "wrap_due": 1
+            },
+            {
+              "period": 180,
+              "zero_armed": 1,
+              "zero_elapsed_at_zero": 0,
+              "zero_elapsed_at_one": 1,
+              "early": 0,
+              "due": 1,
+              "rise": 1,
+              "stall": 0,
+              "off": 1,
+              "wrap_early": 0,
+              "wrap_due": 1
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "full_target_builds": false,
+  "upstream_submission_created": false,
+  "physical_access": false,
+  "searches": [
+    {
+      "query": "repo:MarlinFirmware/Marlin HeaterWatch",
+      "total_count": 3,
+      "returned_items": 3,
+      "incomplete_results": false
+    },
+    {
+      "query": "repo:MarlinFirmware/Marlin \"next_ms\" \"zero\"",
+      "total_count": 0,
+      "returned_items": 0,
+      "incomplete_results": false
+    },
+    {
+      "query": "repo:MarlinFirmware/Marlin \"heater\" \"wrap\"",
+      "total_count": 63,
+      "returned_items": 30,
+      "incomplete_results": false
+    },
+    {
+      "query": "repo:ThomasToka/Marlin HeaterWatch",
+      "total_count": 0,
+      "returned_items": 0,
+      "incomplete_results": false
+    }
+  ],
+  "related_distinct_fix": {
+    "url": "https://github.com/MarlinFirmware/Marlin/pull/28695",
+    "merge_commit": "c27424fa51053dd3b0febde2f03b287499403d39",
+    "merged": true,
+    "scope": "Near-target handoff between initial heating watch and thermal-runaway state",
+    "backported_to_local_firmware": false
+  }
+}

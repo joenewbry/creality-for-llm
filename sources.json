@@ -1,0 +1,19 @@
+{
+  "controller": {
+    "url": "https://github.com/CrealityOfficial/Ender-3S1.git",
+    "branch": "s1_pro_plus",
+    "commit": "7fffa9270ff8fb5ee208a5b04f832e20bab19c60",
+    "license_file": "LICENSE",
+    "baseline_environment": "STM32F103RET6_creality",
+    "physical_target_verified": false
+  },
+  "screen": {
+    "url": "https://github.com/CrealityOfficial/Ender-3S1.git",
+    "branch": "3S1_PRO_SCREEN",
+    "commit": "25b16c4cfb240c5a889dc59352beda3f6f3f4caf",
+    "format": "DWIN project, configuration workbooks, assets and compiled DWIN_SET files",
+    "license_status": "No top-level LICENSE observed; verify terms before redistributing screen assets"
+  },
+  "build_tools": {"python": "3.11.13", "platformio": "6.1.18"}
+}
+

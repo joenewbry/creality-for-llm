@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "boundary": "H2a",
+  "depends_on": "H1",
+  "source_commit": "3d6553704f16a4e612b470317e68f8667eb596a0",
+  "review_commit": "374913bf12ae1529f83330bc87e1b77e324eb2c9",
+  "review_tree": "db9b03345a2dc23b17a687ffe4494615574f763d",
+  "parent_review_commit": "91e1d4b9022fbc059cb3c5a4726dadfd2da023e3",
+  "mapped_files": 32,
+  "manifest_sha256": "208f406bcb5d3f0585ef06eb0bb9b933caf39b708f35f6c7402af5c12c343389",
+  "source_tests": {
+    "tests": 164,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "junit_sha256": "1e9a9349c73a5d9e9a8c1265a0c2a11d5f63e3a02fcfa04d9b5f7f7c7e4f3cc5"
+  },
+  "installed_tests": {
+    "tests": 164,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "junit_sha256": "1e2995338c27a8cf311863244f29b71ef1f44c98af1d6a2b7a45a7aeb3044f9d"
+  },
+  "python_version": "3.11.13",
+  "pytest_version": "8.3.5",
+  "firmware": {
+    "schema_version": 1,
+    "upstream_commit": "7fffa9270ff8fb5ee208a5b04f832e20bab19c60",
+    "commit": "98aa03248337b8039a09bbc1a29f33432aed08ca",
+    "tree": "70ec40fa273bd88cfbda442935ac275cbf9f981b",
+    "publication_status": "local-only; supply the reviewed firmware repository explicitly"
+  },
+  "package_built_and_installed": true,
+  "installed_import_from_site_packages": true,
+  "source_files_unchanged": true,
+  "review_worktree_clean": true,
+  "private_host_history_included": false,
+  "physical_access": false,
+  "paid_model_calls": 0,
+  "public_pr_created": false,
+  "limits": [
+    "native hardware dependencies stubbed",
+    "installed tests reuse pinned firmware fixture",
+    "local package cache and reviewed firmware repository required",
+    "virtual job and thermal execution not included",
+    "full simulator and physical transport not qualified"
+  ]
+}

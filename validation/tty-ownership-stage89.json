@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "scope": "Linux terminal ownership primitive; not production USB adapter",
+  "macos_initial_pty_probe": {
+    "tests": 19,
+    "failures": 1,
+    "errors": 0,
+    "skipped": 0,
+    "sha256": "cbb9b96d6895f99ec584b8776cfb20b176cd8fe4f02566a3d99a216026729518"
+  },
+  "macos_full_suite": {
+    "tests": 788,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 6,
+    "sha256": "70e69beb5fddc8a72da1bc6dda4c9bde5506e82a89542da1edebde3f3dd3e25e"
+  },
+  "linux_focused_suite": {
+    "tests": 21,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "sha256": "95f3d9cf5e2f5a9ec089181b0c336650a3b7610e50326f4c61566de4f5b98871"
+  },
+  "source_sha256": {
+    "printer_control/devices.py": "e07fda31256425d3179bbfa8f71b78ed5e64472f3ccf399669e0a76ea12f3a92",
+    "printer_control/tty_ownership.py": "d1b9448cb2991e2133fa28c57fafc8c079a6dc2158cd24ef54b78ba4bd244a16",
+    "tests/test_devices.py": "15c8296b4042045309688c9eaf2a12aaa8e26cffd908b32fc417c5bbfff09722",
+    "tests/test_tty_ownership.py": "c18566b83f45c9da5bf160e3e9b6130b73de03cb29b6af408783c3b9af7609a3"
+  },
+  "macos": "15.2 24C101; non-root uid; PTY competing open was allowed after TIOCEXCL",
+  "linux": "aarch64; PTY competing open rejected with EBUSY",
+  "macos_support": "explicitly rejected before os.open",
+  "physical_serial_access": false,
+  "modem_control_or_baud_configuration": false,
+  "paid_model_calls": 0,
+  "limitations": [
+    "pre-existing descriptors and privileged processes are not excluded",
+    "opening before ioctl creates a race requiring deployment isolation",
+    "actual USB driver and physical reset behavior unqualified",
+    "no sender read/write integration",
+    "no OS device access policy deployed"
+  ]
+}

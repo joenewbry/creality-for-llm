@@ -1,0 +1,74 @@
+{
+  "queries": [
+    {
+      "query": "repo:MarlinFirmware/Marlin HeaterWatch",
+      "total_count": 3,
+      "retrieved": 3,
+      "incomplete_results": false
+    },
+    {
+      "query": "repo:MarlinFirmware/Marlin heater wrap",
+      "total_count": 63,
+      "retrieved": 63,
+      "incomplete_results": false
+    },
+    {
+      "query": "repo:MarlinFirmware/Marlin \"next_ms\"",
+      "total_count": 2,
+      "retrieved": 2,
+      "incomplete_results": false
+    },
+    {
+      "query": "repo:MarlinFirmware/Marlin \"watch\" \"zero\" in:title,body",
+      "total_count": 50,
+      "retrieved": 50,
+      "incomplete_results": false
+    },
+    {
+      "query": "repo:MarlinFirmware/Marlin \"heater\" \"overflow\" in:title,body",
+      "total_count": 13,
+      "retrieved": 13,
+      "incomplete_results": false
+    }
+  ],
+  "scope": "GitHub issue/PR search; title/body inspection and selected related changes; not exhaustive across comments or all branches",
+  "equivalent_identified": false,
+  "related_distinct": [
+    28695,
+    21743,
+    2041,
+    28372,
+    1308,
+    1309
+  ],
+  "refreshed_base": "b84243d8f3337586ff0d9771a92a7828d5678731",
+  "candidate_commit": "36406aafd8029b8375281d298ae983c373c399af",
+  "candidate_tree": "48e09704ec788d0350337c1fcea95a0a55cf1e39",
+  "previous_native_candidate": "2e93c507baa1acefac579597539261125fc20e3f",
+  "changed_paths_since_native_test": [
+    "Marlin/Version.h",
+    "Marlin/src/inc/Version.h"
+  ],
+  "patch_sha256": "f51ddaeba6c9c1a2262e58b6df2716306e9d0cc48c7a7c4d2ccc0bbf0ba26096",
+  "upstream_pr_published": false,
+  "native_tests_on_refreshed_commit": false,
+  "schema_version": 1,
+  "cross_builds": [
+    {
+      "environment": "mega2560",
+      "result": "passed",
+      "elapsed_seconds": 10.296,
+      "artifact_sha256": "47a8c9185ff893ce4c48375c73a9e8f41866598e1f01f43c9a690dab1365722f",
+      "log_sha256": "ffcf59c827b94fe952ba590417e4fd91d490b1d5506b7eb1f58f0a80e3be855d"
+    },
+    {
+      "environment": "DUE",
+      "result": "passed",
+      "elapsed_seconds": 16.242,
+      "artifact_sha256": "e8040c1d193ac8463273451aafe33cc39dbaeb3302820a6ad0e2f571b1fd97cd",
+      "log_sha256": "23f33b0a996a0cdd9cb08c43eedff3c75caaf8f84403a30a27e76373cca74fb9"
+    }
+  ],
+  "physical_access": false,
+  "worktree_clean": true
+}

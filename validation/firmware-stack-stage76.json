@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "platformio_version": "6.1.18",
+  "build_command": "pio run",
+  "virtual_environment_on_path": true,
+  "isolated_worktrees": true,
+  "shared_local_package_cache": true,
+  "upload_requested": false,
+  "physical_printer_qualified": false,
+  "runtime_tests_at_each_boundary": false,
+  "binary_reproducibility_proven": false,
+  "boundaries": [
+    {
+      "boundary": "F1",
+      "commit": "362508639f39f501dc44c608e42e74e930a0b578",
+      "tree": "262137c36dad0d390ebb459789552d1818ec3fba",
+      "environment": "STM32F103RET6_creality",
+      "result": "passed",
+      "elapsed_seconds": 25.99,
+      "binary_bytes": 185892,
+      "binary_sha256": "b8f2393390a14206837b9f01699cabd5f21c813e7c67fe9ed2069bbd2b10f01b",
+      "build_log_sha256": "9887d5d4596fdbc03f9eee2ca73f643492979ceb7c7c20aac642fffd45e65910",
+      "tracked_source_unchanged": true,
+      "ram_used_bytes": 13392,
+      "flash_used_bytes": 185892
+    },
+    {
+      "boundary": "F1b",
+      "commit": "93ea5539e3b30689c730bb4e5e691564d44882a3",
+      "tree": "d4ef150f6ffa583d4a863ad87cd8789477d9e649",
+      "environment": "STM32F401RC_creality",
+      "result": "passed",
+      "elapsed_seconds": 42.38,
+      "binary_bytes": 161152,
+      "binary_sha256": "e37c3baa43f48b82525fded85b7a8e4c9421e5d872031b5429960446e5a6c7d0",
+      "build_log_sha256": "4d0f769875d725fbfd8b18e5fa950cf098f5d922719465a2f617a415e868374d",
+      "tracked_source_unchanged": true,
+      "ram_used_bytes": 10276,
+      "flash_used_bytes": 160648
+    },
+    {
+      "boundary": "F2",
+      "commit": "7ec664f7ceb5d3bfb754aa0778ab786dde953274",
+      "tree": "aa18049888755b73da4f95675778b24ac36b69fe",
+      "environment": "STM32F401RC_creality",
+      "result": "passed",
+      "elapsed_seconds": 35.02,
+      "binary_bytes": 163300,
+      "binary_sha256": "4500f35a0160e01b389f3a584859596d39fd8358ccbe01def86c5c6790543fbc",
+      "build_log_sha256": "b4d3f2b63ab851e39372e2d8e58950c27218f90d7e26594855d96d22b6ad2544",
+      "tracked_source_unchanged": true,
+      "ram_used_bytes": 10324,
+      "flash_used_bytes": 162792
+    },
+    {
+      "boundary": "F3",
+      "commit": "a5c1cabc478e52c5e2ec00a00686e2b573a912e4",
+      "tree": "fbd322f08cde2eb184cd6d8122d134abf9df46df",
+      "environment": "STM32F401RC_creality",
+      "result": "passed",
+      "elapsed_seconds": 27.6,
+      "binary_bytes": 165320,
+      "binary_sha256": "c687fea71f2fab31ffff5cbda71e97d28ceadca960157fcab27800cee7b8372f",
+      "build_log_sha256": "c10d15803c54ce5e194061fe007c2211a5d1c299f03a80763876ba225d337edd",
+      "tracked_source_unchanged": true,
+      "ram_used_bytes": 10516,
+      "flash_used_bytes": 164808
+    }
+  ],
+  "f3_previous_candidate_comparison": {
+    "previous_sha256": "629144f4bf55505fe64f7db621a5c37ba667048938ee1b8b2166a1d2c98ef41d",
+    "same_length": true,
+    "differing_bytes": 4,
+    "only_difference": "M115 compiled time, 13:44:37 to 17:07:32; replacing that string makes the binaries identical",
+    "previous_candidate_replaced": false
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "boundary": "H3",
+  "depends_on": "H2f",
+  "source_commit": "868ffd088504d88dd1d8f7054c2b1a84949974e2",
+  "review_commit": "75e55da7e4e624f733da7a9a6009343b2a91c610",
+  "review_tree": "60a4dc890f4434b94c4cce46d2d28059f08f88c2",
+  "parent_review_commit": "b7d305c47c95d9ec9a10c06d9f8a28c23295f08f",
+  "mapped_files": 118,
+  "manifest_sha256": "76a93aaf7c76af6f4b75b40faae500ed7917f4891eeb2668b51265fedc30092d",
+  "source_tests": {
+    "tests": 659,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "junit_sha256": "a1ed4dfa1849d5905c6ae4b939043f645128fb07ceb7e1b3d63aaff05ad6d36a"
+  },
+  "installed_tests": {
+    "tests": 659,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "junit_sha256": "2107e126a4f16be4f93cfc43d88ff30f0a7f14295d1469f53944e155804063b3"
+  },
+  "python_version": "3.11.13",
+  "locked_dependencies": 99,
+  "dependency_lock_sha256": "72095c4af50910df0b2ff4554473e01b01ea182b468fdfd47996ebc203c85458",
+  "firmware": {
+    "schema_version": 1,
+    "upstream_commit": "7fffa9270ff8fb5ee208a5b04f832e20bab19c60",
+    "commit": "98aa03248337b8039a09bbc1a29f33432aed08ca",
+    "tree": "70ec40fa273bd88cfbda442935ac275cbf9f981b",
+    "publication_status": "local-only; supply the reviewed firmware repository explicitly"
+  },
+  "package_built_and_installed": true,
+  "installed_import_from_site_packages": true,
+  "source_files_unchanged": true,
+  "parent_code_unchanged": true,
+  "review_worktree_clean": true,
+  "private_host_history_included": false,
+  "physical_access": false,
+  "paid_model_calls": 0,
+  "public_pr_created": false,
+  "limits": [
+    "actual MCP clients against virtual/native subprocesses, not physical USB",
+    "model evaluators use fixtures; no new live model run",
+    "installed tests reuse pinned native firmware fixture",
+    "local package cache and reviewed firmware repository required",
+    "other firmware protection and OS ownership qualification remain separate"
+  ]
+}

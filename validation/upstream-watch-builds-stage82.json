@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "upstream_commit": "a49fef81141d91d4b261a64479e46a00092ea05a",
+  "candidate_commit": "7c3c9ee84de78d3cb59b377a518beee507bf7970",
+  "candidate_tree": "f0098c96c334e1ace05e1bd79b045316a2798f82",
+  "patch_sha256": "e09660f9dd4771420350eb2297bfafea21e5a7c85c2952e18e3417d45416812b",
+  "builds": [
+    {
+      "environment": "mega2560",
+      "result": "passed",
+      "command": "pio run -e mega2560",
+      "binary_sha256": "9239f37833a2eec3524539ba1662042841e850f94a9cbd23e7a9b557724d187d",
+      "artifact_bytes": 166211,
+      "build_log_sha256": "3c81551163221110b1462890a94c9e9c8f54df802212ac71baeec84804b1e31d",
+      "ram_used_bytes": 2639,
+      "flash_used_bytes": 59088
+    },
+    {
+      "environment": "DUE",
+      "result": "passed",
+      "command": "pio run -e DUE",
+      "binary_sha256": "d9e08bb0bcf4e54b61cad46488fe82a4093777b54fc98cbcf0a639e9202e11c2",
+      "artifact_bytes": 245084,
+      "build_log_sha256": "3aa31fcee2af6163f46bf361ce56e786e5f96a0d9631d465f36d5c519b47ed26",
+      "ram_used_bytes": 13164,
+      "flash_used_bytes": 241028
+    }
+  ],
+  "due_test_config": "buildroot/tests/DUE/config-01.ini",
+  "due_configuration_sha256": {
+    "Configuration.h": "7cc7485e213c0a59e508f58f3b4a1a8e486d34ae83890b404fc37e6ac14f2cba",
+    "Configuration_adv.h": "19a269b1160179f75f70b193fc332c6639237b759bf13b1eb14001e987d237f5",
+    "config.ini": "e72ebf833c40e329fc8767d20512ac27e243ea8d5fc99c611fcfb43a54d9b89c"
+  },
+  "platformio_version": "6.1.18",
+  "native_unit_tests_run": false,
+  "full_simulator_run": false,
+  "physical_access": false,
+  "published_pr": false,
+  "tracked_worktree_clean_after_config_restore": true,
+  "wrapper_note": "mftest exits 1 after successful DUE build because final IS_MEGA_1 condition is false; direct pio run exited 0",
+  "initial_attempt_note": "First mftest invocation lacked buildroot/bin on PATH; opt_set was not found. Retained, then rerun with corrected PATH."
+}

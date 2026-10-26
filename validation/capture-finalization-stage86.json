@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "baseline_commit": "60da160",
+  "scope": "serial capture shutdown finalization; software only",
+  "before": {
+    "tests": 3,
+    "failures": 3,
+    "errors": 0,
+    "skipped": 0,
+    "junit_sha256": "80eb1e4ded34c8d2399015376d78e70dd958629df58b02440014051397691573"
+  },
+  "after": {
+    "tests": 780,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "junit_sha256": "312afb8a1977e3cc912d84145ef4524695229aa411cf3cf72ce094acdc4e0af3"
+  },
+  "source_sha256": {
+    "printer_control/protocol.py": "e874acd6a8f5e1be28347925f74223849d696fc19c49de471f0da763ab29db19",
+    "printer_control/machine_events.py": "7d37ce653939bf4349f39c97e1d74cea22f28b0c2ee5667f1587cdb1313c5749",
+    "tests/test_machine_events.py": "859aa4fd51de41bc87050cbb1d60a99b320f1a3ccae6441970ba15cec66672fc"
+  },
+  "cases": [
+    "partial line cannot synthesize ack or temperature",
+    "observed prompt invalidated at capture end without firmware-close claim",
+    "overlong unterminated line reports loss",
+    "completed fragments close normally",
+    "overflow preserves loss reason and invalidates observed prompt"
+  ],
+  "physical_access": false,
+  "paid_model_calls": 0,
+  "limits": [
+    "virtual hot console integration only",
+    "process death may prevent finalization",
+    "database failure may prevent durable loss record",
+    "no recovery or shutdown authority"
+  ]
+}

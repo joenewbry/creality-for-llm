@@ -1,17 +1,12 @@
-# LLM-facing printer tools and evaluation
+# Printer-control qualification and release preparation
 
-H3 builds on the streamed virtual runtime in H2f. It adds a Model Context
-Protocol (MCP) adapter, actual client/server integration tests, a bounded model
-demo runner and independent outcome evaluators. It does not add physical USB
-access or grant an LLM authority to override deterministic controls.
+H4a collects the software qualification, source/build references, prior-art
+research, contribution preparation and recovery candidate documentation for the
+preceding host stack. It includes native firmware protection regressions and a
+Linux-only terminal-ownership primitive. This is not a commissioned development
+release, and no physical printer migration is authorized by these artifacts.
 
-Tools publish structured schemas and dispatch through the same identity,
-state-version, deadline, journal and backend checks as the JSON service. The
-model can choose supported operations; it cannot issue unrestricted G-code.
-Pause, resume, cancel and stop are distinct operations with separate completion
-evidence. Unknown outcomes and physical-intervention requirements remain visible.
-
-## Reproduce without model API calls
+## Reproduce software evidence
 
 Use Python 3.11, Git and `clang++` on macOS or Linux:
 
@@ -23,22 +18,36 @@ uv pip install --python .venv/bin/python --no-deps .
 .venv/bin/python -m pytest -q tests tests_mcp tests_model tests_print_mcp
 ```
 
-The firmware repository must supply the exact commit/tree in
-`firmware-test-source.json`. Public firmware publication remains pending.
-The ordinary test command opens local virtual/native subprocesses, uses actual
-MCP clients and checks model-output evaluators against fixtures. It requires no
-model credential and makes no paid API call. Physical serial opens are denied
-by the virtual runner; native physical dependencies remain substituted.
+The firmware repository must contain the exact commit/tree in
+`firmware-test-source.json`; the public firmware fork remains unpublished.
+Native tests compile actual or extracted source functions with substituted
+physical dependencies. They are not complete firmware simulation or hardware
+qualification. The normal suite calls no paid model API.
 
-`tests/model_prompt_demo.py` is a separate, opt-in paid model demonstration.
-Its execution requires credentials, a model still available to the account,
-a task-wide spend allowance, and retained success/failure evidence. The tests
-above do not invoke it as a model run. Earlier paid-run evidence is separate
-from this boundary's qualification; no new live-model outcome is claimed here.
+Six Linux terminal-exclusivity tests are skipped on macOS. They require a Linux
+run to qualify that layer; the adapter rejects macOS before opening a device.
+The Linux tests use software terminals, not printers. Exclusion does not evict
+existing descriptors or replace device permissions and identity checks.
 
-This remains a development interface. Physical identity, production transport,
-commissioning, final release/rollback evidence and public PR/page delivery are
-unfinished. Scripted virtual temperatures and continuity do not qualify real
-printing, physical pauses or resumed extrusion. No PR has been submitted.
-Original source is AGPL-3.0-or-later; installed dependencies and separately
-fetched firmware retain their own licenses and attribution.
+## What remains before a development release
+
+- Establish the development printer's board, MCU, screen, bootloader and recovery
+  route. The currently printing printer remains protected and excluded.
+- Resolve the observed sensor problem, verify the workspace and qualify any
+  permitted non-printing motion. Keep heating/extrusion disabled for the clogged
+  test profile. No stock package is yet a validated rollback for this device.
+- Complete production USB ownership, device access isolation and controlled
+  recovery. The tested runtime is virtual-only.
+- Complete manual privacy/attribution review, publish the pinned firmware and
+  host PR stack, and update the explanatory page with actual public links.
+- Keep real printing, adhesion, extrusion and print-resume quality outside the
+  non-printing qualification until the nozzle is repaired and supervised tests
+  pass. Never migrate the protected printer as part of this project.
+
+See [recovery limits](docs/recovery.md), [interface scope](docs/interface.md),
+[prior art](docs/prior-art.md), [contribution plan](docs/contributions.md) and
+[publication checks](docs/publication.md). Each validation record pins its tested
+revision; historical successes do not qualify later untested changes. Local
+progress logs, physical-device records, recovery binaries and private Git history
+are excluded from this package. No PR submission or maintainer acceptance is
+claimed. Original host source is AGPL-3.0-or-later; third-party terms remain intact.

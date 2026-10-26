@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llm-printer-control"
+version = "0.1.0"
+description = "Typed LLM-facing virtual printer interface"
+requires-python = ">=3.11"
+license = "AGPL-3.0-or-later"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md", "licenses/*.txt"]
+
+[tool.setuptools.packages.find]
+include = ["printer_control*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[project.optional-dependencies]
+virtual = ["OctoPrint==1.11.8"]
+mcp = ["mcp==2.3.0"]
+model-demo = ["mcp==2.3.0", "openai==3.37.0"]
