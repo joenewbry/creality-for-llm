@@ -35,6 +35,22 @@ claims a physical stop. Supported prompt operations may overlap a pending
 start/pause/resume, so a firmware wait can be resolved without a second journal or
 serial reader. Unknown/fault states do not authorize bind/respond recovery.
 
+## Unqualified transport recovery
+
+The assigned sender rejects every resend request and communication-timeout
+handler invocation. It retires the shared receive/write owner before reporting
+an error and closing the logical sender. It does not inherit automatic replay,
+timeout probes, heat-wait completion or manufactured acknowledgment credit from
+the pinned sender. The diagnostic and prompt lanes share the retirement fence.
+Capabilities advertise automatic resend and timeout acknowledgment credit as
+unsupported; the separate virtual resend tests retain their original profile.
+
+A frame admitted before retirement can still have an unknown outcome. Retirement
+blocks later gated I/O and never claims motion stopped or heaters became cold.
+There is no automatic reopen, reset or queue replay. A new startup still needs
+explicit prior-state reconciliation and physical qualification. Actual hardware
+acknowledgment windows and a recoverable physical resend policy remain unfinished.
+
 ## Evidence-provider boundary
 
 The controller supplies trusted, bounded provider methods:

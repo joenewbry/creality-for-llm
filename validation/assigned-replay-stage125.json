@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-26",
+  "scope": "explicit retirement of unqualified assigned resend/timeout paths; software terminals only",
+  "source_sha256": {
+    "printer_control/assigned_sender.py": "539001b839571be47c2f99106be4a49203aed697b997facdbc0a2c689162fca1",
+    "printer_control/assigned_job.py": "b7fc40fe96b319af9d1573a5a71e4f7774d258866df7a2560b85babdd55a0d81",
+    "printer_control/tty_receiver.py": "091dcf572edceb18ab3bf635260032f1c7dc7875f73946dd11f7bb8227dc9fd2",
+    "tests/test_assigned_sender.py": "021b2521394fce3b591aeb40d4880d26a3e6d733dec6859e72fe17af3e6d9d88",
+    "tests/test_assigned_job.py": "19152ea5bb3e550c5400b5c61d7945bc5bbc0d5dd585b16aad227fc8f35d5bf2",
+    "tests/test_tty_receiver.py": "92a88e96007c66bf2a818a5188b914ef9df8136cf78d2d10257874d10ce13353",
+    "tests/test_assigned_observations.py": "9ded09d99de029446ad232450910d4bd1fe233e42ca9c3de50804cfa5b706313",
+    "tests/assigned_job_smoke.py": "022b3376518bcfda6a8501a1df3254cef354abb6b0597d123bf495d11837cb45"
+  },
+  "regression_before": {
+    "failed": 2,
+    "junit_sha256": "eb0cc8ec6cfa659f181ef0e81822132d45e6710d87b0a78ea3ebbbdf98b3e059",
+    "finding": "assigned sender inherited replay and timeout handlers from the pinned sender without an assigned acknowledgment/recovery qualification"
+  },
+  "mac_focused": {
+    "passed": 101,
+    "skipped": 8,
+    "junit_sha256": "ed86675d85cb9110192c2f1418977ea311d79e7d43a05fdb45d35561a69d4f1f"
+  },
+  "linux_intermediate_focused": {
+    "passed": 109,
+    "skipped": 0,
+    "junit_sha256": "fcca4559a766ed0ad69908e03ba76a80b3a9f5ae94a7978cc86fde75501e8936",
+    "scope": "before final fault-latch locking and explicit sendM112OnError scenario option; complete installed qualification is authoritative for frozen final inputs"
+  },
+  "linux_emergency_option_fault_cases": {
+    "passed": 2,
+    "skipped": 0,
+    "junit_sha256": "f9740098dfa715678e4b31bb156671c6165f9fbd9047982eb17e5de869340b7e",
+    "scope": "actual assigned sender with sendM112OnError enabled; source resent-line and missing-ack scenarios retire without M112 or any subsequent frames; before final fault-latch locking"
+  },
+  "covered": [
+    "no delegation to inherited resend or timeout handlers",
+    "retirement is latched before waiting for bounded in-flight I/O, and later job/prompt writes reject",
+    "an already admitted frame remains outcome unknown, not a stopped-machine claim",
+    "actual resend line remains in durable source-bound history",
+    "streamed job becomes outcome_unknown; no original modeled move replay or later wire frames",
+    "automatic resend, timeout probing, heat-wait completion and manufactured acknowledgment credit are unsupported on this assigned path"
+  ],
+  "physical_device_access": false,
+  "physical_stop_confirmed": false,
+  "firmware_flashed": false,
+  "default_launchers_virtual_only": true,
+  "paid_model_calls": 0,
+  "limits": [
+    "physical acknowledgment/recovery profile remains unqualified; separate virtual single-window resend cases retain their original scope",
+    "retiring or closing the connection cannot undo buffered movement or prove heater shutdown",
+    "exact development hardware/recovery/sensors/clearance and physical/camera integration remain unfinished"
+  ]
+}

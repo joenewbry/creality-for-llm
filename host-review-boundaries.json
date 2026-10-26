@@ -811,7 +811,8 @@
         "tests/test_assigned_observations.py": "tests/test_assigned_observations.py",
         "docs/assigned-observations.md": "docs/assigned-observations.md",
         "validation/assigned-observations-stage124.json": "validation/assigned-observations-stage124.json",
-        "validation/linux-package-stage124.json": "validation/linux-package-stage124.json"
+        "validation/linux-package-stage124.json": "validation/linux-package-stage124.json",
+        "validation/assigned-replay-stage125.json": "validation/assigned-replay-stage125.json"
       }
     }
   }

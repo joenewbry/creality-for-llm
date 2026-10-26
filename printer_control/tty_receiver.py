@@ -4,6 +4,7 @@ No device opening, background thread, reset or reconnect. Optional job copying
 must be chosen before connection construction; this is not a job backend.
 """
 import threading
+import re
 import time
 from collections import deque
 from .shared_receiver import SharedReceiveBuffer,ObservedBytes
@@ -59,6 +60,7 @@ class TTYReceiveHub:
         self._job_arrivals=deque()
         self._lock=_OrderedGate()
         self._fault=None
+        self._fault_lock=threading.Lock()
         self._job_reader_claimed=False
 
     @property
@@ -67,10 +69,14 @@ class TTYReceiveHub:
 
     @property
     def fault(self):
-        return self._fault or self._prompt.fault
+        with self._fault_lock:reason=self._fault
+        return reason or self._prompt.fault
+
+    def _latch_fault(self,reason):
+        with self._fault_lock:self._fault=self._fault or reason
 
     def _invalidate(self,reason):
-        self._fault=self._fault or reason
+        self._latch_fault(reason)
         self._jobs.clear()
         self._job_arrivals.clear()
         self._prompt.close()
@@ -170,6 +176,20 @@ class TTYReceiveHub:
                 self._invalidate('write_interrupted')
                 raise
         finally:self._lock.release()
+
+    def retire(self,reason):
+        """Latch uncertainty before waiting for an in-flight bounded I/O call.
+
+        No reset, retry or stop command. A write already in progress still has
+        an unknown outcome; all later gated reads/writes reject this owner.
+        """
+        if type(reason) is not str or not re.fullmatch(r'[a-z][a-z0-9_]{0,127}',reason):
+            raise ValueError('bounded retirement reason required')
+        self._latch_fault(reason)
+        if not self._lock.acquire(timeout=.2):return False
+        try:self._invalidate(reason)
+        finally:self._lock.release()
+        return True
 
     def close(self):
         if not self._lock.acquire(timeout=.2):raise TimeoutError('receive owner busy')

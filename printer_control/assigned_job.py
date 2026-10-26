@@ -314,7 +314,9 @@ class AssignedJobBackend:
 
     def capabilities(self):
         return dict(scope='experimental_assigned_job_adapter',physical_control_qualified=False,
-                    external_evidence_provider_required=True,evidence_scope=self.evidence_kind,unsupported=['physical_qualification','raw_gcode','reconnect','physical_setup'])
+                    external_evidence_provider_required=True,evidence_scope=self.evidence_kind,
+                    automatic_resend_supported=False,timeout_ack_credit_supported=False,
+                    transport_recovery='reconciliation_required_on_resend_or_timeout',unsupported=['physical_qualification','raw_gcode','reconnect','physical_setup'])
 
     def close(self):
         if not self._closed:

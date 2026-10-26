@@ -136,7 +136,7 @@ def test_foreign_process_is_refused_before_inherited_locks(capture,monkeypatch):
     recorder,endpoint,sender,_,_=capture
     with recorder._source_lock,recorder._condition:
         monkeypatch.setattr('os.getpid',lambda:recorder._pid+1)
-        for call in (lambda:recorder.received_hook(sender,'ok\n'),recorder.snapshot,recorder.read,recorder.close,endpoint.readline,endpoint.close):
+        for call in (lambda:recorder.received_hook(sender,'ok\n'),recorder.snapshot,recorder.read,recorder.close,endpoint.readline,endpoint.close,lambda:endpoint.retire('assigned_timeout_unqualified')):
             with pytest.raises(OSError):call()
     monkeypatch.undo()
 

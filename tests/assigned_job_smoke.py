@@ -6,7 +6,7 @@ from contextlib import ExitStack
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
-import hashlib,json,os,pty,sqlite3,sys,tempfile,threading,time,argparse
+import hashlib,json,os,pty,re,sqlite3,sys,tempfile,threading,time,argparse
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 import serial,octoprint.plugin
 from octoprint.settings import settings
@@ -69,7 +69,10 @@ def main(scenario):
         temp=Path(temp);stack.enter_context(patch.object(serial.Serial,'open',forbidden));stack.enter_context(patch.object(comm,'serialList',forbidden))
         config=settings(init=True,basedir=str(temp));config.set(['serial','logPositionOnPause'],True)
         config.set(['serial','timeout','positionLogWait'],1.);config.set(['feature','sdSupport'],False)
-        config.set(['serial','suppressSecondHello'],True);profiles=PrinterProfileManager()
+        config.set(['serial','suppressSecondHello'],True)
+        if scenario=='ack_timeout':config.set(['serial','timeout','communication'],.5)
+        if scenario in ('resend','ack_timeout'):config.set(['serial','sendM112OnError'],True)
+        profiles=PrinterProfileManager()
         defaults=VirtualPrinterPlugin().get_settings_defaults();defaults.update(enabled=True,throttle=.001,simulateReset=False,sendWait=False,commandBuffer=4,simulated_errors=[])
         virtual_settings=octoprint.plugin.plugin_settings('virtual_printer',defaults=defaults,settings=config)
         def get_hooks(name):
@@ -138,6 +141,27 @@ def main(scenario):
                 print(json.dumps({'scenario':scenario,'rejected_before_start':True,'physical_serial_open_or_discovery_attempts':len(denied)}));return
             finish('job.start',req,result)
             wait_for(lambda:peer.wait_active.is_set() if scenario=='native_prompt' else any('Recv: echo:MODEL_005' in s for s in observer.logs),'initial progress')
+            if scenario in ('resend','ack_timeout'):
+                if scenario=='resend':peer._send('Resend: 1')
+                expected_fault='assigned_resend_unqualified' if scenario=='resend' else 'assigned_timeout_unqualified'
+                wait_for(lambda:backend.prompt.receive_hub.fault==expected_fault,'assigned replay retirement',timeout=10)
+                wait_for(lambda:sender.getState()==sender.STATE_CLOSED_WITH_ERROR,'assigned sender error closure')
+                before_frames=list(bridge.frames);time.sleep(.1)
+                assert bridge.frames==before_frames
+                motion=[re.search(rb'\bG1 X[^*\r\n]+',frame)[0] for frame in bridge.frames if re.search(rb'\bG1 X[^*\r\n]+',frame)]
+                assert len(motion)==len(set(motion))
+                assert sender._send_m112_on_error and not any(b'M112' in frame for frame in bridge.frames)
+                state=router.call('job.inspect',{})
+                assert state['job_state']=='outcome_unknown' and not state['resumable']
+                assert not state['serial_reports']['source_usable']
+                wait_for(lambda:recorder.read()['events'][-1]['event']['kind']!='capture_started','captured source lines')
+                if scenario=='resend':
+                    wait_for(lambda:any(row['event']['kind']=='resend_requested' for row in recorder.read(limit=1000)['events']),'recorded resend request')
+                assert not denied and not bridge.errors and not drain_errors
+                print(json.dumps(dict(scenario=scenario,transport_fault=expected_fault,job_state=state['job_state'],
+                    physical_stop_confirmed=False,automatic_emergency_frame_emitted=False,physical_serial_open_or_discovery_attempts=len(denied),
+                    no_additional_wire_frames_after_retirement=True,no_original_move_replay=True,source_bound_serial_capture=True)))
+                return
             pause_req,pending=submit('job.pause');assert pending['status']=='running',pending
             gate.set()
             if scenario=='native_prompt':
@@ -181,5 +205,5 @@ def main(scenario):
 
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('--scenario',choices=['resume','native_prompt','cancel','denied'],required=True)
+    parser=argparse.ArgumentParser();parser.add_argument('--scenario',choices=['resume','native_prompt','cancel','denied','resend','ack_timeout'],required=True)
     main(parser.parse_args().scenario)
