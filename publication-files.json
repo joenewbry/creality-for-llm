@@ -219,6 +219,7 @@
     "tests/test_assigned_transport.py",
     "printer_control/macos_discovery.py",
     "tests/test_macos_discovery.py",
-    "validation/macos-discovery-stage108.json"
+    "validation/macos-discovery-stage108.json",
+    "validation/transport-readiness-stage110.json"
   ]
 }

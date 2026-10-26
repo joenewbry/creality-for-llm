@@ -1,0 +1,36 @@
+{
+  "scope": "authority lost during terminal readiness wait; software tests only",
+  "physical_access": false,
+  "linux_runtime": "aarch64 Python 3.10.12; focused stdlib tests, not full package >=3.11 qualification",
+  "mac_runtime": "Python 3.11.13; Linux PTY cases skipped",
+  "results": {
+    "before": {
+      "tests": "4",
+      "failures": "4",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.042",
+      "sha256": "59eff758e8a0821e8e7c41b0d530fd2df333affedbf4be7c638ae8af3c459a98"
+    },
+    "mac": {
+      "tests": "83",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "22",
+      "time": "0.088",
+      "sha256": "5b389af21019409e3bd3b4d3497e994f31d0daee73cef456558010b99236b3c7"
+    },
+    "linux": {
+      "tests": "83",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.620",
+      "sha256": "4f03c82bb8478ae9d42b4932789d13708a5414dd1f238771a3df900494b5934e"
+    }
+  },
+  "source_sha256": {
+    "printer_control/tty_transport.py": "a6a63d6e6acd51a7c811baf22aedf24063e0ec74db37d0f5be94b36099471cb9",
+    "tests/test_tty_transport.py": "64464d921f564e355c5159db4ad4e6ca2d2c757efbff783a9db738b7f68cffc0"
+  }
+}

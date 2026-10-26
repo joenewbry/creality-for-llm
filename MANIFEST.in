@@ -214,6 +214,7 @@ include validation/model-hot-stage75.json
 include validation/native-handoff-stage81.json
 include validation/native-thermal-stage78.json
 include validation/native-watch-stage79.json
+include validation/transport-readiness-stage110.json
 include validation/tty-ownership-stage89.json
 include validation/upstream-native-stage88.json
 include validation/upstream-review-stage87.json
