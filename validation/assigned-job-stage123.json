@@ -61,5 +61,6 @@
     "evidence IDs/hashes are references, not physical certificates; no actual hardware provider is supplied",
     "actual source-timed serial observation/provider, restart/reconnect, resend/saturation/shutdown and physical policy qualification remain unfinished",
     "physical board/screen/recovery, sensor/clearance and camera/mount qualification remain open"
-  ]
+  ],
+  "linux_full_qualification": "linux-package-stage123.json"
 }

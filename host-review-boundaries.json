@@ -805,7 +805,8 @@
         "tests/assigned_job_smoke.py": "tests/assigned_job_smoke.py",
         "tests/test_assigned_job.py": "tests/test_assigned_job.py",
         "docs/assigned-job.md": "docs/assigned-job.md",
-        "validation/assigned-job-stage123.json": "validation/assigned-job-stage123.json"
+        "validation/assigned-job-stage123.json": "validation/assigned-job-stage123.json",
+        "validation/linux-package-stage123.json": "validation/linux-package-stage123.json"
       }
     }
   }

@@ -1,6 +1,6 @@
 # Contribution delivery and review stack
 
-Updated October 26, 2026. Twenty-three host and six firmware pull requests are open as drafts in the owner's repositories. Each PR names its predecessor and validation evidence. They are review candidates, not merged releases or accepted upstream contributions.
+Updated October 26, 2026. Twenty-four host and six firmware pull requests are open as drafts in the owner's repositories. Each PR names its predecessor and validation evidence. They are review candidates, not merged releases or accepted upstream contributions.
 
 ## Repository relationships
 
@@ -35,6 +35,7 @@ Updated October 26, 2026. Twenty-three host and six firmware pull requests are o
 | [H12](https://github.com/joenewbry/creality-for-llm/pull/21) | Preserve buffered arrival age without weakening deadlines | `stack/h11-assigned-prompt-transport` |
 | [H13](https://github.com/joenewbry/creality-for-llm/pull/22) | One assigned receive owner and dispatch failure gate | `stack/h12-receive-arrival-age` |
 | [H14](https://github.com/joenewbry/creality-for-llm/pull/23) | Pinned sender attachment and fair bounded connection admission | `stack/h13-shared-receive-owner` |
+| [H15](https://github.com/joenewbry/creality-for-llm/pull/24) | Journaled assigned job/prompt tools and scoped evidence | `stack/h14-assigned-sender` |
 
 ## Firmware stack
 
@@ -49,7 +50,7 @@ Updated October 26, 2026. Twenty-three host and six firmware pull requests are o
 
 ## Validation and physical limits
 
-The exact public snapshot `ad596fd96d227fd6768e0fac486f62e23b979be4` passes the complete installed-package Linux aarch64/Python 3.11.13 suite: **1072 passed, zero skips**. The test corpus is outside the source tree, installed runtime bytes match the frozen export, and all 99 pinned dependencies are verified. [Current qualification](../validation/linux-package-stage122.json) includes the real pinned sender attachment and shared virtual-sender mixin. Linux focused checks pass 85; Mac checks pass 67 with 18 Linux-only skips, plus nine exporter cases. Both real-sender software-terminal scenarios complete 80 modeled moves once after pause/resume; one also clears a native wait through three journaled prompt operations. The actual pinned write method makes one attempt after an uncertain partial frame. The prior 1044-case record remains historical. Job methods in attachment tests are direct sender calls; the journaled physical job backend and commissioning remain unfinished. Later delivery commits change documentation/qualification/source-archive metadata, with tested runtime/tests/dependency inputs identical.
+The exact public snapshot `b9e70ca7fa9c4a4f360a515fff4585627a80902f` passes the complete installed-package Linux aarch64/Python 3.11.13 suite: **1103 passed, zero skips**. The test corpus is outside the source tree, runtime bytes match the frozen export, and all 99 pinned dependencies are verified. [Current qualification](../validation/linux-package-stage123.json) includes the journaled assigned job/prompt adapter. Linux focused checks pass 31; Mac checks pass 27 with four Linux-only skips, plus nine exporter cases. Two tool-driven owned-terminal jobs finish all 80 modeled moves once after source mutation, one resolving a compiled native wait during pending pause. Cancel and refused-start cases also pass. Typed evidence binds identities/operation/phase/time/scope, and ordinary progress no longer stales pause requests while paused stream changes still invalidate them. The provider reads virtual-peer state; no hardware provider or physical qualification is supplied. The prior 1072-case record remains historical. Later delivery changes are documentation/qualification/source-archive metadata; tested runtime/tests/dependency inputs remain identical.
 
 The first ten public review trees preserve their originally tested trees. [The goal audit](goal-audit.md) lists unmet requirements, and [the printing plan](printing-qualification-plan.md) separates post-repair physical testing from software qualification. The readiness-admission reference does not certify hardware or clear unknown receipts.
 
