@@ -78,7 +78,7 @@ def connection(tmp_path,actions_binary,request):
     device=Device(path,'fixture-port','fixture-instance',1,2);devices=[device]
     assignment=Assignment('dev',device,time.time()+60,'native PTY fixture only',frozenset({'excluded-location'}),frozenset({'excluded-path'}))
     journal=tmp_path/'printer.sqlite'
-    def factory(lease,*_):return TTYPromptBackend.open(assignment,lambda:devices,time.time,lambda _:False,lease)
+    def factory(lease,*_):return TTYPromptBackend.open(assignment,lambda:devices,time.time,lambda _:False,lease,copy_jobs=True)
     service=OperationService.from_backend_factory(journal,factory,
         readiness_check=lambda _:StartupAdmission('native-software-fixture',False))
     native=NativeDevice(actions_binary,master,getattr(request,'param','runtime'))
@@ -179,3 +179,39 @@ def test_peer_disconnect_retains_unknown_outcome(connection):
     native.disconnect()
     assert finish(router,pending)['status']=='outcome_unknown'
     assert router.call('printer.status',{})['channel_state']=='uncertain'
+
+
+def test_native_prompt_and_job_line_copy_share_owned_descriptor_without_consuming_each_other(connection):
+    service,router,native,_,_=connection
+    bind(router)
+    _,receipt=submit(router,'prompt.respond',{'prompt':1,'choice':0})
+    assert receipt['status']=='running'
+    lines=[]
+    end=time.monotonic()+3
+    while b''.join(lines).count(b'//llm:v1 ')<3 and time.monotonic()<end:
+        line=service.backend.receive_hub.job_readline()
+        if line:lines.append(line)
+    assert b''.join(lines).count(b'//llm:v1 ')==3
+    # The job consumer read the third receipt first. The prompt operation still
+    # completes from its own timestamped copy without another descriptor owner.
+    assert finish(router,receipt)['status']=='completed'
+    while True:
+        line=service.backend.receive_hub.job_readline()
+        if not line:break
+        lines.append(line)
+    stream=b''.join(lines)
+    assert stream.count(b'//llm:v1 ')==3 and b'STATE 0 0' in stream
+    assert len(native.frames)==3 and not service.backend.receive_hub.fault
+    assert service.backend.capabilities()['job_receive_copy_enabled']
+    assert not service.backend.capabilities()['job_sender_integrated']
+    service.backend.receive_hub.close()
+    with pytest.raises(OSError):service.backend.frame_writer.write_job(b'M400\n')
+    assert len(native.frames)==3
+
+
+@pytest.mark.parametrize('mode',[0,1,None,'yes'])
+def test_invalid_copy_mode_never_acquires_transport(monkeypatch,mode):
+    def forbidden(*a,**k):raise AssertionError('must not open')
+    monkeypatch.setattr('printer_control.tty_prompt.open_assigned_transport',forbidden)
+    with pytest.raises(ValueError):
+        TTYPromptBackend.open(SimpleNamespace(printer_id='dev'),None,lambda:10.,None,None,copy_jobs=mode)

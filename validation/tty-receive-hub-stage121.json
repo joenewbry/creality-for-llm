@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-26",
+  "scope": "assigned Linux single receive owner and optional job copy; software terminals only",
+  "source_sha256": {
+    "printer_control/tty_receiver.py": "a4f226cb67a2cbf61c3873bc9749782dbb9a8a971ada8b3f73598cb40453fec8",
+    "printer_control/tty_prompt.py": "46b359136c4c8b364d9397b6d9a4101ebe3a249d931759a598991ea95f158e0f",
+    "printer_control/tty_transport.py": "424e09523e659734e725ce5f3c932a62586b9b311219e96aff7793c237b827c0",
+    "tests/test_tty_receiver.py": "d3c836240d1810db9ef72fef32a8eea34781a6d26926a77bbc76d29161a2d7dd",
+    "tests/test_tty_prompt.py": "fe2f9c9550da1a142f1eccfdf2729928bea5c6585e2f288f5c4611a4cb1a70fd"
+  },
+  "linux_focused": {
+    "passed": 57,
+    "skipped": 0,
+    "junit_sha256": "00df81df6781cc80f7f9ae303933de7ad2c01b42de018d6bd0a8e1cb6144339a"
+  },
+  "mac_focused": {
+    "passed": 41,
+    "skipped": 16,
+    "junit_sha256": "3f67d4ce947117bb8567d0a05126eb23566eee37939dead6f5fb843a2a5aca8c"
+  },
+  "firmware_commit": "98aa03248337b8039a09bbc1a29f33432aed08ca",
+  "physical_device_access": false,
+  "job_sender_integrated": false,
+  "default_launchers_virtual_only": true,
+  "covered": [
+    "job consumer reads compiled firmware receipt first; prompt operation still completes from its copy",
+    "one native frame per journaled request, no acknowledgment or delimiter injection",
+    "arrival captured before post-read authority checks; cached bytes cannot refresh age",
+    "receive failure fences concurrent queued dispatch, partial writes never replay",
+    "cached assignment loss, malformed input, overflow and closure invalidate both lanes",
+    "prompt-only default has no unused job-copy backlog"
+  ],
+  "limits": [
+    "not an attached production sender, serial compatibility wrapper or physical job backend",
+    "no physical USB, board/screen, camera or mount qualification",
+    "read and identity callbacks must be bounded; software limits are not physical timing guarantees"
+  ],
+  "linux_full_qualification": "linux-package-stage121.json"
+}

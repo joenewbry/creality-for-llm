@@ -7,7 +7,7 @@ This development prototype includes typed tools, durable operations, virtual job
 native firmware prompt handling and bounded simulator setup controls.
 It does not yet implement a qualified hardware controller. Tests use virtual devices, software terminals and hardware substitutes; no physical printer or camera capture is controlled.
 
-Current installed-package qualification: **1019 tests passed, zero skips on Linux/Python 3.11.13** at the [public source snapshot](https://github.com/joenewbry/creality-for-llm/tree/905d0ebf19c9e01986f06bb8da8481bea476cc36). Installed runtime bytes and all 99 locked dependencies were verified. See [the qualification record](validation/linux-package-stage120.json), [goal audit](docs/goal-audit.md), [contribution stack](docs/contributions.md) and [post-repair printing plan](docs/printing-qualification-plan.md). Firmware commissioning and physical printer/camera operation remain unqualified.
+Current installed-package qualification: **1044 tests passed, zero skips on Linux/Python 3.11.13** at the [public source snapshot](https://github.com/joenewbry/creality-for-llm/tree/e05080aae70cf5270e07c97c384d911d1f7f96ca). Installed runtime bytes and all 99 locked dependencies were verified. See [the qualification record](validation/linux-package-stage121.json), [goal audit](docs/goal-audit.md), [contribution stack](docs/contributions.md) and [post-repair printing plan](docs/printing-qualification-plan.md). Firmware commissioning and physical printer/camera operation remain unqualified.
 
 ## Source layout
 
