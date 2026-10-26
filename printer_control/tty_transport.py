@@ -88,6 +88,11 @@ class TTYTransport:
             self._lock.release()
             raise
 
+    def validate_authority(self):
+        """Revalidate cached evidence without reading or exposing the descriptor."""
+        self._enter()
+        self._lock.release()
+
     def read(self, size=4096):
         if type(size) is not int or not 1 <= size <= 65536:
             raise ValueError('bounded positive read size required')

@@ -78,9 +78,9 @@ physical checks and a qualified recovery procedure remain separate work.
 and `PromptChannel` with the same journal lease acquired by
 `OperationService.from_backend_factory`. Validate identity and protocol options
 before acquiring a descriptor. A fresh random host generation does not authorize
-reset, rebind or replay of an existing firmware session. The receive path is the
-sole prompt consumer; future job integration needs one coordinated receive fanout,
-not a second reader. Default launchers remain virtual-only.
+reset, rebind or replay of an existing firmware session. The receive owner now provides coordinated timestamped prompt and optional job
+line copies; the actual job sender attachment remains unfinished. See
+[assigned sender integration](tty-sender-integration.md). Default launchers remain virtual-only.
 
 Native tests use Linux software terminals connected to the actual compiled pinned
 firmware handlers. Journal claims precede each wire frame; exact duplicate calls
