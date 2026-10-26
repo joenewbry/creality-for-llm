@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-26",
+  "scope": "pinned real sender attached to an owned Linux software terminal; not a physical job backend",
+  "source_sha256": {
+    "printer_control/assigned_sender.py": "c74db0036f201fd4a385d7029d00c92bf12e7bbf03af1b2e111524c08640cb60",
+    "printer_control/octoprint_sender.py": "24257a6d3683a2d1b3e817586d77cf282e9493e0cc869ba18f320fbbab7b0395",
+    "printer_control/tty_receiver.py": "bbb199be76fbf3818cab508bcb63be231d8eb0d6b7981149c2e22ba1d980fee0",
+    "tests/assigned_sender_smoke.py": "48f1d16f0132d01ea0951f4a34b83130fbab6898db6971b1af525cb4916fc4d4",
+    "tests/test_assigned_sender.py": "748e36d1d176fc4ce29f790378b60129bfe66f59b1cc7ee170a30a86cc0a4586",
+    "tests/test_tty_receiver.py": "b7bf42900b24dc30dea89dcd7464812b11b0b944e4ca9cc0b7381d56739d8be6"
+  },
+  "linux_focused": {
+    "passed": 85,
+    "skipped": 0,
+    "junit_sha256": "a48f875a5d6c4ec3c80b9b9d9a72b24efa106f4f8d1064c9a23d7c0344ed8004"
+  },
+  "mac_focused": {
+    "passed": 67,
+    "skipped": 18,
+    "junit_sha256": "60ee8f7186728fb4aae6fe013c84ac19c4d50afa4608802409c378126ebae89e"
+  },
+  "sender_version": "OctoPrint 1.11.8",
+  "firmware_commit": "98aa03248337b8039a09bbc1a29f33432aed08ca",
+  "physical_device_access": false,
+  "journaled_physical_job_backend_implemented": false,
+  "default_launchers_virtual_only": true,
+  "integration_scenarios": [
+    {
+      "name": "resume",
+      "completed_moves_once_in_order": 80,
+      "native_prompt_receipts": 0,
+      "physical_serial_open_or_discovery_attempts": 0
+    },
+    {
+      "name": "native_prompt",
+      "completed_moves_once_in_order": 80,
+      "native_prompt_receipts": 3,
+      "physical_serial_open_or_discovery_attempts": 0
+    }
+  ],
+  "covered": [
+    "one explicit endpoint bypasses serial factories/openers and refuses reopen/autodetection",
+    "sender claims descriptor reads; prompt consumer drains timestamped copies without reading",
+    "bounded FIFO gate prevents polling readers overtaking a waiting writer",
+    "actual pinned write method emits one attempt and no suffix after partial write",
+    "real sender pause/resume and native prompt tools over one software terminal"
+  ],
+  "diagnoses": [
+    "initial endpoint authority check outside connection gate raced the descriptor reader; moved checks to existing shared gate",
+    "polling reader reacquired unfair lock ahead of waiting writes; bounded FIFO admission replaces unfair acquisition"
+  ],
+  "limits": [
+    "isolated fixture settings/hooks; no existing printer service or global production configuration changed",
+    "job methods in attachment tests are direct sender calls, not journaled job tools",
+    "physical job backend needs immutable staging, state/sensor/configuration gates, observations/checkpoints and qualified shutdown/restart",
+    "endpoint timeout field is logical sender deadline configuration; actual reads are bounded transport polls",
+    "actual board/processor/screen/recovery, sensor, clearance, USB isolation, camera and mount remain unqualified"
+  ]
+}

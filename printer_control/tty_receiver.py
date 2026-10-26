@@ -4,7 +4,43 @@ No device opening, background thread, reset or reconnect. Optional job copying
 must be chosen before connection construction; this is not a job backend.
 """
 import threading
+import time
+from collections import deque
 from .shared_receiver import SharedReceiveBuffer
+
+
+class _OrderedGate:
+    """Bounded FIFO admission; polling readers cannot overtake waiting writes."""
+    def __init__(self):
+        self._condition=threading.Condition()
+        self._waiters=deque()
+        self._owner=None
+
+    def acquire(self,timeout):
+        end=time.monotonic()+timeout
+        token=object()
+        with self._condition:
+            if len(self._waiters)>=64:return False
+            self._waiters.append(token)
+            try:
+                while self._owner is not None or self._waiters[0] is not token:
+                    remaining=end-time.monotonic()
+                    if remaining<=0:return False
+                    self._condition.wait(remaining)
+                if time.monotonic()>=end:return False
+                self._waiters.popleft()
+                self._owner=threading.get_ident()
+                return True
+            finally:
+                if token in self._waiters:
+                    self._waiters.remove(token)
+                    self._condition.notify_all()
+
+    def release(self):
+        with self._condition:
+            if self._owner!=threading.get_ident():raise RuntimeError('connection gate not owned')
+            self._owner=None
+            self._condition.notify_all()
 
 
 class TTYReceiveHub:
@@ -20,8 +56,9 @@ class TTYReceiveHub:
         self._copy_jobs=copy_jobs
         self._capacity=capacity
         self._jobs=bytearray()
-        self._lock=threading.Lock()
+        self._lock=_OrderedGate()
         self._fault=None
+        self._job_reader_claimed=False
 
     @property
     def job_lane_enabled(self):
@@ -71,11 +108,21 @@ class TTYReceiveHub:
             # First drain captured bytes; do not wait on the descriptor when a
             # sender read already supplied evidence. Preserve original arrival age.
             batch=self._prompt.drain_observed()
-            if not batch.data:
+            if not batch.data and not self._job_reader_claimed:
                 self._pump()
                 batch=self._prompt.drain_observed()
             self._check()
             return batch
+        finally:self._lock.release()
+
+    def claim_job_reader(self):
+        """One-way handoff: sender reads the descriptor; prompts drain copies."""
+        if not self._copy_jobs:raise ValueError('job receive lane not enabled')
+        if not self._lock.acquire(timeout=.2):raise TimeoutError('connection owner busy')
+        try:
+            self._check()
+            if self._job_reader_claimed:raise ValueError('job reader already claimed')
+            self._job_reader_claimed=True
         finally:self._lock.release()
 
     def job_readline(self):

@@ -1,13 +1,8 @@
-"""Pinned OctoPrint 1.11.8 integration adjustment, virtual connections only."""
+"""Pinned OctoPrint 1.11.8 sender behavior; transports retain their own gates."""
 from octoprint.util.comm import MachineCom
 
 
-class VirtualSender(MachineCom):
-    def __init__(self, *args, **kwargs):
-        if args or kwargs.get('port') != 'VIRTUAL':
-            raise ValueError('explicit VIRTUAL connection required')
-        super().__init__(**kwargs)
-
+class PositionWakeMixin:
     def sendCommand(self, cmd, cmd_type=None, part_of_job=False, processed=False,
                     force=False, on_sent=None, tags=None):
         result = super().sendCommand(cmd, cmd_type=cmd_type, part_of_job=part_of_job,
@@ -20,3 +15,10 @@ class VirtualSender(MachineCom):
             # the normal send loop still waits for real acknowledgment credit.
             self._continue_sending()
         return result
+
+
+class VirtualSender(PositionWakeMixin,MachineCom):
+    def __init__(self, *args, **kwargs):
+        if args or kwargs.get('port') != 'VIRTUAL':
+            raise ValueError('explicit VIRTUAL connection required')
+        super().__init__(**kwargs)

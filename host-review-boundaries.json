@@ -795,7 +795,11 @@
         "tests/test_tty_receiver.py": "tests/test_tty_receiver.py",
         "docs/tty-sender-integration.md": "docs/tty-sender-integration.md",
         "validation/tty-receive-hub-stage121.json": "validation/tty-receive-hub-stage121.json",
-        "validation/linux-package-stage121.json": "validation/linux-package-stage121.json"
+        "validation/linux-package-stage121.json": "validation/linux-package-stage121.json",
+        "printer_control/assigned_sender.py": "printer_control/assigned_sender.py",
+        "tests/assigned_sender_smoke.py": "tests/assigned_sender_smoke.py",
+        "tests/test_assigned_sender.py": "tests/test_assigned_sender.py",
+        "validation/assigned-sender-stage122.json": "validation/assigned-sender-stage122.json"
       }
     }
   }
