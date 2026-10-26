@@ -149,3 +149,26 @@ def test_authority_lost_during_write_leaves_one_attempt_and_no_replay():
     valid[0]=True
     with pytest.raises(OSError):hub.write_frame(write,b'M400\n')
     assert len(writes)==1 and hub.fault=='authority_lost'
+
+
+def test_claimed_job_reader_leaves_prompt_poll_passive_and_cannot_be_claimed_twice():
+    hub,reads,now,_=make([b'ok\n'])
+    hub.claim_job_reader()
+    assert hub.prompt_pump().data==b'' and not reads
+    assert hub.job_readline()==b'ok\n'
+    now[0]=16.;batch=hub.prompt_pump()
+    assert batch.observed_at==10. and batch.data==b'ok\n' and len(reads)==1
+    with pytest.raises(ValueError):hub.claim_job_reader()
+
+
+def test_expired_gate_waiter_does_not_block_a_successor():
+    from printer_control.tty_receiver import _OrderedGate
+    gate=_OrderedGate();assert gate.acquire(timeout=.1)
+    results=[]
+    first=threading.Thread(target=lambda:results.append(gate.acquire(timeout=.01)))
+    first.start();first.join(1);assert not first.is_alive() and results==[False]
+    acquired=threading.Event()
+    def successor():
+        if gate.acquire(timeout=.5):acquired.set();gate.release()
+    second=threading.Thread(target=successor);second.start();gate.release()
+    second.join(1);assert not second.is_alive() and acquired.is_set()

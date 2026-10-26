@@ -68,6 +68,7 @@ include licenses/mcp-LICENSE.txt
 include licenses/openai-LICENSE.txt
 include licenses/pytest-LICENSE.txt
 include printer_control/__init__.py
+include printer_control/assigned_sender.py
 include printer_control/camera.py
 include printer_control/camera_http.py
 include printer_control/camera_owner.py
@@ -121,6 +122,7 @@ include scripts/export_review.py
 include scripts/prepare_firmware.py
 include scripts/prepare_review_boundary.py
 include sources.json
+include tests/assigned_sender_smoke.py
 include tests/hot_fixture_router.py
 include tests/hot_pause_faults.py
 include tests/hot_resume_scenario.py
@@ -141,6 +143,7 @@ include tests/native_wait_bridge.py
 include tests/octoprint_virtual_smoke.py
 include tests/restore_serial_scenario.py
 include tests/stream_disconnect_scenario.py
+include tests/test_assigned_sender.py
 include tests/test_assigned_transport.py
 include tests/test_camera.py
 include tests/test_camera_http.py
@@ -220,6 +223,7 @@ include tests_print_mcp/test_virtual_faults.py
 include tests_print_mcp/test_virtual_job_mcp.py
 include tests_print_mcp/test_virtual_setup_mcp.py
 include tests_print_mcp/test_virtual_stop_evidence.py
+include validation/assigned-sender-stage122.json
 include validation/camera-broker-stage114.json
 include validation/camera-owner-api-stage117.json
 include validation/camera-owner-http-stage116.json
@@ -242,6 +246,7 @@ include validation/linux-package-stage118.json
 include validation/linux-package-stage119.json
 include validation/linux-package-stage120.json
 include validation/linux-package-stage121.json
+include validation/linux-package-stage122.json
 include validation/machine-events-stage84.json
 include validation/macos-discovery-stage108.json
 include validation/model-hot-stage75.json

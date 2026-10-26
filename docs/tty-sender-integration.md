@@ -30,8 +30,8 @@ software bounds, not measured physical USB response guarantees. Queue capacity
 is bounded, default 64 KiB per copy, and job line content is at most 2048 bytes.
 An enabled job copy needs an active consumer; unread overflow is an explicit fault.
 Both enabled copies must be drained independently of LLM tool-call frequency.
-The future sender attachment needs a coordinated prompt-processing loop; this
-module creates no background consumer. A receive fault is not evidence that
+The enclosing controller needs a coordinated prompt-processing loop; the
+receive hub creates no background consumer. A receive fault is not evidence that
 motion or heaters stopped.
 
 ## Evidence
@@ -45,13 +45,35 @@ and a subsequent receive closure prevents another writer attempt.
 
 See `validation/tty-receive-hub-stage121.json`. No physical printer was accessed.
 
-## Remaining production work
+## Pinned sender attachment
 
-Attach the real sender's serial interface to these endpoints without adding
-another reader or reopening the descriptor. Qualify its startup/handshake,
-acknowledgment credit, resend policy, barriers, job staging/checkpoints, pause and
-restoration, shutdown and process-death behavior through the same connection.
-The existing virtual sender remains the qualified job path; no physical job tools
-or default physical launcher are enabled here. Exact board/processor/screen and
-recovery, sensor diagnosis, driver/device isolation and physical commissioning
-remain prerequisites for actual printer access. Camera ownership is separate.
+Sender attachment qualification uses one explicit 115200 endpoint and an isolated
+OctoPrint 1.11.8 runtime. The subclass bypasses both plugin serial factories and
+the default pySerial opener; automatic discovery and reopening are refused.
+The endpoint implements only this pinned sender contract. Logical timeout values
+are stored for its communication deadlines, while readline returns complete LF
+lines after a bounded transport poll. Baud changes, raw prompt commands through
+the job lane and partial frame retries are refused. Sender close retires both
+receive copies; the controller retains the descriptor and lease until cleanup.
+
+The sender takes the descriptor-reader role once; prompt processing becomes a
+passive copy consumer. Both copies still require coordinated draining. The gate
+uses bounded FIFO admission so a polling reader cannot repeatedly overtake a
+waiting writer. Metadata authority checks run inside this gate, rather than racing
+an independently held descriptor lock.
+
+A software-only integration uses the actual sender over a Linux owned terminal
+to the OctoPrint virtual firmware peer. Both runs pause/resume and complete all 80
+original modeled moves once. One run also clears a compiled native firmware wait
+through journaled prompt tools while sender pause is pending. Native prompt
+requests are deduplicated. Physical serial opens and discovery/fallback factories
+are denied for the entire experiment. Job methods in these tests are sender calls,
+not journaled job tools; no physical job backend is supplied or commissioned.
+
+Real production integration still requires a job backend with immutable staging,
+state/sensor/configuration gates, transport observations, qualified checkpoints,
+shutdown/restart handling, acknowledgment/resend/barrier and queue-saturation
+qualification, plus fixed isolated settings/hooks/scripts. The
+existing virtual backend deliberately refuses this endpoint. No default launcher
+or existing printer service changes. Board/processor/screen/recovery, sensor,
+clearance, actual USB driver/device isolation and camera qualification remain open.
