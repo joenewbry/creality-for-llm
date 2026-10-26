@@ -1,6 +1,6 @@
 # Contribution delivery and review stack
 
-Updated October 26, 2026. Eighteen host and six firmware pull requests are open as drafts in the owner's repositories. Each PR names its predecessor and validation evidence. They are review candidates, not merged releases or accepted upstream contributions.
+Updated October 26, 2026. Nineteen host and six firmware pull requests are open as drafts in the owner's repositories. Each PR names its predecessor and validation evidence. They are review candidates, not merged releases or accepted upstream contributions.
 
 ## Repository relationships
 
@@ -35,6 +35,8 @@ Updated October 26, 2026. Eighteen host and six firmware pull requests are open 
 
 | [H9](https://github.com/joenewbry/creality-for-llm/pull/18) | Capture-owner API with atomic frame and control evidence | `stack/h8-capture-owner-http` |
 
+| [H10](https://github.com/joenewbry/creality-for-llm/pull/19) | Lease-first backend startup and full goal audit | `stack/h9-capture-owner-api` |
+
 ## Firmware stack
 
 | PR | Focus | Depends on base branch |
@@ -48,7 +50,9 @@ Updated October 26, 2026. Eighteen host and six firmware pull requests are open 
 
 ## Validation and physical limits
 
-The full installed-package suite on Linux aarch64/Python 3.11.13/Clang 15.0.7 passed 876 tests with zero skips. [Pinned qualification](../validation/linux-package-stage111.json) retains initial failures and focused correction evidence. The first ten public review trees match their tested local review trees exactly; later PRs carry their own explicit qualification scopes, including the post-Linux camera additions. The public-source focused Mac check passed 55 tests with 16 Linux-only skips. These tests use virtual printers, native hardware substitutes and software terminals.
+The exact public snapshot `b627601c3b7e614cf43706fbca189b4610fa0c69` passes the complete installed-package Linux aarch64/Python 3.11.13 suite: **986 passed, zero skips**. The test corpus is outside the source tree, every installed runtime file matches the frozen export, and all 99 locked dependencies are verified. [Current qualification](../validation/linux-package-stage118.json) includes the cameras and lease-first startup path. A prior development snapshot also passed 986; the public run retains the `virtual` packaging extra. Mac focused service/prompt/pause/crash/camera/export checks pass 230 cases with one Linux-only skip. Later delivery changes are documentation and qualification metadata; runtime/test/build bytes match the tested public snapshot. Older 876-case and focused camera records retain their original scopes.
+
+The first ten public review trees preserve their originally tested trees. [The goal audit](goal-audit.md) lists unmet requirements, and [the printing plan](printing-qualification-plan.md) separates post-repair physical testing from software qualification. The readiness-admission reference does not certify hardware or clear unknown receipts.
 
 The development board, processor, screen, recovery procedure and sensor fault remain unresolved. No firmware is flashed and no physical production adapter is commissioned. The protected active printer remains excluded. The broker, pinned HTTP/TLS client and owner-side API pass 147 focused source/export checks and 138 camera/tool/service checks against an installed wheel. The owner module is not deployed; native acquisition/control callbacks, identity/clock/profile evidence and device isolation remain unqualified. the original CAD prototype passes four mesh checks and two conditional viewing checks, with all physical qualification flags false.
 
