@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "boundary": "H2a",
-  "source_commit": "3d6553704f16a4e612b470317e68f8667eb596a0",
+  "boundary": "H2b",
+  "source_commit": "b764a19584d97c0a5dfc67d23a493d6af683c6c6",
   "publication_ready": false,
   "files": [
     {
@@ -18,9 +18,9 @@
     },
     {
       "path": "README.md",
-      "source_path": "contributions/host-observations/README.md",
-      "sha256": "3e2ff477048a035b5ce81ec07bbc2b6adb69a3123c4967539ff830b23df20033",
-      "bytes": 1997
+      "source_path": "contributions/host-prompt-transport/README.md",
+      "sha256": "158bb53529787c3680c65f09d3a14ea1efc82fbf1355713fe9b0f40ead7bbbbd",
+      "bytes": 2366
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -107,6 +107,18 @@
       "bytes": 2297
     },
     {
+      "path": "printer_control/prompt_backend.py",
+      "source_path": "printer_control/prompt_backend.py",
+      "sha256": "ef3b1ae01cdcb1c99506e04b95d1ec1efb9e7307f26f717c6398ea83553302bc",
+      "bytes": 9537
+    },
+    {
+      "path": "printer_control/prompt_channel.py",
+      "source_path": "printer_control/prompt_channel.py",
+      "sha256": "9670008d25813cc99e693b64f9c926807dfa11fdf1a29cee458ea0d35a46a249",
+      "bytes": 8364
+    },
+    {
       "path": "printer_control/prompt_wire.py",
       "source_path": "printer_control/prompt_wire.py",
       "sha256": "b2b671cb6ade66c8d7f52a1e6f93a0608f4ef74f0d206a0a461388905e14d755",
@@ -125,10 +137,22 @@
       "bytes": 11336
     },
     {
+      "path": "printer_control/shared_receiver.py",
+      "source_path": "printer_control/shared_receiver.py",
+      "sha256": "7dcba8164baccbde9dd157f37854e8a32c6c1fa9fc4ca500841da5f363bf581b",
+      "bytes": 2005
+    },
+    {
+      "path": "printer_control/shared_writer.py",
+      "source_path": "printer_control/shared_writer.py",
+      "sha256": "d62e41d6637004531e73fe3be911889c8f497758149bce4d83afd324667400f8",
+      "bytes": 2274
+    },
+    {
       "path": "pyproject.toml",
-      "source_path": "contributions/host-core/pyproject.toml",
-      "sha256": "98aaaa675647eb038917d90976d83a09d6c064c532496155936891477632ea65",
-      "bytes": 476
+      "source_path": "contributions/host-prompt-transport/pyproject.toml",
+      "sha256": "adbd288c3161dce6a726ba0ffab93f971470709556b06459da9d24fd96df8f53",
+      "bytes": 478
     },
     {
       "path": "scripts/prepare_firmware.py",
@@ -179,6 +203,18 @@
       "bytes": 2220
     },
     {
+      "path": "tests/test_prompt_backend.py",
+      "source_path": "tests/test_prompt_backend.py",
+      "sha256": "e12ac10b87c8c1ed30d4198d79cf83063648358c68e48b54a7e1f10072b33904",
+      "bytes": 13001
+    },
+    {
+      "path": "tests/test_prompt_channel.py",
+      "source_path": "tests/test_prompt_channel.py",
+      "sha256": "c103ed3c4295b4fe9cbe2d40b9e8cd4f6c86870cac023ac51bce2822af3e9378",
+      "bytes": 9060
+    },
+    {
       "path": "tests/test_prompt_wire.py",
       "source_path": "tests/test_prompt_wire.py",
       "sha256": "474cc72cca09d68b7c8cf579e66a4098af3b71f51107c1973849e23ca50f62a9",
@@ -195,6 +231,18 @@
       "source_path": "tests/test_service.py",
       "sha256": "b4a9db9ee8e61887bec0e7daca5b13d235e27446b62dd67c573c7e5e826b3f6f",
       "bytes": 10494
+    },
+    {
+      "path": "tests/test_shared_receiver.py",
+      "source_path": "tests/test_shared_receiver.py",
+      "sha256": "7be01297fd99eadc75bd5f2c3a1797e903d1229057c29944d6a47a2170161070",
+      "bytes": 2308
+    },
+    {
+      "path": "tests/test_shared_writer.py",
+      "source_path": "tests/test_shared_writer.py",
+      "sha256": "815942b859ceefbc68caa749457868a05f12cff3c05d5225086a8e120d435afc",
+      "bytes": 3887
     }
   ]
 }

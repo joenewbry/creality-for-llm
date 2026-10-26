@@ -1,14 +1,21 @@
-# Printer observations and prompt protocol
+# Correlated prompt transport
 
-This H2a review boundary builds on H1's typed operation core. It adds bounded
-Marlin serial parsing, prompt-wire encoding/decoding and asynchronous journaled
-machine events. Observations do not grant permission to resume or dismiss a
-fault. Acknowledgments alone do not prove physical completion.
+This H2b review boundary builds on H2a's observations and H1's operation core.
+It adds a shared complete-frame writer, bounded receive-copy buffer, prompt
+session channel and durable prompt-operation backend. No physical device opener
+or production printer adapter is included.
 
-Capture has a bounded queue and retention window. Overflow, truncated final
-lines and persistence failures are explicit. Closing capture invalidates local
-prompt observations without claiming the firmware closed its prompt. The caller
-must retain controller ownership until the capture worker has stopped.
+The writer prevents frame interleaving and rejects prompt responses sent through
+the ordinary job-command entry point. An interrupted, partial or unconfirmed
+write latches uncertainty. The receive hook returns the sender's original reply;
+its independent copy is bounded and a loss invalidates the channel. These
+components cannot enforce ownership if an enclosing sender bypasses them.
+
+Prompt responses bind to a negotiated session, request and exact prompt token.
+Only the generic one-button user-wait profile is supported. Stale tokens,
+unsupported choices, faulted channels and uncertain completion remain blocked.
+A successful prompt receipt means the tested firmware wait flag cleared; it does
+not mean a print resumed or that physical intervention is complete.
 
 ## Reproduce
 
@@ -22,18 +29,18 @@ uv pip install --python .venv/bin/python --no-deps .
 .venv/bin/python -m pytest -q tests
 ```
 
-The firmware repository must contain the exact commit and tree in
-`firmware-test-source.json`. The public fork is not yet published. Preparation
-creates an independent checkout and refuses an existing destination; no upload
-or printer connection occurs. The native harness compiles copied production
-prompt handlers with substituted hardware dependencies. It checks token/session
-identity, malformed frames, stale responses, supported choices and selected
-screen/wait handlers. This is not a full firmware simulation or touchscreen test.
+The reviewed repository must contain the commit/tree in
+`firmware-test-source.json`; the public fork is not published yet. The native
+harness runs actual firmware prompt functions with physical dependencies
+substituted. Channel/backend tests exchange frames with this harness through
+process pipes, not USB. Writer tests also force partial writes and concurrent
+calls. Tests do not connect to a printer, require credentials or invoke a model.
 
-The software capture tests require no physical device. No backend connects these
-modules to a physical printer in this boundary. Virtual job execution, powered
-pause/resume integration, setup/maintenance, the LLM tool server and physical
-commissioning remain later review work. No PR has been submitted.
+Virtual jobs, powered-pause/restore execution, setup/maintenance, the LLM server
+and physical commissioning remain later review units. The enclosing transport
+must establish device identity, exclusive ownership and its permitted profile
+before adopting these components. No reconnect or automatic fault recovery is
+provided. No PR has been submitted.
 
-Original host source is AGPL-3.0-or-later. Native firmware source retains its own
-GPL terms and is fetched separately; third-party notices remain included.
+Original host source is AGPL-3.0-or-later. Native firmware retains its GPL terms
+and is fetched separately; third-party notices are included.
