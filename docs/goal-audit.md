@@ -37,7 +37,7 @@ full-suite run.
 | Publication | Owned explanation page, architecture, platform/repository distinctions, PR dependencies and screenshot review | Firmware commissioning or an accepted upstream release |
 
 The [current installed Linux qualification](../validation/linux-package-stage118.json)
-passes 986 tests with zero skips at source `3536d3f`, including the camera and
+passes 986 tests with zero skips at public source `b627601`, including the camera and
 startup additions. The earlier 876-case record remains historical. Subsequent
 delivery changes are documentation/qualification metadata only. Neither test counts nor a successful source
 export prove physical readiness.
