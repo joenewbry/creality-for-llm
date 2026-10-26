@@ -7,6 +7,7 @@ responsibility. Only generic user-wait choice zero is implemented here.
 from dataclasses import asdict
 import threading
 
+from .shared_receiver import ObservedBytes
 from .journal import RequestRejected
 from .service import Context, Outcome
 
@@ -76,6 +77,9 @@ class PromptBackend:
         now = self.clock()
         if lost:
             self.channel.invalidate('receive_stream_unavailable', now=now)
+        elif isinstance(data, ObservedBytes):
+            if data.data:self.channel.feed(data.data, now=now, received_at=data.observed_at)
+            else:self.channel.tick(now)
         elif data:
             self.channel.feed(data, now=now)
         else:

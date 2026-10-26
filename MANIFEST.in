@@ -243,6 +243,7 @@ include validation/model-hot-stage75.json
 include validation/native-handoff-stage81.json
 include validation/native-thermal-stage78.json
 include validation/native-watch-stage79.json
+include validation/receive-arrival-stage120.json
 include validation/service-startup-stage118.json
 include validation/streamed-host-restart-stage109.json
 include validation/transport-readiness-stage110.json

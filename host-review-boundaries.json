@@ -788,7 +788,8 @@
         "printer_control/tty_prompt.py": "printer_control/tty_prompt.py",
         "tests/test_tty_prompt.py": "tests/test_tty_prompt.py",
         "validation/tty-prompt-stage119.json": "validation/tty-prompt-stage119.json",
-        "validation/linux-package-stage119.json": "validation/linux-package-stage119.json"
+        "validation/linux-package-stage119.json": "validation/linux-package-stage119.json",
+        "validation/receive-arrival-stage120.json": "validation/receive-arrival-stage120.json"
       }
     }
   }
