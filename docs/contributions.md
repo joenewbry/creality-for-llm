@@ -31,9 +31,7 @@ Updated October 26, 2026. Twenty-one host and six firmware pull requests are ope
 | [H8](https://github.com/joenewbry/creality-for-llm/pull/17) | Bounded capture-owner HTTP client and frame invalidation | `stack/h7-upstream-contribution` |
 | [H9](https://github.com/joenewbry/creality-for-llm/pull/18) | Capture-owner API with atomic frame and control evidence | `stack/h8-capture-owner-http` |
 | [H10](https://github.com/joenewbry/creality-for-llm/pull/19) | Lease-first backend startup and full goal audit | `stack/h9-capture-owner-api` |
-
 | [H11](https://github.com/joenewbry/creality-for-llm/pull/20) | Assigned Linux prompt connection and post-read receipt deadlines | `stack/h10-startup-and-audit` |
-
 | [H12](https://github.com/joenewbry/creality-for-llm/pull/21) | Preserve buffered arrival age without weakening deadlines | `stack/h11-assigned-prompt-transport` |
 
 ## Firmware stack
