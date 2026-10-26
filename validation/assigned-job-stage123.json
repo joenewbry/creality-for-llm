@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-26",
+  "scope": "journaled job/prompt adapter over owned Linux software terminal with explicit software-only evidence provider",
+  "source_sha256": {
+    "printer_control/assigned_job.py": "af2a7d054c4191b6f8b1dd4c7248a5764ae7f4d4d2d4a42d1adeaa056b3b4f9e",
+    "tests/assigned_job_smoke.py": "37cf85056b6c7a76774e35070295e694ba1fb069f6e8619a717d5171d9915b26",
+    "tests/test_assigned_job.py": "81b87970cae8b9a3aa291ea013114eb01975302cd37f86495ee3e8c5af129a80"
+  },
+  "linux_focused": {
+    "passed": 31,
+    "skipped": 0,
+    "junit_sha256": "dda4880aa8fb13eb090d2b7701388ef0edc244414a039a8e77acce1904b231c4"
+  },
+  "mac_focused": {
+    "passed": 27,
+    "skipped": 4,
+    "junit_sha256": "f6d03baf2a185b38b7903833f77d60c3987f63169ebd875e89b83adb2a4344e3"
+  },
+  "firmware_commit": "98aa03248337b8039a09bbc1a29f33432aed08ca",
+  "physical_device_access": false,
+  "physical_evidence_provider_implemented": false,
+  "default_launchers_virtual_only": true,
+  "scenarios": [
+    {
+      "name": "resume",
+      "modeled_moves_once_in_order": 80,
+      "source_changed_after_stage": true
+    },
+    {
+      "name": "native_prompt",
+      "modeled_moves_once_in_order": 80,
+      "native_prompt_frames": 3,
+      "one_journal": true
+    },
+    {
+      "name": "cancel",
+      "cancel_while_paused": true,
+      "full_print_claimed": false
+    },
+    {
+      "name": "denied",
+      "unqualified_start_rejected_before_job_dispatch": true
+    }
+  ],
+  "covered": [
+    "immutable staged bytes and source/staged hash checks; duplicate requests do not redispatch",
+    "start/resume/cancel and final completion require job/host/generation/operation/phase/time/scope-bound typed evidence, not bare boolean or sender state",
+    "pause requires complete fresh checkpoint or returns unknown and refuses resume",
+    "deadlines and provider exceptions remain unknown; no physical stop claim",
+    "owned cancellation remains available after staged-file corruption",
+    "stream progress does not stale pause requests; paused stream changes still advance expected state version"
+  ],
+  "regression": {
+    "symptom": "every queued streaming command changed control state version, intermittently rejecting otherwise current pause requests",
+    "baseline_junit_sha256": "2bc87ee5ff2f6fd3c3b82e76ff141ad85983b3f3295b59ddadd6dd3b79c7c4c3",
+    "fixed": "stream epoch participates in expected-state validation while paused; job/control/prompt/fault changes still update the version"
+  },
+  "limits": [
+    "evidence test provider reads private virtual-peer fields and labels all facts software_only_virtual_peer",
+    "evidence IDs/hashes are references, not physical certificates; no actual hardware provider is supplied",
+    "actual source-timed serial observation/provider, restart/reconnect, resend/saturation/shutdown and physical policy qualification remain unfinished",
+    "physical board/screen/recovery, sensor/clearance and camera/mount qualification remain open"
+  ]
+}

@@ -266,6 +266,11 @@
     "tests/assigned_sender_smoke.py",
     "tests/test_assigned_sender.py",
     "validation/assigned-sender-stage122.json",
-    "validation/linux-package-stage122.json"
+    "validation/linux-package-stage122.json",
+    "printer_control/assigned_job.py",
+    "tests/assigned_job_smoke.py",
+    "tests/test_assigned_job.py",
+    "docs/assigned-job.md",
+    "validation/assigned-job-stage123.json"
   ]
 }
