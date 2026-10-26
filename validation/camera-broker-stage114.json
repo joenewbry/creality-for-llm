@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-26",
+  "scope": "camera software broker with injected capture-owner fixture; no live acquisition",
+  "passed": 92,
+  "skipped": 0,
+  "command": "python -m pytest -q tests/test_camera.py tests/test_tools.py tests/test_service.py tests/test_export_review.py",
+  "covered": [
+    "real MCP client/server memory-stream exchange",
+    "frame identity/generation/printer/job association and freshness",
+    "bounded encoded frame bytes, signatures, dimensions and provenance hashes",
+    "durable control intent/dispatch/readback and duplicate receipts",
+    "concurrent duplicate writes dispatch once",
+    "uncertain control effects block further mutation across broker restart",
+    "journal binding, canonical-path lease and printer journal protection",
+    "expired or reassigned capture invalidates observations"
+  ],
+  "not_qualified": [
+    "live Logitech capture or native host controls",
+    "OS camera device-access isolation or backend deadlines",
+    "camera clock calibration, image decoding or optical quality",
+    "physical mount fit/clearance/visibility",
+    "image fault detection or automatic printer intervention"
+  ],
+  "initial_failures": [
+    "MCP test attempted unsupported SDK internals; replaced with actual SDK client/server memory streams",
+    "source archive manifest additions were unsorted; regenerated in allowlist order and reran full focused suite"
+  ],
+  "physical_device_access": false,
+  "paid_model_calls": 0,
+  "source_sha256": {
+    "printer_control/camera.py": "f252c1a3a7fd98f1190deafb4e5878acf871e573ad17c37488ad8b2b580eabd1",
+    "tests/test_camera.py": "d09f1f566f87527a459b6db896b82551c4bd3fd67c96f55baefeb0f16fb4f89c"
+  },
+  "installed_wheel": {
+    "passed": 83,
+    "skipped": 0,
+    "scope": "camera, shared tool and operation-service tests; exporter tests require source and are counted separately",
+    "source_import_excluded": true,
+    "module_location_asserted_in_fresh_environment": true,
+    "dependencies": "pinned requirements-print-mcp.lock",
+    "python": "3.11.13",
+    "platform": "macOS arm64",
+    "command": "python -m pytest -q --import-mode=importlib -o pythonpath= EXPORT/tests/test_camera.py EXPORT/tests/test_tools.py EXPORT/tests/test_service.py"
+  }
+}

@@ -768,7 +768,10 @@
         ".gitattributes": ".gitattributes",
         "validation/macos-discovery-stage108.json": "validation/macos-discovery-stage108.json",
         "validation/transport-readiness-stage110.json": "validation/transport-readiness-stage110.json",
-        "validation/streamed-host-restart-stage109.json": "validation/streamed-host-restart-stage109.json"
+        "validation/streamed-host-restart-stage109.json": "validation/streamed-host-restart-stage109.json",
+        "printer_control/camera.py": "printer_control/camera.py",
+        "tests/test_camera.py": "tests/test_camera.py",
+        "validation/camera-broker-stage114.json": "validation/camera-broker-stage114.json"
       }
     }
   }

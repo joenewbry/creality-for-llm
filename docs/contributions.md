@@ -1,6 +1,6 @@
 # Contribution delivery and review stack
 
-Updated October 26, 2026. Fourteen host and six firmware pull requests are open as drafts in the owner's repositories. Each PR names its predecessor and validation evidence. They are review candidates, not merged releases or accepted upstream contributions.
+Updated October 26, 2026. Fifteen host and six firmware pull requests are open as drafts in the owner's repositories. Each PR names its predecessor and validation evidence. They are review candidates, not merged releases or accepted upstream contributions.
 
 ## Repository relationships
 
@@ -27,6 +27,8 @@ Updated October 26, 2026. Fourteen host and six firmware pull requests are open 
 | [H4e](https://github.com/joenewbry/creality-for-llm/pull/13) | Qualify streamed restart and external-client concurrency | `stack/h4d-readiness-authority` |
 | [H5](https://github.com/joenewbry/creality-for-llm/pull/14) | Camera interface, architecture and overview mount prototype | `stack/h4e-restart-and-clients` |
 
+| [H6](https://github.com/joenewbry/creality-for-llm/pull/15) | Assigned camera broker and durable controls | `stack/h5-camera-design` |
+
 ## Firmware stack
 
 | PR | Focus | Depends on base branch |
@@ -42,7 +44,7 @@ Updated October 26, 2026. Fourteen host and six firmware pull requests are open 
 
 The full installed-package suite on Linux aarch64/Python 3.11.13/Clang 15.0.7 passed 876 tests with zero skips. [Pinned qualification](../validation/linux-package-stage111.json) retains initial failures and focused correction evidence. The first ten public review trees match their tested local review trees exactly; later runtime/test files match the final qualified source. The public-source focused Mac check passed 55 tests with 16 Linux-only skips. These tests use virtual printers, native hardware substitutes and software terminals.
 
-The development board, processor, screen, recovery procedure and sensor fault remain unresolved. No firmware is flashed and no physical production adapter is commissioned. The protected active printer remains excluded. Camera capture/control is planned; the original CAD prototype passes four mesh checks and two conditional viewing checks, with all physical qualification flags false.
+The development board, processor, screen, recovery procedure and sensor fault remain unresolved. No firmware is flashed and no physical production adapter is commissioned. The protected active printer remains excluded. The camera broker and tools pass 92 focused software checks in development and clean export; native capture/control is pending. the original CAD prototype passes four mesh checks and two conditional viewing checks, with all physical qualification flags false.
 
 ## Ecosystem contribution status
 

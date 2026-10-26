@@ -161,7 +161,7 @@
   ],
   "physical_commissioning_complete": false,
   "camera_capture_implemented": false,
-  "latest_branch": "stack/h5-camera-design",
+  "latest_branch": "stack/h6-camera-broker",
   "note": "First ten trees are identical to tested local review trees; parent history is a clean public bootstrap. Later runtime/test bytes match the qualified source export. Self commit is resolved from latest_branch.",
   "host_prs": [
     {
@@ -289,6 +289,15 @@
       "isDraft": true,
       "state": "OPEN",
       "url": "https://github.com/joenewbry/creality-for-llm/pull/14"
+    },
+    {
+      "key": "H6",
+      "title": "Assigned camera broker and durable controls",
+      "baseRefName": "stack/h5-camera-design",
+      "headRefName": "stack/h6-camera-broker",
+      "isDraft": true,
+      "state": "OPEN",
+      "url": "https://github.com/joenewbry/creality-for-llm/pull/15"
     }
   ],
   "firmware_prs": [

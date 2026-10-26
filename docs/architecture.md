@@ -36,8 +36,7 @@ There are no separate published Mac and Linux forks.
 
 The firmware candidate builds for an F401 configuration, but the development
 unit's exact board, processor, screen and recovery route remain unconfirmed.
-No candidate has been flashed. Camera capture, controls and visual monitoring
-are planned interfaces; the CAD mount is a geometrically checked prototype.
+No candidate has been flashed. A tested broker exposes frames and durable numeric image controls through injected capture-owner adapters. Live acquisition/control backends and visual detection remain pending; the CAD mount is a geometrically checked prototype.
 
 ## Development identity evidence and commissioning gate
 
