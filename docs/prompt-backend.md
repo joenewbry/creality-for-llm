@@ -99,3 +99,21 @@ Actual board/processor/screen identity, USB isolation and reset behavior, readin
 review and clogged-nozzle diagnosis remain prerequisites for physical commissioning.
 Heating, motion, extrusion and physical job streaming are not exposed by this
 prompt-only adapter. See `validation/tty-prompt-stage119.json`.
+
+## Arrival time and buffered evidence
+
+Shared receive hooks now return `ObservedBytes` through `drain_observed`. The
+oldest byte arrival in a drained batch bounds its evidence age; draining never
+refreshes that age. Both combined virtual paths use this API. Byte-only `drain`
+remains for compatibility and must not authorize freshness from a buffered copy.
+The receiver clock must share the backend clock domain and return promptly.
+Invalid or backward arrival clocks permanently invalidate the receive copy.
+
+The prompt adapter checks deadlines using the current clock after pumping, while
+snapshot age uses arrival time. A late-processed reply can therefore finish a
+diagnostic inspection with a stale snapshot, but cannot authorize bind/respond.
+Processing at or after the deadline remains unknown even if bytes arrived earlier.
+Split receipts conservatively retain their first fragment's age. Future, invalid
+or backward arrival timestamps invalidate the transaction; they cannot mint a
+fresh snapshot. This is host receive evidence, not a firmware clock or physical
+readiness certificate. See `validation/receive-arrival-stage120.json`.

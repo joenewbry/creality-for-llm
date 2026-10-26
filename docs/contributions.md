@@ -1,6 +1,6 @@
 # Contribution delivery and review stack
 
-Updated October 26, 2026. Twenty host and six firmware pull requests are open as drafts in the owner's repositories. Each PR names its predecessor and validation evidence. They are review candidates, not merged releases or accepted upstream contributions.
+Updated October 26, 2026. Twenty-one host and six firmware pull requests are open as drafts in the owner's repositories. Each PR names its predecessor and validation evidence. They are review candidates, not merged releases or accepted upstream contributions.
 
 ## Repository relationships
 
@@ -31,8 +31,8 @@ Updated October 26, 2026. Twenty host and six firmware pull requests are open as
 | [H8](https://github.com/joenewbry/creality-for-llm/pull/17) | Bounded capture-owner HTTP client and frame invalidation | `stack/h7-upstream-contribution` |
 | [H9](https://github.com/joenewbry/creality-for-llm/pull/18) | Capture-owner API with atomic frame and control evidence | `stack/h8-capture-owner-http` |
 | [H10](https://github.com/joenewbry/creality-for-llm/pull/19) | Lease-first backend startup and full goal audit | `stack/h9-capture-owner-api` |
-
 | [H11](https://github.com/joenewbry/creality-for-llm/pull/20) | Assigned Linux prompt connection and post-read receipt deadlines | `stack/h10-startup-and-audit` |
+| [H12](https://github.com/joenewbry/creality-for-llm/pull/21) | Preserve buffered arrival age without weakening deadlines | `stack/h11-assigned-prompt-transport` |
 
 ## Firmware stack
 
@@ -47,7 +47,7 @@ Updated October 26, 2026. Twenty host and six firmware pull requests are open as
 
 ## Validation and physical limits
 
-The exact public snapshot `3abe54678ee9a48af3d783e1eb04e5872cdec94a` passes the complete installed-package Linux aarch64/Python 3.11.13 suite: **1004 passed, zero skips**. The test corpus is outside the source tree, every installed runtime file matches the frozen export, and all 99 locked dependencies are verified. [Current qualification](../validation/linux-package-stage119.json) includes camera, lease-first startup and assigned prompt connection code. Mac focused prompt/export checks pass 38 with five Linux-only skips. The prior 986-case record retains its original scope. The first attempt at this new suite had 1,003 passes and one virtual-job timing race; its transcript confirmed the job had completed before pause submission. The fixture now uses a bounded simulator queue and explicit pause handshake. All six fault scenarios and a deliberately delayed host experiment pass; production admission was not weakened. Later delivery changes are documentation and qualification metadata; runtime, tests, pyproject and locked dependencies match the tested public snapshot; the source-archive manifest adds qualification records.
+The exact public snapshot `905d0ebf19c9e01986f06bb8da8481bea476cc36` passes the complete installed-package Linux aarch64/Python 3.11.13 suite: **1019 passed, zero skips**. The test corpus is outside the source tree, every installed runtime file matches the frozen export, and all 99 locked dependencies are verified. [Current qualification](../validation/linux-package-stage120.json) includes the buffered receive-age fix. Mac focused prompt/transport and combined-policy/export checks pass 152 cases, with five Linux-only skips. A native regression failed on the prior implementation: a reply received at time 10 was stamped time 16 when drained. Arrival age now survives queueing and split lines; deadlines still use current processing time. The prior 1004-case record retains its original scope. Later delivery commits change documentation, qualification records and the source-archive manifest; runtime, tests, pyproject and locked dependency inputs remain identical.
 
 The first ten public review trees preserve their originally tested trees. [The goal audit](goal-audit.md) lists unmet requirements, and [the printing plan](printing-qualification-plan.md) separates post-repair physical testing from software qualification. The readiness-admission reference does not certify hardware or clear unknown receipts.
 

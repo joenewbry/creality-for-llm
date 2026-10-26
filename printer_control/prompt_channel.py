@@ -39,6 +39,8 @@ class PromptChannel:
         self._snapshot = None
         self._observed_at = None
         self._last_time = None
+        self._last_received_at = None
+        self._partial_received_at = None
         self.bound = False
         self.state = 'ready'
         self.invalidation_reason = None
@@ -133,12 +135,21 @@ class PromptChannel:
             self._uncertain(reason)
             return self.latest
 
-    def feed(self, data: bytes, *, now: float):
+    def feed(self, data: bytes, *, now: float, received_at: float | None = None):
         with self._lock:
             self.tick(now)
             if self.state in ('uncertain', 'disconnected'):
                 return self.latest
-            for event in self.observer.feed(data, now):
+            arrival = now if received_at is None else received_at
+            if (type(arrival) not in (int,float) or not math.isfinite(arrival) or arrival > now
+                    or self._last_received_at is not None and arrival < self._last_received_at):
+                self._uncertain('invalid_receive_timestamp')
+                return self.latest
+            self._last_received_at = arrival
+            # A split line cannot become younger when its final byte arrives.
+            evidence_time = min(arrival, self._partial_received_at) if self._partial_received_at is not None else arrival
+            self._partial_received_at = None if data.endswith((b'\r',b'\n')) else evidence_time
+            for event in self.observer.feed(data, evidence_time):
                 if event.kind in ('fault', 'sensor_suspect'):
                     # A protocol receipt cannot establish fault recovery. Latch
                     # the observation and require enclosing recovery qualification;
@@ -173,7 +184,7 @@ class PromptChannel:
                 self._pending = None
                 self.state = 'ready'
                 if result.outcome == 'accepted':
-                    self._snapshot, self._observed_at = receipt, now
+                    self._snapshot, self._observed_at = receipt, event.observed_at
                     if command.kind == 'bind':
                         self.bound = True
                 else:

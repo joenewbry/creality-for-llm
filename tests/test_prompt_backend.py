@@ -297,3 +297,22 @@ def test_receipt_arriving_after_blocking_receive_deadline_is_not_backdated(runti
     assert result['result']['reason']=='receipt_deadline_expired'
     assert service.submit(req)==result
     assert len(transport.writes)==3
+
+
+def test_buffered_native_inspection_keeps_arrival_age_and_cannot_bind(runtime):
+    service,backend,transport,now=runtime
+    from printer_control.shared_receiver import SharedReceiveBuffer
+    receiver=SharedReceiveBuffer(clock=lambda:now[0])
+    pending=service.submit(submit(service,backend,'prompt.inspect',deadline=30.))
+    assert select.select([transport.process.stdout],[],[],2)[0]
+    data=transport.pump()
+    receiver.received_hook(None,data.decode('ascii'))
+    now[0]=16.
+    backend.pump=receiver.drain_observed
+    result=service.poll(pending['operation_id'])
+    assert result['status']=='completed'
+    state=backend.inspect()
+    assert state['snapshot_observed_at']==10. and state['snapshot_age_seconds']==6.
+    assert not state['snapshot_fresh']
+    result=service.submit(submit(service,backend,'prompt.bind',deadline=30.))
+    assert result['status']=='rejected' and len(transport.writes)==1

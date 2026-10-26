@@ -201,3 +201,38 @@ def test_checksum_resend_and_busy_are_not_machine_faults():
     channel, writes = prepared()
     channel.feed(b'Error:checksum mismatch\nResend: 42\necho:busy: processing\n', now=5.)
     assert channel.state == 'ready' and channel.bound and channel.blocker is None
+
+
+def test_split_queued_receipt_keeps_first_fragment_age():
+    channel=PromptChannel(lambda data:len(data),'c1',session=SESSION)
+    channel.dispatch('inspect',now=1.,deadline=20.)
+    wire=receipt(1)
+    channel.feed(wire[:40],now=2.,received_at=1.5)
+    channel.feed(wire[40:],now=8.,received_at=7.)
+    assert channel.latest.status=='accepted' and channel.snapshot()[1]==1.5
+    with pytest.raises(ValueError,match='fresh'):channel.dispatch('bind',now=8.,deadline=20.)
+
+
+def test_queued_receipt_does_not_bypass_current_processing_deadline():
+    channel=PromptChannel(lambda data:len(data),'c1',session=SESSION)
+    channel.dispatch('inspect',now=1.,deadline=3.)
+    channel.feed(receipt(1),now=3.,received_at=2.)
+    assert channel.latest.status=='outcome_unknown' and channel.invalidation_reason=='receipt_deadline_expired'
+    assert channel.snapshot()==(None,None)
+
+
+@pytest.mark.parametrize('bad',[True,float('nan'),float('inf'),'2',4.])
+def test_invalid_arrival_timestamp_invalidates_pending_transaction(bad):
+    channel=PromptChannel(lambda data:len(data),'c1',session=SESSION)
+    channel.dispatch('inspect',now=1.,deadline=10.)
+    channel.feed(receipt(1),now=3.,received_at=bad)
+    assert channel.latest.status=='outcome_unknown' and channel.invalidation_reason=='invalid_receive_timestamp'
+    assert channel.snapshot()==(None,None)
+
+
+def test_backward_arrival_timestamp_invalidates_pending_transaction():
+    channel=PromptChannel(lambda data:len(data),'c1',session=SESSION)
+    channel.dispatch('inspect',now=1.,deadline=10.)
+    channel.feed(b'ok\n',now=3.,received_at=2.)
+    channel.feed(receipt(1),now=4.,received_at=1.5)
+    assert channel.latest.status=='outcome_unknown' and channel.snapshot()==(None,None)

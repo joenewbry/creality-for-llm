@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-26",
+  "scope": "buffered receive arrival age and processing deadline; software only",
+  "source_sha256": {
+    "printer_control/combined_virtual.py": "c52d7c5d36f8ce4fbb9604b70094ac68201fdd4c4083ca64be7b7a73dbc9d96b",
+    "printer_control/prompt_backend.py": "cb676deb271b786fc5e33790536c38d9fe6009f35cce801a4e72e73935789383",
+    "printer_control/prompt_channel.py": "b91de39624ea0cc35905d5fb0ef09f544756ccb0b477ec0aef6bd5527b75d907",
+    "printer_control/shared_receiver.py": "942ba51f53fa529b6a39dbc1b8f78bdc79ed2a872b89138b167aa798fd8d1781",
+    "tests/native_wait_bridge.py": "01f94ff5b91892acd40fc2feb6184f9810d321157cdee4aff2f7e92f4207bd9d",
+    "tests/test_prompt_backend.py": "cabbc5ee6da2ed178afb5a2edd343c4a5de60f220ff389e3159434faa7a318db",
+    "tests/test_prompt_channel.py": "4a489ef029a68e3a97ddaf5f0bfd90693d1784b9be5af50e239c79d1a322856a",
+    "tests/test_shared_receiver.py": "1ef41f8b170c25ea233692a3ea59115877648b9ba931311b01b0a26cbf29e636",
+    "tests/test_combined_pause_interrupt.py": "ba76752925017a29fb7d1124fce5542e145deb03c4fa6a3f6ba3c94e0d04de6d"
+  },
+  "mac_focused": {
+    "passed": 120,
+    "skipped": 5,
+    "scope": "shared writer/receive, prompt channel/backend and assigned prompt tests; Linux terminal cases skipped",
+    "junit_sha256": "9ddf7ee33f26d9968c6fae1f619b239149300954bf4904bfdfd8065d52087fa8"
+  },
+  "baseline_regression": {
+    "observed": "queued native inspection arrived at time 10 but snapshot was stamped time 16 on drain",
+    "junit_sha256": "a1d036a552fcd6b871d92910735d93679c3832ff3ac50397d7439630b730deed"
+  },
+  "physical_device_access": false,
+  "production_sender_complete": false,
+  "limitations": [
+    "oldest arrival per batch/partial line is conservative and may require another inspection",
+    "byte-only pumps are suitable only for immediate reads; buffered authority requires ObservedBytes",
+    "receiver and backend must share a clock domain",
+    "physical USB/camera/board/screen qualification remains open"
+  ],
+  "combined_mac": {
+    "passed": 32,
+    "skipped": 0,
+    "scope": "combined pause/stop/cancel policy, interruption and source export checks",
+    "junit_sha256": "0ffe3dcfd16ad99e7047be9c12c8611d7c016ad7a7efc84c4c6ffb2a99a787a1"
+  },
+  "linux_full_qualification": "linux-package-stage120.json"
+}

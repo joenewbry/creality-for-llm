@@ -57,3 +57,26 @@ def test_concurrent_drain_preserves_stream_order():
     release.set(); thread.join(5)
     assert not thread.is_alive()
     assert before+receiver.drain() == ''.join(f'{i}\n' for i in range(100)).encode()
+
+
+def test_observed_drain_preserves_oldest_arrival_and_empty_has_no_time():
+    now=[10.]
+    receiver=SharedReceiveBuffer(clock=lambda:now[0])
+    receiver.received_hook(None,'first\n')
+    now[0]=12.;receiver.received_hook(None,'second\n')
+    now[0]=20.;batch=receiver.drain_observed()
+    assert batch.data==b'first\nsecond\n' and batch.observed_at==10.
+    assert receiver.drain_observed().observed_at is None
+    receiver.received_hook(None,'third\n')
+    assert receiver.drain_observed().observed_at==20.
+
+
+@pytest.mark.parametrize('bad',[True,None,float('nan'),float('inf'),9.])
+def test_invalid_or_backward_arrival_clock_discards_buffer_and_preserves_sender_input(bad):
+    now=[10.];receiver=SharedReceiveBuffer(clock=lambda:now[0])
+    receiver.received_hook(None,'old\n');now[0]=bad
+    line='new\n';assert receiver.received_hook(None,line) is line
+    assert receiver.fault=='receive_copy_clock_invalid'
+    with pytest.raises(OSError):receiver.drain_observed()
+    now[0]=30.;receiver.received_hook(None,'later\n')
+    with pytest.raises(OSError):receiver.drain_observed()

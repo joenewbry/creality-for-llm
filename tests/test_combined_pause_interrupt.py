@@ -49,7 +49,8 @@ def test_combined_interruption_revokes_queued_pause_grant_before_dispatch(tmp_pa
         dispatched.append('cancel')
     job.dispatch=cancel_dispatch
     job.close=lambda:None
-    receiver=SimpleNamespace(drain=lambda:[],close=lambda:None)
+    from printer_control.shared_receiver import SharedReceiveBuffer
+    receiver=SharedReceiveBuffer(clock=job.clock)
     backend=CombinedVirtualBackend(job,receiver)
     with OperationService(tmp_path/'combined.sqlite',backend,clock=lambda:10.) as service:
         base=policy_fixture()

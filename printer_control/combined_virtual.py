@@ -17,7 +17,7 @@ class CombinedVirtualBackend:
         self.generation = job.generation
         channel = PromptChannel(self.writer.write_prompt, self.generation)
         self.prompt = PromptBackend(channel, printer_id='virtual-development', clock=job.clock,
-                                    pump=receiver.drain, close_transport=lambda: None)
+                                    pump=receiver.drain_observed, close_transport=lambda: None)
         self._version = 0
         self._signature = None
         self._routes = {}

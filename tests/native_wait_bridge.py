@@ -85,7 +85,7 @@ def recover_native_wait(sender, receiver, generation, journal, *, unified_servic
     if unified_service is None:
         channel = PromptChannel(device.shared_frame_writer.write_prompt, generation)
         backend = PromptBackend(channel, printer_id='virtual-development', clock=time.time,
-                                pump=receiver.drain, close_transport=lambda: None)
+                                pump=receiver.drain_observed, close_transport=lambda: None)
         ownership = OperationService(journal, backend)
     else:
         backend = unified_service.backend
