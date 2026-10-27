@@ -11,7 +11,7 @@ import uuid
 from typing import Protocol, ContextManager
 
 from .journal import Journal, RequestRejected
-from .ownership import ControllerLease
+from .ownership import ControllerLease, OwnershipError
 
 
 @dataclass(frozen=True)
@@ -33,7 +33,9 @@ class Backend(Protocol):
 
     Methods must not wait for physical completion while holding guard. poll
     returns None while pending, or explicit evidence, never inferred from a
-    successful write. The backend must reject unsupported operations, unknown
+    successful write. validate may run again after the durable claim; it must
+    not write to the machine or consume a one-shot dispatch permission.
+    The backend must reject unsupported operations, unknown
     argument fields, unsafe states, and physical profiles it cannot qualify.
     """
     def guard(self) -> ContextManager: ...
@@ -171,6 +173,16 @@ class OperationService:
                 and self._thermal_pause is not None and not self._thermal_recovery_required
                 and not self._restore_recovery_required
                 and callable(getattr(self.backend,'make_resume_workflow',None)))
+            def validate_backend():
+                if restored_resume:
+                    self._restore.validate_resume(request['arguments'])
+                elif managed_resume:
+                    if self._resume_workflow is not None:
+                        raise RequestRejected('resume_workflow_already_exists')
+                    self.backend.validate_managed_resume(request['arguments'])
+                else:
+                    self.backend.validate(request['operation'], request['arguments'])
+
             try:
                 if (self._restore is not None or self._restore_recovery_required) and not restored_resume and request['operation'] not in ('job.cancel', 'printer.stop'):
                     return self.journal.finish(op, 'rejected', {'reason': 'restore_requires_resume_integration_or_recovery'}, now=self.clock())
@@ -187,20 +199,43 @@ class OperationService:
                         'next_action': 'Poll each pending operation with operation.get before submitting another operation.',
                     }, now=self.clock())
                 self._fresh(context, now)
-                if restored_resume:
-                    self._restore.validate_resume(request['arguments'])
-                elif managed_resume:
-                    if self._resume_workflow is not None:
-                        raise RequestRejected('resume_workflow_already_exists')
-                    self.backend.validate_managed_resume(request['arguments'])
-                else:
-                    self.backend.validate(request['operation'], request['arguments'])
+                validate_backend()
             except RequestRejected as exc:
                 return self.journal.finish(op, 'rejected', {'reason': str(exc)}, now=self.clock())
             except Exception:
                 return self.journal.finish(op, 'failed', {'reason': 'validation_unavailable', 'dispatched': False}, now=self.clock())
             if not self.journal.claim(op, now=self.clock()):
                 return self.journal.get(op)
+            # Persistence may outlive a deadline or external readiness proof.
+            # Validation cannot write to the machine. Recheck both sides of it
+            # before invoking any dispatch/workflow callback. The backend still
+            # owns its final write-time device and evidence interlocks.
+            try:
+                def check_dispatch_context():
+                    self.lease.check()
+                    current = self.backend.context()
+                    now = self.clock()
+                    Journal._time(now)
+                    if now >= request['deadline']:
+                        raise RequestRejected('deadline_expired_before_dispatch')
+                    self._fresh(current, now)
+                    if (current.printer_id, current.generation) != (context.printer_id, context.generation):
+                        raise RequestRejected('connection_changed_before_dispatch')
+                    if current.state_version != request['expected_state_version']:
+                        raise RequestRejected('state_changed_before_dispatch')
+
+                check_dispatch_context()
+                validate_backend()
+                check_dispatch_context()
+            except OwnershipError:
+                # A successor must reconcile the committed intent. A former
+                # owner cannot safely record a terminal receipt or dispatch.
+                raise
+            except RequestRejected as exc:
+                return self.journal.finish(op, 'rejected', {'reason': str(exc), 'dispatched': False}, now=self.clock())
+            except Exception:
+                return self.journal.finish(op, 'failed', {'reason': 'dispatch_admission_unavailable',
+                                                        'dispatched': False}, now=self.clock())
             self._pending[op] = (context.printer_id, context.generation)
             try:
                 if self._resume_workflow is not None and request['operation'] in ('job.cancel','printer.stop'):
