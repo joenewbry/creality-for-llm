@@ -173,3 +173,23 @@ def test_commit_latency_expiry_prevents_queue_dispatch(barrier,monkeypatch):
     with check.recorder.journal._db() as db:
         assert db.execute('SELECT status FROM assigned_barriers').fetchone()[0]=='dispatching'
     with pytest.raises(RequestRejected):check.poll()
+
+
+def test_resume_request_correlates_numbered_barrier_frames(barrier):
+    check,capture,identity,_=barrier
+    journal=check.recorder.journal
+    request=dict(request_id='resume',printer_id='fixture',connection_generation='g1',expected_state_version=1,
+        deadline=20.,operation='job.resume',arguments={'job_id':'job'})
+    operation=journal.accept(request,now=10.,printer_id='fixture',generation='g1',state_version=1)['operation_id']
+    assert journal.claim(operation,now=10.)
+    numbers=iter((7,8))
+    def numbered(command):
+        frame=('N'+str(next(numbers))+' '+command).encode();checksum=0
+        for byte in frame:checksum^=byte
+        capture[1].write(frame+b'*'+str(checksum).encode()+b'\n')
+    token=check.dispatch(operation,'resuming',identity,numbered)
+    reply(check,capture,token)
+    result=check.poll()
+    assert result['phase']=='resuming' and result['operation_id']==operation
+    assert [w['line_number'] for w in result['writes']]==[7,8]
+    assert not result['resume_authorized'] and not result['physical_readiness_qualified']

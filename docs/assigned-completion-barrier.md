@@ -44,6 +44,20 @@ retains the separate external cancellation proof requirement. A refused enqueue
 or failed correlation produces outcome_unknown and withdraws resume authority;
 repeating the request cannot submit the pair again.
 
+Resume now stays in admission with the sender paused until a new marker for the
+journaled job.resume request qualifies. It compares a new checkpoint with the saved one, rechecks the
+staged file after the provider returns, checks the source marker again, arms the
+stream guard and checks source authority/arrival/deadline once more before the
+single resume effect. A delayed, missing or unqualified reply cannot release the
+file stream. The normal resumed-transition proof is still required afterward.
+Its final receipt retains the historical admission marker.
+
+Read-only completion queries can consume numbered transport frames. The writer
+records their original line numbers; admission permits exactly those two known
+frames to advance the saved transport counter. It does not adjust file cursor,
+position, modes, configuration, offsets, leveling or physical proofs. Unexplained
+line-number changes refuse resume. The saved checkpoint is not rewritten.
+
 The new owned-terminal scenarios exercise powered pause/resume of all 80 original
 modeled moves once, a separate cancellation marker, an interleaved command, and
 maintained native prompt/state handlers combined with the barrier path. Native
@@ -58,8 +72,8 @@ fail qualification. This is unknown evidence, not permission to retry or bypass
 it. Construction remains opt-in while firmware/profile qualification and a
 physical provider are unfinished. EOF completion still uses the existing external
 provider; integrating a final marker needs an explicit lifecycle evidence window,
-separate from the earlier job.start dispatch deadline. Fresh resume admission and
-physical continuity are also separate from a historical pause marker.
+separate from the earlier job.start dispatch deadline. Fresh source-correlated
+resume admission is implemented; physical continuity remains separate from both the new marker and a historical pause checkpoint.
 
 Pause supports continuously powered, in-place continuation only after all
 checkpoint proofs qualify. Power-loss recovery and opening the protected printer

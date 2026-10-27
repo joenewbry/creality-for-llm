@@ -322,6 +322,8 @@
     "printer_control/assigned_barrier.py",
     "tests/test_assigned_barrier.py",
     "validation/assigned-barrier-stage141.json",
-    "validation/sender-barrier-stage142.json"
+    "validation/sender-barrier-stage142.json",
+    "tests/test_fresh_resume.py",
+    "validation/fresh-resume-stage143.json"
   ]
 }
