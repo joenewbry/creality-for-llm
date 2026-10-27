@@ -67,3 +67,12 @@ qualified. The manufacturer recovery archive is not a settings backup.
 separate reported stock facts, complete-tree inspection and unresolved physical
 qualification. This audit changes no runtime, firmware binary or test pin. Camera
 work stays deferred; the protected printer remains excluded.
+
+## Follow-on maintained-source port
+
+A separate [v040-based candidate](maintained-firmware.md) now builds and has
+focused native/host prompt checks. It retains input-shaping source while
+porting the guarded protocol. The earlier candidate and its test-source pin
+remain unchanged. Neither source has physical printing qualification, and the
+new baseline still needs its own screen, settings, thermal-manager and hardware
+qualification before commissioning.

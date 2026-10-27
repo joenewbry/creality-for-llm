@@ -1,0 +1,206 @@
+{
+  "schema_version": 1,
+  "observed_date": "2026-10-27",
+  "scope": "offline maintained S1 Pro release-source port; no commissioning",
+  "source_repository": "https://github.com/ThomasToka/Marlin",
+  "source_branch": "MARLIN-E3S1PROFORK-BYTT-RELEASE-CODE-v040",
+  "source_commit": "0114371a8644ab58e254865f2c0345b061704b39",
+  "review_repository": "https://github.com/joenewbry/Marlin",
+  "review_repository_default_branch_preserved": "bugfix-2.1.x",
+  "reference_branch": "reference/toka-v040",
+  "pull_requests": [
+    {
+      "baseRefName": "reference/toka-v040",
+      "headRefName": "stack/v040-f1-profile",
+      "headRefOid": "e6488a16616422bd2f44697264e7111096dcc7fa",
+      "isDraft": true,
+      "number": 1,
+      "state": "OPEN",
+      "title": "Add printing-only S1 Pro v040 build profile",
+      "url": "https://github.com/joenewbry/Marlin/pull/1",
+      "key": "M1"
+    },
+    {
+      "baseRefName": "stack/v040-f1-profile",
+      "headRefName": "stack/v040-f2-protocol",
+      "headRefOid": "d5b45adbad40479fe103e10856039c2dafaaa0d8",
+      "isDraft": true,
+      "number": 2,
+      "state": "OPEN",
+      "title": "Port session-bound LLM prompt control to S1 Pro v040",
+      "url": "https://github.com/joenewbry/Marlin/pull/2",
+      "key": "M2"
+    },
+    {
+      "baseRefName": "stack/v040-f2-protocol",
+      "headRefName": "stack/v040-f3-thermal",
+      "headRefOid": "7569d4a76b99758f3c6c9e62e748b7799ded7922",
+      "isDraft": true,
+      "number": 3,
+      "state": "OPEN",
+      "title": "Carry heater watch protection fixes onto S1 Pro v040",
+      "url": "https://github.com/joenewbry/Marlin/pull/3",
+      "key": "M3"
+    }
+  ],
+  "baseline": {
+    "source_repository": "https://github.com/ThomasToka/Marlin",
+    "source_commit": "0114371a8644ab58e254865f2c0345b061704b39",
+    "source_tree": "c0984e85adc089878ad65e104b842e5f5392e0f2",
+    "source_clean": true,
+    "environment": "STM32F401RC_creality_e3s1pro_abl",
+    "platformio": "6.1.18",
+    "ram_used": 39828,
+    "ram_capacity": 65536,
+    "flash_used": 193796,
+    "application_flash_capacity": 196608,
+    "flash_margin": 2812,
+    "input_shaping_X_Y_enabled_in_source": true,
+    "physical_device_access": false,
+    "firmware_flashed": false,
+    "log_sha256": "979027d687c917d65f9290b120f4d267ce5f6550d42616d459f606bad9ac54db",
+    "artifacts": [
+      {
+        "name": "firmware-20261027-020143-E3S1Pro-abl-v040-F4.elf",
+        "bytes": 31995768,
+        "sha256": "94c6daa3b8db81fbb477dfe73412675a8a654ae2edb5ef738ed8570c92f948be"
+      },
+      {
+        "name": "firmware-20261027-020143-E3S1Pro-abl-v040-F4.bin",
+        "bytes": 194308,
+        "sha256": "e4013687c8ceab9b8115ddbbaa5f86570f0085236d499399cd1805b76b9c6b46"
+      }
+    ]
+  },
+  "printing_profile": {
+    "source_commit": "e6488a16616422bd2f44697264e7111096dcc7fa",
+    "source_clean": true,
+    "environment": "STM32F401RC_creality_e3s1pro_llm",
+    "source_changes": "explicit printing-only profile; laser flags removed; prompt protocol not yet added",
+    "physical_device_access": false,
+    "firmware_flashed": false,
+    "log_sha256": "e0134e81b93dea2d046a31e2d8924be9199e82ed46a8b069a7eb0ae97b7ce82f",
+    "artifacts": [
+      {
+        "name": "firmware-20261027-021614-E3S1Pro-llm-v040-F4.elf",
+        "bytes": 30989672,
+        "sha256": "6413e546724e4aa9fccf8e903691e6af1dbdce1ad52d0d7c2274aaf8fc5cbc33"
+      },
+      {
+        "name": "firmware-20261027-021614-E3S1Pro-llm-v040-F4.bin",
+        "bytes": 181056,
+        "sha256": "dc8c902b4e50e920343587b0564fbc7ed8cbf4ef58db370ee48aa6023f79df86"
+      }
+    ]
+  },
+  "protocol_port": {
+    "source_commit": "d5b45adbad40479fe103e10856039c2dafaaa0d8",
+    "source_tree": "9bb09234413590c84d8e6349ba76d71865638805",
+    "source_clean": true,
+    "environment": "STM32F401RC_creality_e3s1pro_llm",
+    "ram_used": 39860,
+    "ram_capacity": 65536,
+    "flash_used": 182904,
+    "flash_capacity": 196608,
+    "flash_free": 13704,
+    "native_scenarios_passed": 11,
+    "host_channel_backend_tests_passed": 66,
+    "physical_access": false,
+    "firmware_flashed": false,
+    "thermal_backport_status": "not yet included",
+    "artifacts": [
+      {
+        "name": "firmware-20261027-023007-E3S1Pro-llm-v040-F4.bin",
+        "bytes": 183420,
+        "sha256": "dc79daf26990a9c067e5b0e6b2ad9e43b7f9048cb00159dfacad71b7c4d2c5b6"
+      },
+      {
+        "name": "firmware-20261027-023007-E3S1Pro-llm-v040-F4.elf",
+        "bytes": 31207644,
+        "sha256": "ec7de87c4e6333ff7a04a9492dee2f5bfbef3978ec73fa9c19dfc8e79d15891d"
+      }
+    ],
+    "protocol-build-fixed.log_sha256": "a82cf536a088f8626bbcd16f5bd05b824b4fdba3ae31761b01b82d7aa4896dd1",
+    "host-tests.log_sha256": "1a625123d88f334b90c2c85a208981fc269e52a8627aa741c73ed48c6e4fed84"
+  },
+  "final_candidate": {
+    "source_commit": "7569d4a76b99758f3c6c9e62e748b7799ded7922",
+    "source_tree": "5ca45210cd3fd652851c116d7b34b1c7578e524d",
+    "source_clean": true,
+    "environment": "STM32F401RC_creality_e3s1pro_llm",
+    "ram_used": 39860,
+    "ram_capacity": 65536,
+    "flash_used": 183000,
+    "flash_capacity": 196608,
+    "flash_free": 13608,
+    "native_prompt_scenarios_passed": 11,
+    "heater_template_scenarios_passed": 6,
+    "watch_typedef_checks_passed": 3,
+    "host_channel_backend_tests_passed": 66,
+    "full_thermal_manager_qualified": false,
+    "physical_access": false,
+    "firmware_flashed": false,
+    "artifacts": [
+      {
+        "name": "firmware-20261027-023759-E3S1Pro-llm-v040-F4.bin",
+        "bytes": 183516,
+        "sha256": "0847b839789d2174ea7abe00b6223ab66bb6a92d34b3b79139687d74de336dcc"
+      },
+      {
+        "name": "firmware-20261027-023759-E3S1Pro-llm-v040-F4.elf",
+        "bytes": 31207260,
+        "sha256": "4bf740e5556f2487d7a2bdce1d3e63eb2951d92a6db4ee87668380014d0eccc2"
+      }
+    ],
+    "thermal-build.log_sha256": "1ed0d648e56b38b61dff29f0eb67c1269e0f178e2241bd6cf26efaab4d79b746",
+    "thermal-host-tests.log_sha256": "4ce74da56d27377da7fec9d1f04e0ddc00635b54acd8bdcc78b9f70c5eb224d9",
+    "thermal-regression-before.log_sha256": "70752a9df600ee3a3e53c7cc911be9c7d6dba47cab5793e1caa262fa0b52fac2"
+  },
+  "input_shaping_X_Y_enabled_in_source": true,
+  "laser_support_removed_from_explicit_profile": true,
+  "screen_preview_leveling_source_retained": true,
+  "screen_feature_parity_physically_verified": false,
+  "legacy_dispatcher_guards": [
+    "M108 interrupt and ordinary dispatch fenced on binding/pending protocol",
+    "M876 ordinary dispatch defers to emergency mailbox"
+  ],
+  "wire_reason_ids_stable": {
+    "none": 0,
+    "runout": 1,
+    "user_continue": 2,
+    "pause_resume": 3,
+    "info": 4,
+    "unsupported_reheat": 255
+  },
+  "previous_host_firmware_test_pin_unchanged": "98aa03248337b8039a09bbc1a29f33432aed08ca",
+  "previous_installed_linux_qualification": {
+    "source_commit": "4e820fa0e2ec4dcc5656b780e335ca9377cbb347",
+    "tests": 1156,
+    "skips": 0,
+    "not_requalified_against_new_firmware": true
+  },
+  "focused_host_environment": {
+    "os": "macOS",
+    "python": "3.11.13",
+    "native_compiler": "Apple clang++"
+  },
+  "physical_device_access": false,
+  "firmware_flashed": false,
+  "camera_scope": "deferred_by_owner",
+  "protected_printer_preserved": true,
+  "remaining": [
+    "Actual target/layout and bootloader compatibility",
+    "Physical screen variant and paired firmware qualification",
+    "Sensor diagnosis before heating; invalid nozzle reading unresolved",
+    "Settings restoration/migration and physical recovery",
+    "Full thermal-manager shutdown on this baseline",
+    "Actual serial interrupts, screen, motion and heated pause/resume",
+    "Printing/adhesion/quality qualification after repair",
+    "Full host repinning/requalification and production physical evidence provider"
+  ],
+  "sources": [
+    "https://github.com/ThomasToka/Marlin/tree/0114371a8644ab58e254865f2c0345b061704b39",
+    "https://github.com/ThomasToka/MarlinFirmware",
+    "https://github.com/joenewbry/Marlin/tree/stack/v040-f3-thermal"
+  ]
+}

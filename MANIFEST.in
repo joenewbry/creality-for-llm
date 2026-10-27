@@ -39,6 +39,7 @@ include docs/firmware-parity.md
 include docs/firmware-stack-builds.md
 include docs/goal-audit.md
 include docs/interface.md
+include docs/maintained-firmware.md
 include docs/mcp.md
 include docs/model-demo.md
 include docs/pause-resume.md
@@ -270,6 +271,7 @@ include validation/linux-package-stage131.json
 include validation/linux-package-stage132.json
 include validation/machine-events-stage84.json
 include validation/macos-discovery-stage108.json
+include validation/maintained-firmware-stage135.json
 include validation/manufacturer-recovery-stage133.json
 include validation/model-hot-stage75.json
 include validation/native-handoff-stage81.json
