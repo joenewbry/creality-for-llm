@@ -1,4 +1,3 @@
-# Source archive follows the explicit publication allowlist.
 global-exclude *
 include .gitattributes
 include .gitignore
@@ -40,6 +39,7 @@ include docs/firmware-parity.md
 include docs/firmware-stack-builds.md
 include docs/goal-audit.md
 include docs/interface.md
+include docs/macos-owners.md
 include docs/maintained-firmware.md
 include docs/mcp.md
 include docs/model-demo.md
@@ -88,6 +88,7 @@ include printer_control/devices.py
 include printer_control/journal.py
 include printer_control/machine_events.py
 include printer_control/macos_discovery.py
+include printer_control/macos_owners.py
 include printer_control/mcp_adapter.py
 include printer_control/modal.py
 include printer_control/octoprint_sender.py
@@ -130,6 +131,7 @@ include scripts/dependency_notices.py
 include scripts/export_review.py
 include scripts/prepare_firmware.py
 include scripts/prepare_review_boundary.py
+include scripts/qualify_macos_pty.py
 include sources.json
 include tests/assigned_job_smoke.py
 include tests/assigned_sender_smoke.py
@@ -171,6 +173,7 @@ include tests/test_firmware_parser.py
 include tests/test_journal.py
 include tests/test_machine_events.py
 include tests/test_macos_discovery.py
+include tests/test_macos_owners.py
 include tests/test_marlin_modal_virtual.py
 include tests/test_modal.py
 include tests/test_native_heater_watch.py
@@ -275,6 +278,7 @@ include validation/linux-package-stage132.json
 include validation/linux-package-stage137.json
 include validation/machine-events-stage84.json
 include validation/macos-discovery-stage108.json
+include validation/macos-owners-stage138.json
 include validation/maintained-firmware-stage135.json
 include validation/manufacturer-recovery-stage133.json
 include validation/model-hot-stage75.json
