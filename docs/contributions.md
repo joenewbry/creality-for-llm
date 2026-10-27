@@ -105,9 +105,9 @@ physical commissioning or full thermal-manager qualification.
 | [M4](https://github.com/joenewbry/Marlin/pull/4) | Complete thermal protection handoff at runtime | `stack/v040-f3-thermal` |
 
 The first three source layers need the runtime correction in M4 to complete
-the near-target backport. The corrected candidate builds with13,600bytes free;
-32actual-source thermal paths,11prompt cases,6watch-template scenarios/3threshold
-checks and66host checks pass. All physical dependencies are recording stubs;
-full manager/physical shutdown and printing remain unqualified. The1156-test
+the near-target backport. The corrected candidate builds with 13,600 bytes free;
+32 actual-source thermal paths, 11 prompt cases, six watch-template scenarios,
+three threshold checks and 66 host checks pass. All physical dependencies are recording stubs;
+full manager/physical shutdown and printing remain unqualified. The 1,156-test
 installed Linux qualification and older firmware-test pin are unchanged.
 [Detailed current source and limits](maintained-firmware.md).

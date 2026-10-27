@@ -105,7 +105,7 @@ entirely deferred. No printer or camera was accessed for this source port.
 ## Runtime handoff correction
 
 The first three layers were not the complete near-target backport. Candidate
-7569d4a's watch template disarms at the hysteresis boundary, while TRFirstHeating
+`7569d4a`'s watch template disarms at the hysteresis boundary, while TRFirstHeating
 still waits for the exact target. An actual-source runtime harness reproduced
 six regressions (nozzle/bed boundary hold, boundary drop and above-boundary
 drop); a later drop could evade both protection branches. These are software
@@ -120,13 +120,14 @@ Assertions verify targets/PWM/pin writes and autotemp are off before park or
 final kill, no park when unhomed, one kill on repeated faults, correct boundary
 protection, heating stalls, wrap and idle behavior.
 
-Current source09162eb builds at183008/196608 flash (13600bytes free), RAM39860.
-Eleven prompt cases, six template cases/three typedef checks and66host checks
+Current source `09162eb` builds at 183,008/196,608 application flash
+(13,600 bytes free), RAM 39,860. Eleven prompt cases, six template cases/three
+typedef checks and 66 host checks
 pass. The previous layer requires this correction before commissioning
 consideration. No source has been flashed.
 
 Run `python3 buildroot/tests/llm_thermal_paths_native.py` from the firmware
-checkout; `--source-root` permits reproducing the six failures against7569d4a.
+checkout; `--source-root` permits reproducing the six failures against `7569d4a`.
 Use `--output` to save detailed results and source/snippet hashes. The harness
 does not execute the complete temperature task, PID, ADC, interrupts or real
 screen/motion/kill/HAL. Physical shutdown remains unqualified, as do the target,
