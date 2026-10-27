@@ -41,7 +41,9 @@ two separate admissions. A stale journal entry cannot substitute for either.
 The optional [owned firmware/settings collector](configuration-report.md) now
 supplies a reported baseline before the first job. Its digest does not establish
 complete runtime configuration, installed binary or physical readiness. Idle
-timers, profile coverage and post-drain collection remain separate gaps.
+timers and profile coverage remain separate gaps. Optional compound checkpoint
+inspection now obtains a new settings report for each pause/resume; matching
+reported rows still do not establish complete configuration or physical identity.
 The current stock firmware does not supply the new LLM_MACHINE_STATE report;
 that source path needs the separately qualified candidate installation.
 

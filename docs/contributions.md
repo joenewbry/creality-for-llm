@@ -232,3 +232,13 @@ with complete-configuration/binary/readiness/resume qualification false. Runtime
 idle timers, post-drain coverage and the actual physical provider remain open.
 See [report design and limits](configuration-report.md) and
 [qualification evidence](../validation/configuration-report-stage149.json).
+
+
+## Fresh settings in pause/resume admission
+
+Optional compound checkpoint mode acquires a fresh M115/M503 interval plus
+controller state for each pause/resume parent. It rejects changed reported
+settings before invoking the physical provider, copies both inputs and accounts
+for only five exact numbered read frames plus one unnumbered state query.
+Physical/configuration coverage remains separate and incomplete. No raw tool
+is added. See [checkpoint design](checkpoint-inspection.md).

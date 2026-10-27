@@ -8,6 +8,7 @@ class AssignedCheckpointInspection:
         self.backend=backend
         self.operations={}
         self.current=None
+        self.configurations={}
 
     def advance(self,operation_id,phase,barrier):
         b=self.backend;r=b.machine_events;j=r.journal
@@ -19,6 +20,11 @@ class AssignedCheckpointInspection:
             # A supported prompt operation may predate the drain. Wait for its
             # receipt before claiming this child, without extending marker age.
             if b.prompt.channel.state=='busy':return None
+            if b.checkpoint_configuration and operation_id not in self.configurations:
+                from .configuration_report import collect_configuration_report
+                configuration=collect_configuration_report(b,barrier)
+                j.record_observation(dict(kind='checkpoint_configuration_report',**configuration),source='job.inspect',now=b.clock())
+                self.configurations[operation_id]=configuration
             c=b.context();r.lease.check()
             with j._db() as db:
                 row=db.execute('SELECT request,status FROM operations WHERE operation_id=?',(operation_id,)).fetchone()
@@ -71,7 +77,7 @@ class AssignedCheckpointInspection:
         tail=proof.get('inspection',{})
         writes=tail.get('writes',[])
         if (tail.get('operation_id')!=item['child'] or len(writes)!=1 or not writes[0]['confirmed']
-                or not proof['receipt']['observed_at']<=writes[0]['started_at']<=report['observed_at']
+                or not proof.get('end_receipt',proof['receipt'])['observed_at']<=writes[0]['started_at']<=report['observed_at']
                 or report['state']['planner_blocks']!=0):
             raise RequestRejected('checkpoint_report_not_after_owned_drain')
         proof=b.completion_barrier.finish_inspection(item['child'])
@@ -80,6 +86,7 @@ class AssignedCheckpointInspection:
             raise RequestRejected('checkpoint_source_changed_during_commit')
         self.current=operation_id
         return dict(proof,controller_state=report,
+            **({'configuration':json.loads(json.dumps(self.configurations[operation_id]))} if b.checkpoint_configuration else {}),
             evidence_scope='post_drain_controller_variables_with_external_physical_proofs_required')
 
     def read(self):

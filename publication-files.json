@@ -344,6 +344,8 @@
     "docs/configuration-report.md",
     "printer_control/configuration_report.py",
     "tests/test_configuration_report.py",
-    "validation/configuration-report-stage149.json"
+    "validation/configuration-report-stage149.json",
+    "tests/test_checkpoint_configuration.py",
+    "validation/checkpoint-configuration-stage150.json"
   ]
 }
