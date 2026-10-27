@@ -113,14 +113,15 @@ def main(scenario):
             bridge=PeerBridge(master,peer);backend.start()
             wait_for(sender.isOperational,'assigned job handshake');router=ToolRouter(service);receipts=[];counter=[0]
             if scenario=='idle_reports':
-                line='echo:idle-copy-'+('x'*32)
-                for _ in range(3000):peer._send(line)
+                line='echo:idle-copy-'+('x'*600)
+                report_count=128  # Cross the byte limit without thousands of SQLite commits.
+                for _ in range(report_count):peer._send(line)
                 peer._send('ok T:23.00 /0.00 B:22.00 /0.00')
                 wait_for(lambda:recorder.snapshot()['reports'].get('temperature',{}).get('data',{}).get('values',{}).get('T',{}).get('actual')==23.,'idle source reports',timeout=20)
                 assert not backend.prompt.receive_hub.fault and backend._pump_thread.is_alive()
                 assert backend._pump_samples>0 and not denied and not bridge.errors
-                assert len((line+'\n').encode())*3000>65536
-                print(json.dumps(dict(scenario=scenario,prompt_copy_bytes=len((line+'\n').encode())*3000,
+                assert len((line+'\n').encode())*report_count>65536
+                print(json.dumps(dict(scenario=scenario,prompt_copy_bytes=len((line+'\n').encode())*report_count,
                     controller_pump_samples=backend._pump_samples,no_tool_calls_during_capture=True,
                     physical_serial_open_or_discovery_attempts=len(denied))))
                 return
@@ -212,10 +213,14 @@ def main(scenario):
         finally:
             gate.set()
             if bridge:bridge.close()
-            if service:service.close()
-            elif sender:sender.close()
-            if peer:peer.close()
-            if master is not None:os.close(master)
+            try:
+                if service:service.close()
+                elif sender:sender.close()
+            finally:
+                # A retained capture/lease must not leave unrelated fixture
+                # peer threads alive and obscure the original cleanup error.
+                if peer:peer.close()
+                if master is not None:os.close(master)
 
 
 if __name__=='__main__':
