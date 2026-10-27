@@ -299,19 +299,22 @@ def test_stalled_prompt_consumer_retains_lease_and_transport_until_join(runtime)
     runtime[0].lease.acquire()
 
 
-@pytest.mark.parametrize('cause',['callback','capture','channel'])
+@pytest.mark.parametrize('cause',['callback','capture','channel','sensor','thermal'])
 def test_prompt_consumer_loss_retires_shared_dispatch_without_tool_poll(runtime,cause):
     backend,capture=lifecycle(runtime)
     if cause=='callback':
         def fail():raise OSError('fixture failure')
         backend.prompt.context=fail
-    elif cause=='channel':backend.prompt.channel.state='uncertain'
+    elif cause in ('channel','sensor','thermal'):
+        backend.prompt.channel.state='uncertain'
+        if cause!='channel':backend.prompt.channel.invalidation_reason='sensor_suspect' if cause=='sensor' else 'firmware_fault'
     if cause=='capture':
         # Start with a usable capture, then lose it after the consumer is live.
         backend.start();capture._fault='fixture_capture_failed'
     else:backend.start()
     wait_lifecycle(lambda:backend._pump_error is not None)
-    assert backend.prompt.receive_hub.fault=='assigned_prompt_pump_unavailable'
+    expected={'sensor':'assigned_serial_sensor_suspect','thermal':'assigned_serial_fault'}.get(cause,'assigned_prompt_pump_unavailable')
+    assert backend.prompt.receive_hub.fault==expected and backend._pump_error==expected
     assert backend._fault and backend._phase=='outcome_unknown' and backend.checkpoint is None
 
 

@@ -132,3 +132,9 @@ job/prompt terminal scenarios now use this lifecycle rather than a test-owned
 prompt-draining thread. An idle-report scenario sends more than one copy-buffer's
 capacity while making no LLM tool calls; the source report remains observable
 without overflow. Native physical transport/provider/commissioning remain open.
+
+Both receive copies may observe a warning first. The consumer preserves an
+existing retirement cause, or maps the prompt observer's sensor/firmware cause
+to the same source-hazard category used by capture. It cannot replace a specific
+sensor warning with a generic consumer failure. Source history retains its own
+line provenance independently of which observer reaches the fence first.

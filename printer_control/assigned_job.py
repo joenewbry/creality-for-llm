@@ -122,7 +122,13 @@ class AssignedJobBackend:
                             or self.prompt.receive_hub.fault or self.prompt.frame_writer.fault):
                         raise OSError('prompt connection uncertain')
                 except BaseException:
-                    self._pump_error='assigned_prompt_pump_unavailable'
+                    # Either validated receive copy may observe a hazard first.
+                    # Preserve its cause rather than winning the sticky fence
+                    # with a generic consumer error.
+                    self._pump_error=self.prompt.receive_hub.fault or {
+                        'sensor_suspect':'assigned_serial_sensor_suspect',
+                        'firmware_fault':'assigned_serial_fault',
+                    }.get(getattr(self.prompt.channel,'invalidation_reason',None),'assigned_prompt_pump_unavailable')
                     self._fault=self._fault or {'reason':self._pump_error}
                     self._phase='outcome_unknown';self.checkpoint=None;self.witness.invalidate_resume()
                     self.sender._assigned_endpoint.retire(self._pump_error)
