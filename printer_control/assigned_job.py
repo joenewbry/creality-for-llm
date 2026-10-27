@@ -83,6 +83,7 @@ class AssignedJobBackend:
         self.machine_events=None;self.state_reader=None;self.cold_preflight=None;self._cold_stage_screening=None
         self.cold_inspection=None;self._cold_admitting=False;self._cold_results={}
         self.completion_barrier=None;self._barrier_tokens={}
+        self.checkpoint_inspection=None;self._checkpoint_pending=set();self._checkpoint_results={}
         self._resume_dispatched=set();self._resume_admission={}
         self._completion_window_seconds=30.;self._completion_window=None;self._completion_result=None
         self._owner_pid=os.getpid()
@@ -138,6 +139,11 @@ class AssignedJobBackend:
                         for operation_id in tuple(self.cold_inspection.pending):
                             outcome=self.poll(operation_id)
                             if outcome is not None:self._cold_results[operation_id]=outcome
+                    for operation_id in tuple(self._checkpoint_pending):
+                        outcome=self.poll(operation_id)
+                        if outcome is not None:
+                            self._checkpoint_results[operation_id]=outcome
+                            self._checkpoint_pending.discard(operation_id)
                     if (self.prompt.channel.state in ('uncertain','disconnected')
                             or self.prompt.receive_hub.fault or self.prompt.frame_writer.fault):
                         raise OSError('prompt connection uncertain')
@@ -192,16 +198,22 @@ class AssignedJobBackend:
         if self.cold_inspection is not None and not self._cold_admitting:return None
         if self.cold_preflight is not None:return self.cold_preflight.check(data,self.identity())
 
-    def attach_completion_barrier(self,*,completion_window_seconds=30.):
+    def attach_completion_barrier(self,*,completion_window_seconds=30.,checkpoint_inspection=False):
         """Opt in before start; keep external physical checkpoint proofs required."""
         from .assigned_barrier import AssignedCompletionBarrier,AssignedCompletionWindow
         AssignedCompletionWindow(0.,completion_window_seconds)
+        if type(checkpoint_inspection) is not bool:raise TypeError('boolean checkpoint inspection mode required')
+        if checkpoint_inspection and not callable(getattr(self.evidence,'checkpoint_from_controller',None)):
+            raise TypeError('external controller-backed checkpoint provider required')
         with self._lock:
             if (self.machine_events is None or self._closed or self._pump_started
                     or self.sender._assigned_endpoint._claimed or self.completion_barrier is not None):
                 raise ValueError('attach one completion barrier after capture and before sender start')
             self.completion_barrier=AssignedCompletionBarrier(self.machine_events)
             self._completion_window_seconds=completion_window_seconds
+            if checkpoint_inspection:
+                from .checkpoint_inspection import AssignedCheckpointInspection
+                self.checkpoint_inspection=AssignedCheckpointInspection(self)
 
     def _barrier_evidence(self, operation_id, phase):
         """Queue the fixed pair only on the sender already owned by this backend."""
@@ -213,7 +225,10 @@ class AssignedJobBackend:
             token=self.completion_barrier.dispatch(operation_id,phase,self.identity(),enqueue,
                 **({'completion_window':self._completion_window} if phase=='completed' else {}))
             self._barrier_tokens[key]=token
-        return self.completion_barrier.poll()
+        proof=self.completion_barrier.poll()
+        if proof is not None and self.checkpoint_inspection is not None and phase in ('paused','resuming'):
+            return self.checkpoint_inspection.advance(operation_id,phase,proof)
+        return proof
 
     def _barrier_outcome(self, operation_id, phase):
         try:return self._barrier_evidence(operation_id,phase)
@@ -337,6 +352,8 @@ class AssignedJobBackend:
         return data
 
     def can_overlap(self,operation,pending_ids):
+        if any((op,phase) in self._barrier_tokens for op in self._checkpoint_pending
+                for phase in ('paused','resuming')):return False
         if self.cold_inspection is not None and self.cold_inspection.pending:return False
         return operation in self.prompt.supported_operations and bool(pending_ids) and all(
             self._operations.get(key) in ('job.start','job.pause','job.resume') for key in pending_ids)
@@ -387,7 +404,9 @@ class AssignedJobBackend:
             if state!=self.sender.STATE_PRINTING:raise RequestRejected('job_not_running')
         elif operation=='job.resume':
             if state!=self.sender.STATE_PAUSED:raise RequestRejected('job_not_paused')
-            blockers=self.resume_blockers()
+            if self.checkpoint_inspection is not None:
+                blockers=[] if self.checkpoint is not None and self.witness.snapshot()[2]==self._pause_epoch else ['qualified_checkpoint_unavailable']
+            else:blockers=self.resume_blockers()
             if blockers:raise RequestRejected(','.join(blockers))
         elif state not in (self.sender.STATE_PRINTING,self.sender.STATE_PAUSED):
             raise RequestRejected('job_not_running_or_paused')
@@ -398,6 +417,8 @@ class AssignedJobBackend:
             self.prompt.dispatch(operation_id,operation,arguments,deadline=deadline)
             return
         self._transitions[operation_id]=self._printing
+        if self.checkpoint_inspection is not None and operation in ('job.pause','job.resume'):
+            self._checkpoint_pending.add(operation_id)
         if self.cold_inspection is not None and operation in ('job.stage','job.start'):
             self.cold_inspection.begin(operation_id,operation,arguments,deadline)
             return
@@ -441,9 +462,20 @@ class AssignedJobBackend:
         else:raise RequestRejected('unsupported_operation')
 
     def _capture(self):
-        try:checkpoint=self.evidence.checkpoint(self.identity())
+        controller=None
+        if self.checkpoint_inspection is not None:
+            controller=self.checkpoint_inspection.read()
+            if controller is None:raise RequestRejected('post_drain_controller_report_pending')
+        try:
+            checkpoint=(self.evidence.checkpoint(self.identity()) if controller is None else
+                self.evidence.checkpoint_from_controller(self.identity(),json.loads(json.dumps(controller['controller_state']))))
         except (RequestRejected,InvalidCheckpoint):raise
         except Exception:raise RequestRejected('checkpoint_evidence_unavailable') from None
+        if controller is not None:
+            refreshed=self.checkpoint_inspection.read()
+            if refreshed is None or any(refreshed['controller_state'][key]!=controller['controller_state'][key]
+                    for key in ('operation_id','observed_at','capture_id','state')):
+                raise RequestRejected('checkpoint_source_changed_during_provider')
         if not isinstance(checkpoint,PauseCheckpoint):raise RequestRejected('qualified_checkpoint_unavailable')
         saved=checkpoint.to_dict();now=self.clock()
         for key,value in self.identity().items():
@@ -481,6 +513,10 @@ class AssignedJobBackend:
             writes=barrier.get('writes')
             if type(writes) is not list or len(writes)!=2 or any(type(w) is not dict or 'line_number' not in w for w in writes):
                 return ['resume_barrier_transport_line_unqualified']
+            if self.checkpoint_inspection is not None:
+                tail=barrier.get('inspection',{}).get('writes')
+                if type(tail) is not list or len(tail)!=1 or tail[0].get('line_number') is not None:
+                    return ['checkpoint_inspection_transport_unqualified']
             numbers=[w['line_number'] for w in writes if w['line_number'] is not None]
             saved=self.checkpoint.to_dict();live=current.to_dict()
             if (any(type(n) is not int for n in numbers)
@@ -499,6 +535,14 @@ class AssignedJobBackend:
             'physical_stop_confirmed':False})
 
     def poll(self,operation_id):
+        if operation_id in self._checkpoint_results:return self._checkpoint_results[operation_id]
+        outcome=self._poll(operation_id)
+        if outcome is not None and operation_id in self._checkpoint_pending:
+            self._checkpoint_pending.discard(operation_id)
+            self._checkpoint_results[operation_id]=outcome
+        return outcome
+
+    def _poll(self,operation_id):
         if operation_id in self._cold_results:return self._cold_results[operation_id]
         self._drain();operation=self._operations[operation_id]
         if operation in self.prompt.supported_operations:return self.prompt.poll(operation_id)
@@ -645,6 +689,7 @@ class AssignedJobBackend:
                     pause_cancel_barrier_enabled=self.completion_barrier is not None,
                     resume_completion_barrier_enabled=self.completion_barrier is not None,
                     lifecycle_completion_barrier_enabled=self.completion_barrier is not None,
+                    post_drain_checkpoint_inspection=self.checkpoint_inspection is not None,
                     cold_preflight_enabled=self.cold_preflight is not None,
                     cold_automatic_inspection=self.cold_inspection is not None,
                     cold_preflight_authorizes_physical_control=False,

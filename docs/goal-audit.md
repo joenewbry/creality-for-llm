@@ -15,7 +15,7 @@ full-suite run.
 | 3. Specify the whole LLM interface and blockers | [Interface](interface.md), [blocker matrix](blocker-matrix.md), typed tool schemas, exact prompt identities and explicit uncertainty rules exist | Actual display/controller pairing and the complete physical alert inventory remain unqualified. Unknown states must remain blocked. |
 | 4. Build firmware and implement host control | Candidate builds, native firmware functions, virtual sender, journal/tool service, Linux assigned prompt connection and Mac metadata discovery are tested | The assigned job/prompt adapter is software-tested with a software-only evidence provider; source-bound serial reports retain actual sender line identity/age and synchronously retire dispatch on sensor/firmware hazards, while the physical evidence provider, remaining policy/recovery integration and Mac serial-driver isolation are unfinished. Pre-open startup admission and post-commit revalidation exist, but no real hardware readiness checker is supplied. Sender error closure uses a short latch and emits no automatic commands on an uncertain connection. |
 | 5. Simulated printer and blocker matrix | Real virtual sender, native handler/protection fixtures, MCP/model demonstrations and [streamed process-death cases](../validation/streamed-host-restart-stage109.json) provide substantial software evidence | A simulator restarted with its host does not model a surviving physical printer. Full controller/screen/ADC/interrupt integration and real timing remain open. |
-| 6. Commission only the clogged printer | No firmware was flashed; the earlier development-only query reported a negative nozzle temperature with zero target | Owner confirmed idle/clear; current read-only queries again report nozzle −15°C with zero targets. Diagnose sensing and qualify the candidate/recovery route before installation or actuation. No protected-printer substitution. |
+| 6. Commission only the clogged printer | No firmware was flashed; the earlier development-only query reported a negative nozzle temperature with zero target | Owner confirmed idle/clear; the earlier October 27 read-only diagnostic recorded nozzle −15°C with zero targets. Current cold readings and a repair update are requested; no new probe or repair is assumed. Diagnose sensing and qualify the candidate/recovery route before installation or actuation. No protected-printer substitution. |
 | 7. Exercise sequences and simulated printing | Constrained virtual jobs finish original moves once, including supported waits and powered pause/resume; [model hot-pause evidence](../validation/model-hot-stage75.json) | No motion-only hardware rehearsal or real-print continuation is qualified. A clogged nozzle does not make an ordinary print file safe to execute. |
 | 8. Deliver report and separate printing plan | Reproduction instructions, public source/PR links, owned explanation page, qualification records and [printing plan](printing-qualification-plan.md) are available | Hardware-backed development release, checked rollback and physical demonstration remain open. Printing qualification follows repair and commissioning. |
 
@@ -97,6 +97,27 @@ journaled state read. It holds the native wait through inspection, then explicit
 responds, pauses/resumes and completes all 80 original modeled moves once.
 Snapshot `d585922` passes 171 focused installed cases. Production modules remain
 byte-identical to full-suite snapshot `c8d079c`. This closes the earlier combined-
-path test gap. Hardware sampling and virtual motion are still separate models;
-operation-correlated barriers, configuration/physical continuity, the actual job
-provider, Mac transport and physical commissioning remain unfinished.
+path test gap. Hardware sampling and virtual motion are still separate models.
+Operation-correlated barriers and ordered post-drain source inspection are now
+implemented in later focused source snapshots. Configuration/physical continuity,
+the actual job provider, Mac transport and physical commissioning remain unfinished.
+
+
+## Physical provider dependency review
+
+The current source implements bounded cold command screening, controller-managed
+stage/start inspection and separate post-drain pause/resume inspection. The latest
+focused cohort passes 403 Linux cases and 372 Mac cases with 31 Linux-only skips;
+see [post-drain evidence](../validation/checkpoint-inspection-stage147.json).
+These are source checks with synthetic physical proofs, not an updated full
+installed-package or physical qualification.
+
+The [physical provider plan](physical-provider-plan.md) maps each existing callback
+to its required producer, separates pre-open admission from post-open firmware/
+configuration checks, and identifies the actual missing target and sensor facts.
+No physical provider/readiness checker is implemented by that plan. Its next
+implementation must use the qualified development-printer profile rather than
+fixture counters or unknown facts filled with defaults. Board/processor evidence
+and a resolved cold nozzle reading are still needed for commissioning; ordinary
+source work remains independent. The owner has been asked for the missing facts.
+No new printer or camera access is part of this review.

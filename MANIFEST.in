@@ -33,6 +33,7 @@ include docs/assigned-job.md
 include docs/assigned-observations.md
 include docs/blocker-matrix.md
 include docs/camera-interface.md
+include docs/checkpoint-inspection.md
 include docs/cold-preflight.md
 include docs/contributions.md
 include docs/development-hardware.md
@@ -48,6 +49,7 @@ include docs/mcp.md
 include docs/model-demo.md
 include docs/native-state-path.md
 include docs/pause-resume.md
+include docs/physical-provider-plan.md
 include docs/printing-qualification-plan.md
 include docs/prior-art.md
 include docs/prompt-backend.md
@@ -91,6 +93,7 @@ include printer_control/camera_http.py
 include printer_control/camera_owner.py
 include printer_control/camera_owner_api.py
 include printer_control/checkpoint.py
+include printer_control/checkpoint_inspection.py
 include printer_control/cold_preflight.py
 include printer_control/combined_virtual.py
 include printer_control/devices.py
@@ -181,6 +184,7 @@ include tests/test_camera.py
 include tests/test_camera_http.py
 include tests/test_camera_owner.py
 include tests/test_checkpoint.py
+include tests/test_checkpoint_inspection.py
 include tests/test_cold_preflight.py
 include tests/test_combined_pause_interrupt.py
 include tests/test_combined_policy.py
@@ -272,6 +276,7 @@ include validation/camera-broker-stage114.json
 include validation/camera-owner-api-stage117.json
 include validation/camera-owner-http-stage116.json
 include validation/capture-finalization-stage86.json
+include validation/checkpoint-inspection-stage147.json
 include validation/clean-export-4b768f9.json
 include validation/clean-export-86bde0b.json
 include validation/clean-export-8d8453f.json

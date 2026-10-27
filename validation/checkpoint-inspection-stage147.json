@@ -1,0 +1,65 @@
+{
+  "linux": {
+    "passed": 403,
+    "skipped": 0,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 234.635,
+    "xml_sha256": "e0aa0d87a6e602eefccb62597167138802461a5226014cba2c5ac34cc962981f"
+  },
+  "mac": {
+    "passed": 372,
+    "skipped": 31,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 6.159,
+    "xml_sha256": "60a7a3b6fac059ed793a2fd7523512f75d7eb1935721c49b69e06bb7accdfb76"
+  },
+  "schema_version": 1,
+  "date": "2026-10-27",
+  "source_commit": "37ae500b48bbc858da37c378fd7ed04821715e2a",
+  "scope": "same focused source cohort on Linux and Mac; optional post-drain controller inspection with synthetic external physical proofs",
+  "matched_source_inputs": 163,
+  "matched_python_and_fixture_inputs": 160,
+  "export_checks": 9,
+  "new_checkpoint_tests": 21,
+  "cohort": [
+    "post-drain checkpoint and cold inspections",
+    "cold preflight and state reader",
+    "assigned job, barriers, sender, capture and transport",
+    "operation service, startup and ownership",
+    "shared writer and receiver"
+  ],
+  "new_behavior": [
+    "distinct journaled post-drain inspections for pause and resume",
+    "durable child/wire/deadline link before one exact adjacent query",
+    "all other, duplicate or partial frames remain invalidating",
+    "source reports must follow marker and write with zero reported planner blocks",
+    "original one-second marker/state ages and parent deadlines preserved",
+    "external checkpoint provider receives copy and source is rechecked afterward",
+    "controller loop progresses without another model poll",
+    "only two numbered barrier writes explain line-number advancement",
+    "predrain prompt overlap and prior receipt completion preserved",
+    "claimed child cannot replay after workflow memory loss"
+  ],
+  "physical_printers_accessed": false,
+  "firmware_flashed": false,
+  "physical_readiness_qualified": false,
+  "resume_authorized_by_source_alone": false,
+  "camera_scope": "deferred",
+  "remaining": [
+    "complete hardware/configuration/physical continuity provider",
+    "bounded provider callback and runtime latency qualification",
+    "exact development target and recovery identification",
+    "negative nozzle-sensor diagnosis",
+    "Mac transport/startup and physical nonprinting commissioning",
+    "separate post-repair printing qualification"
+  ],
+  "limitations": [
+    "synthetic source packets and physical proofs, no physical checkpoint qualification",
+    "native commanded coordinates need qualified conversion into checkpoint frame",
+    "logical flags and reported temperatures are not independent hardware measurements",
+    "external callbacks run under backend guard and cannot be preempted",
+    "no new installed-package/full-suite qualification or reset/reconnect recovery"
+  ]
+}

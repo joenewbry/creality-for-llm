@@ -53,7 +53,12 @@ def cold_context(tmp_path,request):
         backend=AssignedJobBackend(sender,job_path=job,job_id='job',witness=SimpleNamespace(invalidate_resume=lambda:None),
             evidence=provider,clock=lambda:now[0])
         recorder=AssignedMachineEventRecorder(journal,endpoint=endpoint,lease=lease,clock=lambda:now[0])
-        backend.attach_machine_events(recorder);backend.attach_cold_preflight(policy(),automatic_inspection=getattr(request,"param",False))
+        backend.attach_machine_events(recorder)
+        mode=getattr(request,"param",False)
+        backend.attach_cold_preflight(policy(),automatic_inspection=mode is True)
+        if mode=='checkpoint':
+            provider.checkpoint_from_controller=lambda *a:None
+            backend.attach_completion_barrier(checkpoint_inspection=True)
         endpoint.claim();capture=(recorder,endpoint,SimpleNamespace(_serial=endpoint),now,chunks)
         channel.dispatch('inspect',now=8,deadline=20);channel.feed(inactive(1,0),now=8.1)
         channel.dispatch('bind',now=9,deadline=20);channel.feed(inactive(2,1),now=9.1)

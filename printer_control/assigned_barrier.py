@@ -117,12 +117,18 @@ class AssignedCompletionBarrier:
                     sha256=hashlib.sha256(data).hexdigest(),confirmed=False,
                     line_number=int(re.match(rb'N([0-9]+) ',data)[1]) if re.match(rb'N([0-9]+) ',data) else None))
             else:
-                action['fault'] = action['fault'] or 'barrier_frame_interleaved_or_replayed'
+                tail=action.get('inspection')
+                if (index==2 and tail is not None and not tail['writes']
+                        and command==tail['command'] and sequence==action['writes'][-1]['sequence']+1):
+                    tail['writes'].append(dict(sequence=sequence,started_at=now,
+                        sha256=hashlib.sha256(data).hexdigest(),confirmed=False,
+                        line_number=int(re.match(rb'N([0-9]+) ',data)[1]) if re.match(rb'N([0-9]+) ',data) else None))
+                else:action['fault'] = action['fault'] or 'barrier_frame_interleaved_or_replayed'
 
     def after_write(self, sequence, data):
         with self._lock:
             if self._active:
-                for write in self._active['writes']:
+                for write in self._active['writes']+self._active.get('inspection',{}).get('writes',[]):
                     if write['sequence'] == sequence: write['confirmed'] = True
 
     def dispatch(self, operation_id, phase, identity, enqueue, *, completion_window=None):
@@ -133,7 +139,8 @@ class AssignedCompletionBarrier:
         """
         with self._lock:
             self._check_source()
-            if self._active is not None and not self._active.get('completed'):
+            if self._active is not None and (not self._active.get('completed')
+                    or self._active.get('inspection') is not None and not self._active['inspection'].get('complete')):
                 raise RequestRejected('barrier_already_pending')
             if phase not in self.PHASE_OPERATIONS or not callable(enqueue):
                 raise RequestRejected('invalid_barrier_dispatch')
@@ -196,6 +203,56 @@ class AssignedCompletionBarrier:
             raise
         return token
 
+    def authorize_inspection(self, operation_id, child_id, wire_request):
+        """Permit one exact prompt-lane inspect after a fresh completed marker.
+
+        The caller journals/claims the child and dispatches via PromptBackend.
+        No raw bytes or arbitrary read commands are accepted here.
+        """
+        from .prompt_wire import PromptWireCommand
+        with self._lock:
+            proof=self.poll()
+            action=self._active
+            if (proof is None or action['operation_id']!=operation_id
+                    or action['phase'] not in ('paused','resuming') or 'inspection' in action):
+                raise RequestRejected('fresh_barrier_before_one_inspection_required')
+            if type(child_id) is not str or not 1<=len(child_id)<=128:
+                raise RequestRejected('journaled_barrier_inspect_required')
+            command=PromptWireCommand('inspect',wire_request).encode().decode('ascii').strip()
+            with self.recorder.journal._db() as db:
+                row=db.execute('SELECT request,status FROM operations WHERE operation_id=?',(child_id,)).fetchone()
+                if row is None or row['status']!='running':raise RequestRejected('running_barrier_inspect_required')
+                request=json.loads(row['request'])
+                if (request['operation']!='prompt.inspect' or request['arguments']!={}
+                        or request['request_id']!='checkpoint-inspect:'+operation_id
+                        or request['printer_id']!=action['identity']['printer_id']
+                        or request['connection_generation']!=action['identity']['generation']
+                        or request['deadline']!=action['deadline']):
+                    raise RequestRejected('barrier_inspect_identity_or_deadline_mismatch')
+                # Durable link precedes allowing the single extra frame.
+                intent=json.loads(db.execute('SELECT intent FROM assigned_barriers WHERE token=?',(action['token'],)).fetchone()[0])
+                if 'inspection' in intent:raise RequestRejected('barrier_inspect_not_new')
+                tail=dict(operation_id=child_id,wire_request=wire_request,command=command,writes=[],complete=False)
+                intent['inspection']=tail
+                db.execute('UPDATE assigned_barriers SET intent=? WHERE token=?',
+                    (self.recorder.journal._encode(intent),action['token']))
+            self._check_source();self._check_operation(action)
+            if self._now()>=action['deadline']:raise RequestRejected('barrier_inspect_expired_during_commit')
+            action['inspection']=tail
+            return json.loads(json.dumps(tail))
+
+    def finish_inspection(self, child_id):
+        """Close the exact read tail after the coordinator validates its state."""
+        with self._lock:
+            proof=self.poll()
+            tail=self._active.get('inspection')
+            if (proof is None or tail is None or tail['operation_id']!=child_id
+                    or len(tail['writes'])!=1 or not tail['writes'][0]['confirmed']
+                    or self.recorder.journal.get(child_id)['status']!='completed'):
+                raise RequestRejected('completed_barrier_inspection_required')
+            tail['complete']=True
+            return self.poll()
+
     def poll(self, *, max_age=1.):
         if type(max_age) not in (int,float) or not math.isfinite(max_age) or not 0 < max_age <= 1:
             raise RequestRejected('bounded_barrier_age_required')
@@ -239,6 +296,7 @@ class AssignedCompletionBarrier:
                     token=action['token'],capture_id=action['capture_id'],writes=action['writes'],receipt=receipt,
                     evidence_type='source_correlated_firmware_barrier_marker',
                     physical_readiness_qualified=False,resume_authorized=False,
+                    **({'inspection':action['inspection']} if 'inspection' in action else {}),
                     **({'completion_window':action['completion_window']} if 'completion_window' in action else {}))
                 with self.recorder.journal._db() as db:
                     db.execute("UPDATE assigned_barriers SET status='completed',result=? WHERE token=?",

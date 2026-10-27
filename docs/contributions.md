@@ -209,3 +209,14 @@ and duplicates, lost workflow memory, missing state lines, stale source, provide
 errors and interrupted effects are covered. Full hardware/configuration/continuity
 qualification and ordered checkpoint inspection remain unfinished. See
 [design](cold-preflight.md) and [evidence](../validation/fresh-inspection-stage146.json).
+
+## Post-drain checkpoint inspection
+
+Optional pause/resume admission now acquires distinct controller reports after
+its fresh drain marker. A committed child inspect permits one exact, adjacent
+prompt-lane frame; unrelated, partial or replayed frames still invalidate the
+barrier. Source copies reach the required external checkpoint provider and are
+rechecked afterward. Controller-loop progress supports delayed model collection.
+Physical checkpoint proofs, existing immutable comparison and pause intervals
+remain required. See [design and limits](checkpoint-inspection.md) and
+[qualification evidence](../validation/checkpoint-inspection-stage147.json).
