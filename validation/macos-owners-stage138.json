@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "scope": "Mac owner metadata and software-terminal exclusion probe; no physical qualification",
+  "software": {
+    "macos_owner_tests": 43,
+    "macos_owner_failures": 0,
+    "native_lsof_fixture": "private ordinary file, duplicate descriptors in one process",
+    "physical_transport_enabled": false
+  },
+  "probe": {
+    "scope": "software_terminal_only",
+    "platform": "macOS-15.2-arm64-arm-64bit",
+    "kernel": "Darwin Kernel Version 24.2.0: Fri Dec  6 18:56:34 PST 2024; root:xnu-11215.61.5~2/RELEASE_ARM64_T6020",
+    "python": "3.11.13",
+    "uid": 501,
+    "child": {
+      "open_errno": null,
+      "flock_errno": 35
+    },
+    "kernel_excluded_competing_open": false,
+    "physical_serial_access": false,
+    "printer_commands_sent": 0,
+    "physical_driver_qualified": false
+  },
+  "limitations": [
+    "No physical printer or camera access",
+    "Metadata snapshot is not an atomic ownership claim",
+    "PTY behavior does not qualify a USB serial driver",
+    "Production physical evidence provider and Mac transport remain unfinished",
+    "Prior installed Linux full-suite result applies to ad89416, not this new module"
+  ],
+  "files": {
+    "printer_control/macos_owners.py": "644b237d39312507cd2675419f98144c0ec988fd09a2e895d5a42f9ba29b3004",
+    "tests/test_macos_owners.py": "a7eb12d10fd9fecfcc1c1d42500e8bd13ab040d84b6a6fb29851325cb765bd90",
+    "scripts/qualify_macos_pty.py": "4622f1ef3aaa03a223ff00a4368cee82278ad0f3f5b7d38f2189fe8e141b489b"
+  },
+  "paid_model_calls": 0,
+  "installed_macos": {
+    "tests": 135,
+    "passed": 113,
+    "skipped": 22,
+    "failures": 0,
+    "errors": 0,
+    "junit_sha256": "ddadd3e8adfe23f4312bfa5f64d714cf1d608d475d50f019990a1d1b3cad4158",
+    "log_sha256": "e6492039b2b07e205c2ed1d16c116e4a9c34438d20c32c61f6ea2fad8c5fb502"
+  },
+  "installed_linux": {
+    "tests": 135,
+    "passed": 134,
+    "skipped": 1,
+    "failures": 0,
+    "errors": 0,
+    "junit_sha256": "b3a0802c27e86c2c9a25b020f7e09f7f85be1b4b4d9ff6620da033642f1bd337",
+    "log_sha256": "456630dc759e2bfa96226e6d0b182047f2d518ea8dceca3d9f12fc645224707f"
+  },
+  "qualified_source_commit": "d5289a42ee300fb3e01c903df563625159c859c5",
+  "exported_files": 302,
+  "installed_test_corpus_outside_source": true,
+  "installed_module_bytes_match_export": true,
+  "test_command": "python -I with installed-package paths and copied tests outside source; pytest -q -c /dev/null tests",
+  "test_harness_warnings": "Both installed runs reported two pytest cache warnings because -c /dev/null selected /dev as cache root; no test failures. No physical device operation was attempted.",
+  "full_suite_rerun": false,
+  "public_code_snapshot": "https://github.com/joenewbry/creality-for-llm/tree/85653300e28ce9622090c2df6834751527d92f5f",
+  "public_code_bytes_match_qualified_files": true
+}

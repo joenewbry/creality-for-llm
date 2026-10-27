@@ -297,6 +297,11 @@
     "docs/sender-error-close.md",
     "validation/linux-package-stage137.json",
     "validation/dispatch-admission-stage137.json",
-    "validation/sender-close-stage137.json"
+    "validation/sender-close-stage137.json",
+    "printer_control/macos_owners.py",
+    "tests/test_macos_owners.py",
+    "scripts/qualify_macos_pty.py",
+    "docs/macos-owners.md",
+    "validation/macos-owners-stage138.json"
   ]
 }

@@ -39,8 +39,9 @@ full-suite run.
 The [current installed Linux qualification](../validation/linux-package-stage137.json)
 passes 1175 tests with zero skips at public source `ad89416`, including the camera,
 startup, shared serial ownership, journaled assigned job/prompt tools, source-bound serial history and explicit transport-uncertainty retirement and synchronous source-hazard dispatch inhibition and an owned sender/prompt-copy lifecycle. The earlier 986-case qualification
-remains historical. Subsequent delivery changes are documentation/qualification
-metadata only. Neither test counts nor a successful source export prove physical
+remains historical. The later [Mac owner metadata](macos-owners.md) component has separate focused
+installed-package checks and is outside this full-suite snapshot. The Mac transport
+remains disabled; software-terminal exclusion did not hold on this Mac. Neither test counts nor a successful source export prove physical
 readiness.
 
 ## Startup gap found during this audit
