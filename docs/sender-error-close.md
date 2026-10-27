@@ -28,7 +28,8 @@ by a closing error. No serial port is opened by these tests.
 The first full installed run exposed the competing-error closure failure. An
 initial long-held-lock candidate then timed out in the Linux fault scenario;
 that run is retained and is not a qualification. The final implementation uses
-the short latch and requires a fresh installed-package run.
+the short latch and passes a fresh 1,175-test installed Linux qualification with
+zero skips. [Full record](../validation/linux-package-stage137.json).
 
 Already received source-bound fault records remain separate from sender
 callbacks. This adds no automatic print recovery or physical shutdown claim.

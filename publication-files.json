@@ -294,6 +294,9 @@
     "validation/maintained-firmware-stage135.json",
     "validation/thermal-handoff-stage136.json",
     "docs/dispatch-admission.md",
-    "docs/sender-error-close.md"
+    "docs/sender-error-close.md",
+    "validation/linux-package-stage137.json",
+    "validation/dispatch-admission-stage137.json",
+    "validation/sender-close-stage137.json"
   ]
 }

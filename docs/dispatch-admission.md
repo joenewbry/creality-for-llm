@@ -25,8 +25,8 @@ Fourteen regressions reproduce failures in the prior service. They cover commit
 latency, changed connection/state, stale/future observations, readiness withdrawal,
 evidence-source failure, changed staged bytes, slow second validation and lease
 loss. Three cases exercise the actual assigned-job adapter with a recording
-sender; the tests do not connect to hardware. Full installed-package results
-are recorded separately when complete.
+sender; the tests do not connect to hardware. The exact aggregate passes 1,175 installed Linux tests with zero skips; see
+[the qualification record](../validation/linux-package-stage137.json).
 
 This does not implement the physical evidence provider. Current source-bound
 serial reports can describe temperatures, controller-reported position and

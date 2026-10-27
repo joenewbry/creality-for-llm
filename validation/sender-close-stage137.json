@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "observed_date": "2026-10-27",
+  "qualified_public_source_commit": "ad89416ec5362244803ed6bc364021a1147fddfe",
+  "installed_linux_tests": 1175,
+  "installed_linux_skips": 0,
+  "qualification_record": "linux-package-stage137.json",
+  "physical_access": false,
+  "firmware_flashed": false,
+  "camera_scope": "deferred_by_owner",
+  "protected_printer_preserved": true,
+  "physical_evidence_provider_implemented": false,
+  "physical_control_qualified": false,
+  "firmware_test_pin_unchanged": "98aa03248337b8039a09bbc1a29f33432aed08ca",
+  "prior_attempts": [
+    {
+      "source_commit": "1bc40f470f1a176a16951e3f2940c2830707cc1b",
+      "result": "1166 passed, four failures",
+      "failed_tests": [
+        "tests.test_assigned_job::test_journaled_assigned_job_tools_over_owned_software_terminal[thermal_fault]",
+        "tests.test_restored_resume::test_resume_handoff_is_durable_rechecked_and_one_use[False]",
+        "tests.test_restored_resume::test_resume_handoff_is_durable_rechecked_and_one_use[True]",
+        "tests.test_restored_resume::test_temperature_loss_between_validation_and_dispatch_prevents_resume"
+      ],
+      "log_sha256": "211c542617941e790c0aa300cab3a210ec61b992e14d6308b0a0100d8e696c45"
+    },
+    {
+      "source_commit": "13cc05d19af706ec59bc946ec79ff83c8a87cf44",
+      "result": "targeted thermal scenario timed out; full suite not started",
+      "log_sha256": "15568df52d8a62e5cfde1459361c4c6af0a86ebd346990e779f5a864ee908ca7"
+    },
+    {
+      "source_commit": "abb976dbb64d224028f492e1e5a23268496aaa72",
+      "result": "1174 passed, one MCP pause fixture failure",
+      "failed_tests": [
+        "tests_print_mcp.test_virtual_job_mcp::test_mcp_job_pause_resume_executes_every_simulated_move_once"
+      ],
+      "log_sha256": "e00e17ad3324c892e87270239285380cfde4eb4a2a677dfe53eaaca79d761c3e"
+    }
+  ],
+  "full_goal_complete": false,
+  "scope": "assigned sender error-close lifecycle; no physical shutdown claim",
+  "pull_request": {
+    "baseRefName": "stack/h22-dispatch-admission",
+    "headRefName": "stack/h23-sender-error-close",
+    "isDraft": true,
+    "state": "OPEN",
+    "title": "Keep the sender closed after competing errors",
+    "url": "https://github.com/joenewbry/creality-for-llm/pull/32",
+    "key": "H23"
+  },
+  "baseline_sender_regressions_failed": 3,
+  "baseline_nonclosing_control_passed": 1,
+  "final_sender_unit_cases": 4,
+  "baseline_log_sha256": "01200c0eafcf35d0bbd30ac60c131bb5ed714b651fc4394262b24abe4be75d91",
+  "local_focused": {
+    "passed": 122,
+    "linux_only_skipped": 11
+  },
+  "local_mcp_fixture_passed": 1,
+  "error_entry_latch": "short lock released before inherited code",
+  "automatic_commands_from_assigned_error_path": false,
+  "source_fault_history": "source-bound received faults remain distinct from sender callbacks",
+  "targeted_linux_thermal": {
+    "passed": true,
+    "physical_serial_open_or_discovery_attempts": 0,
+    "no_additional_frames_after_retirement": true,
+    "no_original_move_replay": true,
+    "physical_stop_confirmed": false,
+    "automatic_emergency_frame_emitted": false
+  },
+  "mcp_fixture": "default-disabled software-only pause-fixture holds virtual move 6 until pause dispatch; actual sender barrier still required; assertion 0 < paused moves < 80",
+  "runtime_changed_after_abb976d": false
+}

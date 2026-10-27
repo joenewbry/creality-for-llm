@@ -249,6 +249,7 @@ include validation/clean-export-86bde0b.json
 include validation/clean-export-8d8453f.json
 include validation/development-about-owner-20261026.json
 include validation/development-readonly-stage130.json
+include validation/dispatch-admission-stage137.json
 include validation/firmware-parity-stage134.json
 include validation/firmware-stack-stage76.json
 include validation/host-core-boundary-stage90.json
@@ -271,6 +272,7 @@ include validation/linux-package-stage124.json
 include validation/linux-package-stage125.json
 include validation/linux-package-stage131.json
 include validation/linux-package-stage132.json
+include validation/linux-package-stage137.json
 include validation/machine-events-stage84.json
 include validation/macos-discovery-stage108.json
 include validation/maintained-firmware-stage135.json
@@ -280,6 +282,7 @@ include validation/native-handoff-stage81.json
 include validation/native-thermal-stage78.json
 include validation/native-watch-stage79.json
 include validation/receive-arrival-stage120.json
+include validation/sender-close-stage137.json
 include validation/service-startup-stage118.json
 include validation/source-hazard-stage131.json
 include validation/streamed-host-restart-stage109.json
