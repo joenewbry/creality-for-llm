@@ -11,6 +11,7 @@ import threading
 import math
 import re
 from octoprint.util.comm import MachineCom
+from octoprint.util import comm as octoprint_comm
 from .octoprint_sender import PositionWakeMixin
 from .tty_prompt import TTYPromptBackend
 from .shared_receiver import ObservedBytes
@@ -131,7 +132,7 @@ class AssignedSerialEndpoint:
 class AssignedSender(PositionWakeMixin,MachineCom):
     def __init__(self,endpoint,*,callbackObject,printerProfileManager):
         self._assigned_initialized=False
-        self._assigned_error_lock=threading.RLock()
+        self._assigned_error_lock=threading.Lock()
         self._assigned_error_closing=False
         if type(endpoint) is not AssignedSerialEndpoint:
             raise TypeError('explicit assigned endpoint required')
@@ -162,18 +163,26 @@ class AssignedSender(PositionWakeMixin,MachineCom):
     def _perform_detection_step(self,init=False):
         self._trigger_error('Assigned autodetection is disabled','connection')
 
-    def close(self,*args,**kwargs):
-        # Error handlers and explicit close share ownership of the terminal
-        # sender state. A late error may not overwrite an already closed state.
-        with self._assigned_error_lock:
-            return super().close(*args,**kwargs)
-
     def _trigger_error(self,text,reason,close=True):
+        # Never hold this latch while invoking inherited code: its send/close
+        # paths use their own locks. One closing error owns cleanup and notice.
         with self._assigned_error_lock:
             if self._assigned_error_closing or self._connection_closing:
                 return
             if close:self._assigned_error_closing=True
-            return super()._trigger_error(text,reason,close=close)
+        self._errorValue=text
+        if close:
+            # No inherited automatic M112, heater writes, reset or retry on an
+            # uncertain assigned connection. Closure does not prove shutdown.
+            self._assigned_endpoint.retire('assigned_sender_error')
+            self.close(is_error=True)
+        else:
+            self._changeState(self.STATE_ERROR)
+        consequence='disconnect' if close else None
+        payload=self._payload_for_error(reason,consequence=consequence)
+        self._callback.on_comm_error(text,reason,consequence=consequence,
+            faq=payload.get('faq'),logs=payload.get('logs'))
+        octoprint_comm.eventManager().fire(octoprint_comm.Events.ERROR,payload)
 
     def _retire_replay(self,reason):
         self._assigned_endpoint.retire(reason)

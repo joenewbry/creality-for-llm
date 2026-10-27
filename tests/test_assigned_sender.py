@@ -158,7 +158,7 @@ def error_sender(monkeypatch):
     errors, closes, states = [], [], []
     sender = AssignedSender.__new__(AssignedSender)
     sender._assigned_initialized = False
-    sender._assigned_error_lock = threading.RLock()
+    sender._assigned_error_lock = threading.Lock()
     sender._assigned_error_closing = False
     sender._state = sender.STATE_OPERATIONAL
     sender._currentFile = None
@@ -166,6 +166,7 @@ def error_sender(monkeypatch):
     sender._connection_closing = False
     sender._temperature_timer = sender._sd_status_timer = None
     sender._serial = SimpleNamespace(close=lambda: closes.append('closed'))
+    sender._assigned_endpoint = SimpleNamespace(retire=lambda reason: None)
     sender._clear_to_send = threading.Semaphore(1)
     sender._send_queue = queue.Queue()
     sender._monitoring_active = sender._send_queue_active = True
@@ -189,7 +190,7 @@ def test_late_firmware_error_cannot_overwrite_terminal_error_close(error_sender)
     assert sender.getState() == sender.STATE_CLOSED_WITH_ERROR
     assert errors == [('transport unavailable', 'connection')]
     assert closes == ['closed']
-    assert states == [sender.STATE_ERROR, sender.STATE_CLOSED_WITH_ERROR]
+    assert states == [sender.STATE_CLOSED_WITH_ERROR]
 
 
 def test_nonclosing_error_does_not_consume_later_error_closure(error_sender):
@@ -204,7 +205,7 @@ def test_nonclosing_error_does_not_consume_later_error_closure(error_sender):
 def test_competing_errors_share_one_terminal_close(error_sender):
     import threading
     sender, errors, closes, states = error_sender
-    entered, release, attempted = threading.Event(), threading.Event(), threading.Event()
+    entered, release, attempted, second_done = (threading.Event() for _ in range(4))
     failures = []
     def close():
         closes.append('closed')
@@ -216,6 +217,8 @@ def test_competing_errors_share_one_terminal_close(error_sender):
             if text == 'second':
                 attempted.set()
             sender._trigger_error(text, 'connection')
+            if text == 'second':
+                second_done.set()
         except BaseException as error:
             failures.append(error)
     first = threading.Thread(target=trigger, args=('first',))
@@ -225,6 +228,7 @@ def test_competing_errors_share_one_terminal_close(error_sender):
         assert entered.wait(2)
         second.start()
         assert attempted.wait(2)
+        assert second_done.wait(1), 'duplicate error blocked behind inherited close'
     finally:
         release.set()
         first.join(3)
@@ -233,4 +237,15 @@ def test_competing_errors_share_one_terminal_close(error_sender):
     assert not failures and not first.is_alive() and not second.is_alive()
     assert sender.getState() == sender.STATE_CLOSED_WITH_ERROR
     assert errors == [('first', 'connection')] and closes == ['closed']
-    assert states == [sender.STATE_ERROR, sender.STATE_CLOSED_WITH_ERROR]
+    assert states == [sender.STATE_CLOSED_WITH_ERROR]
+
+
+def test_owned_error_close_never_inherits_automatic_emergency_writes(error_sender):
+    sender, errors, closes, states = error_sender
+    emergencies = []
+    sender._send_m112_on_error = True
+    sender._trigger_emergency_stop = lambda *a, **k: emergencies.append('emergency')
+    sender._trigger_error('THERMAL RUNAWAY', 'firmware')
+    assert not emergencies and closes == ['closed']
+    assert errors == [('THERMAL RUNAWAY', 'firmware')]
+    assert sender.getState() == sender.STATE_CLOSED_WITH_ERROR
