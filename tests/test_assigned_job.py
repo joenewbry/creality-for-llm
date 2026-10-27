@@ -396,7 +396,7 @@ def test_refused_barrier_enqueue_is_unknown_and_never_retried(runtime):
     assert backend.checkpoint is None
 
 
-@pytest.mark.parametrize('scenario',['sender_barrier','barrier_cancel','barrier_interleave','native_barrier'])
+@pytest.mark.parametrize('scenario',['sender_barrier','barrier_cancel','barrier_interleave','native_barrier','numbered_resume'])
 def test_assigned_barrier_through_pinned_sender(scenario):
     if sys.platform!='linux':pytest.skip('Linux owned-terminal barrier integration')
     root=Path(__file__).resolve().parents[1]
@@ -414,6 +414,10 @@ def test_assigned_barrier_through_pinned_sender(scenario):
         assert not proof['resume_authorized'] and not proof['physical_readiness_qualified']
         assert result['moves_completed']==80 if scenario!='barrier_cancel' else 0<result['moves_completed']<80
         if scenario=='barrier_cancel':assert result['cancel_barrier']['phase']=='cancelled'
+        else:
+            assert result['resume_barrier']['phase']=='resuming'
+            assert result['resume_barrier']['token']!=result['pause_barrier']['token']
+            if scenario=='numbered_resume':assert all(type(w['line_number']) is int for w in result['resume_barrier']['writes'])
         if scenario=='native_barrier':assert result['native_state_read'] and result['native_prompt_frames']==4
 
 

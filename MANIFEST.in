@@ -182,6 +182,7 @@ include tests/test_devices.py
 include tests/test_export_review.py
 include tests/test_firmware_host_actions.py
 include tests/test_firmware_parser.py
+include tests/test_fresh_resume.py
 include tests/test_journal.py
 include tests/test_machine_events.py
 include tests/test_machine_state.py
@@ -271,6 +272,7 @@ include validation/development-readonly-stage130.json
 include validation/dispatch-admission-stage137.json
 include validation/firmware-parity-stage134.json
 include validation/firmware-stack-stage76.json
+include validation/fresh-resume-stage143.json
 include validation/host-core-boundary-stage90.json
 include validation/host-llm-interface-boundary-stage97.json
 include validation/host-observations-boundary-stage91.json

@@ -70,6 +70,7 @@ class AssignedJobBackend:
         self._staging=tempfile.TemporaryDirectory(prefix='assigned-staged-job-')
         self.machine_events=None;self.state_reader=None
         self.completion_barrier=None;self._barrier_tokens={}
+        self._resume_dispatched=set();self._resume_admission={}
         self._owner_pid=os.getpid()
         self._pump_started=False;self._pump_thread=None;self._pump_stop=threading.Event()
         self._pump_error=None;self._pump_samples=0
@@ -305,7 +306,11 @@ class AssignedJobBackend:
             self.witness.start_job();self._started=True;self._start_operation_id=operation_id;self._phase='starting';self.sender.startPrint()
         elif operation=='job.pause':self._phase='pausing';self.sender.setPause(True)
         elif operation=='job.resume':
+            if self.completion_barrier is not None:
+                self._phase='resume_admission'
+                return  # The journaled operation polls fresh evidence before motion.
             if not self.witness.arm_resume(self._pause_epoch):raise RequestRejected('stream_changed_before_resume')
+            self._resume_dispatched.add(operation_id)
             self.checkpoint=None;self._phase='resuming';self.sender.setPause(False)
         elif operation=='job.cancel':
             self.checkpoint=None;self._phase='cancelling';self.witness.invalidate_resume();self.sender.cancelPrint()
@@ -333,13 +338,41 @@ class AssignedJobBackend:
         return checkpoint
 
     def resume_blockers(self):
+        return self._resume_blockers(None)
+
+    def _resume_blockers(self,barrier):
         if self._fault:return ['shared_connection_requires_reconciliation']
         if self.checkpoint is None:return ['qualified_checkpoint_unavailable']
         if not self._file_valid():return ['staged_file_changed']
         if self.witness.snapshot()[2]!=self._pause_epoch:return ['commands_since_checkpoint']
         try:current=self._capture()
         except (RequestRejected,InvalidCheckpoint):return ['current_checkpoint_unqualified']
+        if not self._file_valid():return ['staged_file_changed']
+        if barrier is not None:
+            operation_id=barrier.get('operation_id')
+            if (barrier.get('phase')!='resuming' or barrier.get('identity')!=self.identity()
+                    or self._operations.get(operation_id)!='job.resume'
+                    or barrier.get('token')!=self._barrier_tokens.get((operation_id,'resuming'))):
+                return ['resume_barrier_identity_mismatch']
+            writes=barrier.get('writes')
+            if type(writes) is not list or len(writes)!=2 or any(type(w) is not dict or 'line_number' not in w for w in writes):
+                return ['resume_barrier_transport_line_unqualified']
+            numbers=[w['line_number'] for w in writes if w['line_number'] is not None]
+            saved=self.checkpoint.to_dict();live=current.to_dict()
+            if (any(type(n) is not int for n in numbers)
+                    or numbers!=list(range(saved['next_line_number'],saved['next_line_number']+len(numbers)))
+                    or live['next_line_number']!=saved['next_line_number']+len(numbers)):
+                return ['resume_barrier_transport_line_mismatch']
+            # Only these exact read-only barrier frames may advance transport
+            # numbering. File cursor and every physical/modal proof stay strict.
+            live['next_line_number']=saved['next_line_number'];current=PauseCheckpoint(live)
         return self.checkpoint.in_place_resume_blockers(current,now=self.clock(),max_observation_age=1)
+
+    def _resume_refusal(self,reason):
+        self._fault={'reason':'resume_admission_unqualified'};self._phase='outcome_unknown'
+        self.checkpoint=None;self.witness.invalidate_resume()
+        return Outcome('outcome_unknown',{'reason':'resume_admission_unqualified','detail':reason[:128],
+            'physical_stop_confirmed':False})
 
     def poll(self,operation_id):
         self._drain();operation=self._operations[operation_id]
@@ -354,6 +387,30 @@ class AssignedJobBackend:
             cursor=self.sender.getFilePosition()
             if cursor and Path(cursor.get('filename','')).resolve()==self.path and self._file_valid():
                 return Outcome('completed',{'evidence_type':'assigned_file_selected','job_id':self.job_id,'file_sha256':self.sha256})
+        if operation=='job.resume' and self.completion_barrier is not None and operation_id not in self._resume_dispatched:
+            if state!=self.sender.STATE_PAUSED:
+                return self._resume_refusal('sender_left_pause_before_resume_admission')
+            proof=self._barrier_outcome(operation_id,'resuming')
+            if isinstance(proof,Outcome):return proof
+            if proof is None:return None
+            blockers=self._resume_blockers(proof)
+            if blockers:return self._resume_refusal(','.join(blockers))
+            proof=self._barrier_outcome(operation_id,'resuming')
+            if isinstance(proof,Outcome):return proof
+            if proof is None:return None
+            if self.sender.getState()!=self.sender.STATE_PAUSED or not self.witness.arm_resume(self._pause_epoch):
+                return self._resume_refusal('stream_or_sender_changed_before_resume')
+            # Acquiring the stream guard may wait. Recheck source and original
+            # arrival/deadline once more before the single resume effect.
+            proof=self._barrier_outcome(operation_id,'resuming')
+            if isinstance(proof,Outcome):return proof
+            if proof is None:return self._resume_refusal('resume_marker_lost_before_effect')
+            self._resume_admission[operation_id]=proof
+            self._resume_dispatched.add(operation_id)
+            self.checkpoint=None;self._phase='resuming'
+            try:self.sender.setPause(False)
+            except Exception:return self._resume_refusal('resume_effect_interrupted')
+            state=self.sender.getState()
         if operation in ('job.start','job.resume') and self._printing>self._transitions[operation_id]:
             phase='started' if operation=='job.start' else 'resumed'
             try:proof=getattr(self.evidence,phase)(self.identity(),operation_id)
@@ -364,7 +421,8 @@ class AssignedJobBackend:
             if self._evidence_valid(proof,phase,operation_id,deadline=self._deadlines[operation_id]):
                 return Outcome('completed',{'evidence_type':'assigned_transition_with_external_evidence','job_id':self.job_id,
                     'evidence_source':proof.source,'evidence_scope':proof.scope,'evidence_observed_at':proof.observed_at,
-                    'physical_control_qualified':False})
+                    'physical_control_qualified':False,
+                    **({'admission_barrier':self._resume_admission[operation_id]} if operation_id in self._resume_admission else {})})
         if operation=='job.pause' and state==self.sender.STATE_PAUSED:
             self.checkpoint=None
             result={'evidence_type':'assigned_sender_pause_state','job_id':self.job_id,'resumable':False,'evidence_scope':self.evidence_kind,'physical_control_qualified':False}
@@ -429,6 +487,7 @@ class AssignedJobBackend:
     def capabilities(self):
         return dict(scope='experimental_assigned_job_adapter',physical_control_qualified=False,
                     pause_cancel_barrier_enabled=self.completion_barrier is not None,
+                    resume_completion_barrier_enabled=self.completion_barrier is not None,
                     external_evidence_provider_required=True,evidence_scope=self.evidence_kind,
                     coordinated_prompt_pump_supported=True,
                     automatic_resend_supported=False,timeout_ack_credit_supported=False,

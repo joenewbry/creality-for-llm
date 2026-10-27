@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-27",
+  "scope": "fresh resume admission through assigned sender, source tests only",
+  "source_commit": "0eceb8900d2103def3424102668f4d16bc723139",
+  "linux": {
+    "passed": 213,
+    "skipped": 0,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 178.08,
+    "xml_sha256": "7b7e3e755e31d51dd67d8bea58512d4cb30f37c0d431578c60789a487d2da61a"
+  },
+  "mac": {
+    "passed": 197,
+    "skipped": 16,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 3.58,
+    "xml_sha256": "514315bae91ea9adf4c23445afbcc1d4ef4d8a1ba9a8e1c461ef97095afe3cd0"
+  },
+  "source_inputs_matched": 152,
+  "native_inputs_verified": 16,
+  "native_source_commit": "0f8d1ca1055b9030cabf6ff8e3a6762fdb4dfee7",
+  "old_native_pin": "98aa03248337b8039a09bbc1a29f33432aed08ca",
+  "scenarios": {
+    "plain_resume": {
+      "fresh_marker_before_effect": true,
+      "moves_once": 80
+    },
+    "numbered_resume": {
+      "exact_read_only_transport_delta": 2,
+      "fresh_marker_before_effect": true,
+      "moves_once": 80
+    },
+    "native_prompt_state_resume": {
+      "native_prompt_frames": 4,
+      "hardware_sampling": "stubs",
+      "movement_M400_M118": "pinned virtual printer",
+      "moves_once": 80
+    },
+    "cancel": {
+      "own_marker": true
+    },
+    "interleaving": {
+      "outcome": "outcome_unknown",
+      "no_replay_on_retry": true
+    }
+  },
+  "unit_refusals": [
+    "missing fresh marker keeps resume pending",
+    "lost motor proof",
+    "changed configuration",
+    "changed cursor",
+    "unexplained transport numbering",
+    "staged file changed during provider callback",
+    "marker stale after provider callback"
+  ],
+  "saved_checkpoint_rewritten": false,
+  "export_checks_passed": 9,
+  "installed_package_tested": false,
+  "full_suite_repeated": false,
+  "physical_printer_access": false,
+  "camera_access": false,
+  "firmware_flashed": false,
+  "physical_provider_implemented": false,
+  "remaining": [
+    "lifecycle completion evidence with a separate bounded window",
+    "configuration, physically bounded preflight and continuity provider",
+    "installed target and firmware semantics qualification",
+    "negative nozzle-temperature diagnosis and development commissioning",
+    "nonprinting hardware demonstration and separate post-repair printing qualification"
+  ]
+}

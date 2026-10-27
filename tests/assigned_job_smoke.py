@@ -72,6 +72,7 @@ def main(scenario):
         config=settings(init=True,basedir=str(temp));config.set(['serial','logPositionOnPause'],True)
         config.set(['serial','timeout','positionLogWait'],1.);config.set(['feature','sdSupport'],False)
         config.set(['serial','suppressSecondHello'],True)
+        if scenario=='numbered_resume':config.set(['serial','alwaysSendChecksum'],True)
         if scenario=='ack_timeout':config.set(['serial','timeout','communication'],.5)
         if scenario in ('resend','ack_timeout','sensor_fault','thermal_fault'):config.set(['serial','sendM112OnError'],True)
         profiles=PrinterProfileManager()
@@ -121,7 +122,7 @@ def main(scenario):
             backend=service.backend
             recorder=AssignedMachineEventRecorder(service.journal,endpoint=sender._assigned_endpoint,lease=service.lease,clock=time.time)
             backend.attach_machine_events(recorder)
-            if scenario in ('sender_barrier','barrier_cancel','barrier_interleave','native_barrier'):
+            if scenario in ('sender_barrier','barrier_cancel','barrier_interleave','native_barrier','numbered_resume'):
                 backend.attach_completion_barrier()
             bridge=PeerBridge(master,peer);backend.start()
             wait_for(sender.isOperational,'assigned job handshake');router=ToolRouter(service);receipts=[];counter=[0]
@@ -236,7 +237,7 @@ def main(scenario):
                 return
             paused=finish('job.pause',pause_req,pending)
             assert paused['result']['resumable'],paused
-            if scenario in ('sender_barrier','barrier_cancel','barrier_interleave','native_barrier'):
+            if scenario in ('sender_barrier','barrier_cancel','barrier_interleave','native_barrier','numbered_resume'):
                 proof=paused['result']['completion_barrier']
                 assert proof['operation_id']==paused['operation_id'] and proof['phase']=='paused'
                 assert len(proof['writes'])==2 and all(w['confirmed'] for w in proof['writes'])
@@ -245,6 +246,13 @@ def main(scenario):
             time.sleep(.1);assert peer.completed_moves==before and sender.getFilePosition()==cursor
             operation='job.cancel' if scenario in ('cancel','barrier_cancel') else 'job.resume'
             req,result=submit(operation);transition=finish(operation,req,result)
+            if backend.completion_barrier is not None and operation=='job.resume':
+                admitted=transition['result']['admission_barrier']
+                assert admitted['phase']=='resuming' and admitted['operation_id']==transition['operation_id']
+                assert admitted['token']!=paused['result']['completion_barrier']['token']
+                if scenario=='numbered_resume':
+                    numbers=[w['line_number'] for w in admitted['writes']]
+                    assert numbers==[paused['result']['checkpoint']['next_line_number'],paused['result']['checkpoint']['next_line_number']+1]
             if scenario=='barrier_cancel':
                 cancelled=transition['result']['completion_barrier']
                 assert cancelled['phase']=='cancelled' and cancelled['operation_id']==transition['operation_id']
@@ -267,7 +275,7 @@ def main(scenario):
                 'moves_completed':len(peer.completed_moves),'moves_at_pause':len(before),'receipts':len(receipts),
                 'native_prompt_frames':len(peer.prompt_writes) if native_scenario else 0,
                 'native_state_read':state_evidence is not None,'completion_barrier_enabled':backend.completion_barrier is not None,
-                'pause_barrier':paused['result'].get('completion_barrier'),'cancel_barrier':transition['result'].get('completion_barrier') if operation=='job.cancel' else None,'native_state_scope':'stubbed_controller_variables' if state_evidence else None,
+                'pause_barrier':paused['result'].get('completion_barrier'),'resume_barrier':transition['result'].get('admission_barrier'),'cancel_barrier':transition['result'].get('completion_barrier') if operation=='job.cancel' else None,'native_state_scope':'stubbed_controller_variables' if state_evidence else None,
                 'physical_serial_open_or_discovery_attempts':len(denied),'source_changed_after_stage':True,'physical_provider_implemented':False,'source_bound_serial_capture':True}))
         finally:
             gate.set()
@@ -283,5 +291,5 @@ def main(scenario):
 
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('--scenario',choices=['resume','native_prompt','native_state','cancel','denied','resend','ack_timeout','sensor_fault','thermal_fault','idle_reports','sender_barrier','barrier_cancel','barrier_interleave','native_barrier'],required=True)
+    parser=argparse.ArgumentParser();parser.add_argument('--scenario',choices=['resume','native_prompt','native_state','cancel','denied','resend','ack_timeout','sensor_fault','thermal_fault','idle_reports','sender_barrier','barrier_cancel','barrier_interleave','native_barrier','numbered_resume'],required=True)
     main(parser.parse_args().scenario)

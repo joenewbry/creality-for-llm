@@ -158,3 +158,16 @@ Linux passes 203 source checks, Mac 188 with 15 Linux-only skips; nine export
 checks pass. See [scoped validation](../validation/sender-barrier-stage142.json).
 Physical provider, EOF lifecycle evidence, fresh resume and commissioning remain
 open. Neither printer nor any camera was accessed.
+
+## Fresh resume admission
+
+The optional assigned path now keeps the sender paused until a new resume marker
+and current checkpoint qualify. Source authority and original age are checked
+after the provider and after acquiring the stream guard. Only the two exact
+read-only query frames may explain transport-number advancement; file cursor and
+all other proofs remain strict. The resume effect is issued once and its final
+transition receipt retains admission evidence. Linux passes 213 source checks,
+Mac 197 with 16 Linux-only skips. Plain and numbered sender scenarios complete all
+80 original modeled moves once. See [qualification](../validation/fresh-resume-stage143.json)
+and [design](assigned-completion-barrier.md). Physical provider, final print
+completion evidence and commissioning remain open.

@@ -18,7 +18,7 @@ from .journal import RequestRejected
 
 
 class AssignedCompletionBarrier:
-    PHASE_OPERATIONS = {'paused': 'job.pause', 'completed': 'job.start', 'cancelled': 'job.cancel'}
+    PHASE_OPERATIONS = {'paused': 'job.pause', 'completed': 'job.start', 'cancelled': 'job.cancel', 'resuming': 'job.resume'}
 
     def __init__(self, recorder):
         if type(recorder) is not AssignedMachineEventRecorder:
@@ -94,7 +94,8 @@ class AssignedCompletionBarrier:
             if index < 2 and command == action['commands'][index]:
                 action['begun'] += 1
                 action['writes'].append(dict(sequence=sequence,started_at=now,
-                    sha256=hashlib.sha256(data).hexdigest(),confirmed=False))
+                    sha256=hashlib.sha256(data).hexdigest(),confirmed=False,
+                    line_number=int(re.match(rb'N([0-9]+) ',data)[1]) if re.match(rb'N([0-9]+) ',data) else None))
             else:
                 action['fault'] = action['fault'] or 'barrier_frame_interleaved_or_replayed'
 
