@@ -332,6 +332,9 @@
     "tests/test_cold_preflight.py",
     "tests/test_assigned_preflight.py",
     "docs/cold-preflight.md",
-    "validation/cold-preflight-stage145.json"
+    "validation/cold-preflight-stage145.json",
+    "printer_control/assigned_inspection.py",
+    "tests/test_assigned_inspection.py",
+    "validation/fresh-inspection-stage146.json"
   ]
 }

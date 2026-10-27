@@ -81,6 +81,7 @@ class AssignedJobBackend:
         self.path=self.source_path
         self._staging=tempfile.TemporaryDirectory(prefix='assigned-staged-job-')
         self.machine_events=None;self.state_reader=None;self.cold_preflight=None;self._cold_stage_screening=None
+        self.cold_inspection=None;self._cold_admitting=False;self._cold_results={}
         self.completion_barrier=None;self._barrier_tokens={}
         self._resume_dispatched=set();self._resume_admission={}
         self._completion_window_seconds=30.;self._completion_window=None;self._completion_result=None
@@ -131,8 +132,12 @@ class AssignedJobBackend:
                 if self._pump_stop.is_set():return
                 try:
                     if not self.machine_events.capturing:raise OSError('capture lost')
-                    self.prompt.context()  # No external evidence-provider callback.
+                    self.prompt.context()  # Drain prompt replies before optional cold admission.
                     self._pump_samples+=1
+                    if self.cold_inspection is not None:
+                        for operation_id in tuple(self.cold_inspection.pending):
+                            outcome=self.poll(operation_id)
+                            if outcome is not None:self._cold_results[operation_id]=outcome
                     if (self.prompt.channel.state in ('uncertain','disconnected')
                             or self.prompt.receive_hub.fault or self.prompt.frame_writer.fault):
                         raise OSError('prompt connection uncertain')
@@ -163,15 +168,19 @@ class AssignedJobBackend:
             self.machine_events=recorder;self.state_reader=reader
             self.supported_reads=type(self).supported_reads+('printer.machine_events','printer.machine_state')
 
-    def attach_cold_preflight(self,policy):
+    def attach_cold_preflight(self,policy,*,automatic_inspection=False):
         """Add command screening before start; never grants hardware readiness."""
         from .assigned_preflight import AssignedColdPreflight
+        if type(automatic_inspection) is not bool:raise TypeError("boolean inspection mode required")
         with self._lock:
             if (self.state_reader is None or self._closed or self._pump_started
                     or self.sender._assigned_endpoint._claimed or self.cold_preflight is not None):
                 raise ValueError('attach one cold preflight after capture and before start')
             self.cold_preflight=AssignedColdPreflight(self.state_reader,policy)
             self.supported_reads=(*self.supported_reads,'job.cold_preflight')
+            if automatic_inspection:
+                from .assigned_inspection import AssignedColdInspection
+                self.cold_inspection=AssignedColdInspection(self)
 
     def inspect_cold_preflight(self,job_id,operation_id):
         if self.cold_preflight is None or job_id!=self.job_id or self._closed or self._started:
@@ -180,6 +189,7 @@ class AssignedJobBackend:
         return self.cold_preflight.evaluate(data,self.identity(),operation_id)
 
     def _check_cold_preflight(self,data):
+        if self.cold_inspection is not None and not self._cold_admitting:return None
         if self.cold_preflight is not None:return self.cold_preflight.check(data,self.identity())
 
     def attach_completion_barrier(self,*,completion_window_seconds=30.):
@@ -327,6 +337,7 @@ class AssignedJobBackend:
         return data
 
     def can_overlap(self,operation,pending_ids):
+        if self.cold_inspection is not None and self.cold_inspection.pending:return False
         return operation in self.prompt.supported_operations and bool(pending_ids) and all(
             self._operations.get(key) in ('job.start','job.pause','job.resume') for key in pending_ids)
 
@@ -355,7 +366,7 @@ class AssignedJobBackend:
             data=self._read_bounded(self.source_path)
             if len(data)>16*1024*1024 or hashlib.sha256(data).hexdigest()!=self.sha256:raise RequestRejected('source_file_changed')
             self._check_cold_preflight(data)
-            if self.evidence.preflight(data,self.identity()) is not True:raise RequestRejected('job_preflight_unqualified')
+            if (self.cold_inspection is None or self._cold_admitting) and self.evidence.preflight(data,self.identity()) is not True:raise RequestRejected('job_preflight_unqualified')
             self._check_cold_preflight(data)
             return
         if not self._staged:raise RequestRejected('job_not_staged')
@@ -369,7 +380,7 @@ class AssignedJobBackend:
         if operation=='job.start':
             self._check_cold_preflight(self._read_bounded(self.path))
             if self._started or state!=self.sender.STATE_OPERATIONAL:raise RequestRejected('job_not_ready_to_start')
-            blockers=self.evidence.start_blockers(self.identity())
+            blockers=[] if self.cold_inspection is not None and not self._cold_admitting else self.evidence.start_blockers(self.identity())
             if type(blockers) is not list or len(blockers)>32 or any(type(x) is not str or not 1<=len(x)<=128 for x in blockers):raise RequestRejected('invalid_start_evidence')
             if blockers:raise RequestRejected(','.join(blockers))
         elif operation=='job.pause':
@@ -387,6 +398,12 @@ class AssignedJobBackend:
             self.prompt.dispatch(operation_id,operation,arguments,deadline=deadline)
             return
         self._transitions[operation_id]=self._printing
+        if self.cold_inspection is not None and operation in ('job.stage','job.start'):
+            self.cold_inspection.begin(operation_id,operation,arguments,deadline)
+            return
+        self._dispatch_job_effect(operation_id,operation,arguments,deadline=deadline)
+
+    def _dispatch_job_effect(self,operation_id,operation,arguments,*,deadline):
         if operation=='job.stage':
             data=self._read_bounded(self.source_path)
             if not 0<len(data)<=16*1024*1024 or hashlib.sha256(data).hexdigest()!=self.sha256:raise RequestRejected('source_changed_before_stage')
@@ -396,12 +413,21 @@ class AssignedJobBackend:
             destination=(Path(self._staging.name)/(uuid.uuid4().hex+'.gcode')).resolve()
             with destination.open('xb') as output:output.write(data)
             destination.chmod(0o400)
+            if self.cold_inspection is not None:
+                self.machine_events.lease.check()
+                self._check_cold_preflight(data)
+                if self.clock()>=deadline:raise RequestRejected('cold_deadline_before_file_selection')
             self.sender.selectFile(str(destination),False)
             self._cold_stage_screening=screening
             self.path=destination;self._staged=True;self._stage_revision+=1;self.checkpoint=None;self._phase='staged'
         elif operation=='job.start':
             self._check_cold_preflight(self._read_bounded(self.path))
-            self.witness.start_job();self._started=True;self._start_operation_id=operation_id;self._phase='starting';self.sender.startPrint()
+            self.witness.start_job()
+            if self.cold_inspection is not None:
+                self.machine_events.lease.check()
+                self._check_cold_preflight(self._read_bounded(self.path))
+                if self.clock()>=deadline:raise RequestRejected('cold_deadline_before_print_start')
+            self._started=True;self._start_operation_id=operation_id;self._phase='starting';self.sender.startPrint()
         elif operation=='job.pause':self._phase='pausing';self.sender.setPause(True)
         elif operation=='job.resume':
             if self.completion_barrier is not None:
@@ -473,9 +499,39 @@ class AssignedJobBackend:
             'physical_stop_confirmed':False})
 
     def poll(self,operation_id):
+        if operation_id in self._cold_results:return self._cold_results[operation_id]
         self._drain();operation=self._operations[operation_id]
         if operation in self.prompt.supported_operations:return self.prompt.poll(operation_id)
         state=self.sender.getState()
+        if self._fault:return Outcome('outcome_unknown',{'reason':'shared_connection_uncertain'})
+        if self.cold_inspection is not None and operation_id in self.cold_inspection.pending:
+            admission=self.cold_inspection.poll(operation_id)
+            if admission is None:return None
+            if isinstance(admission,Outcome):
+                del self.cold_inspection.pending[operation_id]
+                return admission
+            item=self.cold_inspection.pending[operation_id]
+            self._cold_admitting=True
+            try:
+                self.validate(operation,item['arguments'])
+                self.machine_events.lease.check()
+                if self.clock()>=item['deadline']:raise RequestRejected('cold_deadline_before_job_effect')
+            except RequestRejected as exc:
+                del self.cold_inspection.pending[operation_id]
+                return Outcome('failed',{'reason':str(exc),'job_effect_dispatched':False})
+            except Exception:
+                del self.cold_inspection.pending[operation_id]
+                return Outcome('failed',{'reason':'cold_admission_unavailable','job_effect_dispatched':False})
+            finally:self._cold_admitting=False
+            # Consume admission before the effect; exceptions never permit replay.
+            del self.cold_inspection.pending[operation_id]
+            self._cold_admitting=True
+            try:self._dispatch_job_effect(operation_id,operation,item['arguments'],deadline=item['deadline'])
+            except Exception:
+                self._fault=self._fault or {'reason':'cold_job_dispatch_interrupted'}
+                return Outcome('outcome_unknown',{'reason':'cold_job_dispatch_interrupted','physical_stop_confirmed':False})
+            finally:self._cold_admitting=False
+            state=self.sender.getState()
         if self.clock()>=self._deadlines[operation_id]:
             self._fault=self._fault or {'reason':'operation_deadline_expired'}
             self._phase='outcome_unknown';self.checkpoint=None;self.witness.invalidate_resume()
@@ -590,6 +646,7 @@ class AssignedJobBackend:
                     resume_completion_barrier_enabled=self.completion_barrier is not None,
                     lifecycle_completion_barrier_enabled=self.completion_barrier is not None,
                     cold_preflight_enabled=self.cold_preflight is not None,
+                    cold_automatic_inspection=self.cold_inspection is not None,
                     cold_preflight_authorizes_physical_control=False,
                     completion_window_seconds=self._completion_window_seconds if self.completion_barrier is not None else None,
                     external_evidence_provider_required=True,evidence_scope=self.evidence_kind,

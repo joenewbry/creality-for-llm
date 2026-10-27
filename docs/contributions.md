@@ -197,3 +197,15 @@ Mac 305 with 18 Linux-only skips, including an official Model Context Protocol
 client over memory streams. The fresh-inspection coordinator and full hardware/
 configuration/continuity provider remain unfinished. See [design and scope](cold-preflight.md)
 and [qualification](../validation/cold-preflight-stage145.json).
+
+## Controller-managed cold inspection
+
+The optional automatic cold admission mode journals and dispatches a fresh child
+inspection for stage/start. The existing controller loop screens the correlated
+source and external proofs before a job effect, so admission no longer depends
+on a model making its next call within one second. Original source-age limits
+remain enforced, with no physical grant. The child shares the parent deadline,
+and duplicates, lost workflow memory, missing state lines, stale source, provider
+errors and interrupted effects are covered. Full hardware/configuration/continuity
+qualification and ordered checkpoint inspection remain unfinished. See
+[design](cold-preflight.md) and [evidence](../validation/fresh-inspection-stage146.json).

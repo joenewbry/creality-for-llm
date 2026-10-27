@@ -32,7 +32,7 @@ def cold_line():
 
 
 @pytest.fixture
-def cold_context(tmp_path):
+def cold_context(tmp_path,request):
     now=[10.];chunks=[];endpoint=make_endpoint(now,chunks);wire=[]
     endpoint.backend.frame_writer._writer=lambda data:wire.append(data) or len(data)
     journal=Journal(tmp_path/'source.sqlite');job=tmp_path/'cold.gcode';job.write_bytes(JOB);selected=[];cursor=[None]
@@ -53,7 +53,7 @@ def cold_context(tmp_path):
         backend=AssignedJobBackend(sender,job_path=job,job_id='job',witness=SimpleNamespace(invalidate_resume=lambda:None),
             evidence=provider,clock=lambda:now[0])
         recorder=AssignedMachineEventRecorder(journal,endpoint=endpoint,lease=lease,clock=lambda:now[0])
-        backend.attach_machine_events(recorder);backend.attach_cold_preflight(policy())
+        backend.attach_machine_events(recorder);backend.attach_cold_preflight(policy(),automatic_inspection=getattr(request,"param",False))
         endpoint.claim();capture=(recorder,endpoint,SimpleNamespace(_serial=endpoint),now,chunks)
         channel.dispatch('inspect',now=8,deadline=20);channel.feed(inactive(1,0),now=8.1)
         channel.dispatch('bind',now=9,deadline=20);channel.feed(inactive(2,1),now=9.1)
