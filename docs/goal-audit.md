@@ -10,7 +10,7 @@ full-suite run.
 
 | Requirement | Evidence and current state | Unfinished work |
 | --- | --- | --- |
-| 1. Preserve source and match hardware/recovery | Pinned controller/screen sources and attributed candidate builds exist; [source relationships](contributions.md), [build records](firmware-stack-builds.md), [recovery research](recovery.md) | Exact development board, processor, screen, bootloader, readable settings and authentic compatible rollback are unconfirmed. The older source does not match the installed version merely because both say F4. |
+| 1. Preserve source and match hardware/recovery | Pinned controller/screen sources and attributed candidate builds exist; [source relationships](contributions.md), [build records](firmware-stack-builds.md), [recovery research](recovery.md) | The owner About photo now reports firmware 2.0.8.28F4, screen V1.0.5 and hardware label CR-FDM-v24S1_301; see [hardware intake](development-hardware.md). Physical processor/board markings, bootloader, readable settings and authentic compatible rollback remain unconfirmed. The older source does not match the installed version merely because both say F4. |
 | 2. Fork, branch, focused stack and ecosystem contribution | Public host and Creality firmware repositories, dependent draft PRs and [standalone Marlin PR 28753](https://github.com/MarlinFirmware/Marlin/pull/28753) exist | The requested publication/submission artifacts exist. Review, merge and maintainer acceptance are external follow-up, not claims made by this delivery. Physical release qualification is tracked separately below. |
 | 3. Specify the whole LLM interface and blockers | [Interface](interface.md), [blocker matrix](blocker-matrix.md), typed tool schemas, exact prompt identities and explicit uncertainty rules exist | Actual display/controller pairing and the complete physical alert inventory remain unqualified. Unknown states must remain blocked. |
 | 4. Build firmware and implement host control | Candidate builds, native firmware functions, virtual sender, journal/tool service, Linux assigned prompt connection and Mac metadata discovery are tested | The assigned job/prompt adapter is software-tested with a software-only evidence provider; source-bound serial reports now retain actual sender line identity/age, while the physical evidence provider, remaining policy/recovery integration and Mac serial-driver isolation are unfinished. Pre-open startup admission now exists, but no real hardware readiness checker is supplied. |
@@ -33,7 +33,7 @@ full-suite run.
 | Resend/ack uncertainty | Exact virtual resend cases, rejection of unsafe replay, durable unknown outcomes; the assigned sender explicitly retires on unqualified resend/timeout instead of inheriting replay or fabricated credit | Arbitrary physical acknowledgment windows or blind replay after reconnect |
 | Host death | Journal/crash boundaries and actual virtual-sender SIGKILL in running/paused/resume-dispatched states; old requests do not replay | Buffered motion or heaters on a surviving printer, safe physical reconnect or recovered print continuity |
 | Setup/calibration | Bounded software fixtures distinguish temporary changes from persistence | Physical homing, jogging, heating or calibration on this unit |
-| Camera and mount | Broker/client/owner API tests, metadata/freshness/version fences, four CAD meshes and two conditional view models | Native acquisition/control, actual clock/profile/identity, image quality, fault detection, physical fit/clearance/framing |
+| Camera and mount — deferred by owner | Earlier broker/client/owner API tests and CAD/view models retained | Owner deferred Logitech work on October 26. Native capture/control and physical qualification remain unqualified and do not gate current printer work. |
 | Publication | Owned explanation page, architecture, platform/repository distinctions, PR dependencies and screenshot review | Firmware commissioning or an accepted upstream release |
 
 The [current installed Linux qualification](../validation/linux-package-stage125.json)
@@ -64,13 +64,13 @@ thermal/restoration gates remain intact. This is not a resume or reset tool.
 1. Continue the production transport/sender integration using the lease-first
    factory and qualified pre/post-open assignment checks. Keep it unavailable
    to physical tools until device policy, driver behavior and readiness are proven.
-2. Obtain the missing development board/processor and display/recovery facts;
+2. The About versions are recorded in [the owner intake](development-hardware.md). Obtain physical processor/board markings and recovery facts;
    inventory notes, CH340 metadata and the firmware version string do not prove them.
 3. Resolve the negative sensor report and establish mechanical clearance before
    firmware commissioning or operational tests. Never use the working printer.
-4. Embed the camera module only after actual Logitech assignment, capture timing,
-   profile and existing acquisition ownership are verified. Qualify the mount
-   physically; do not turn the conditional field-of-view model into a fit claim.
+4. Logitech work is deferred by the owner. Preserve the existing software/CAD
+   and camera owner; camera assignment or mount qualification does not gate
+   current printer progress.
 5. Execute non-printing commissioning, then the separate printing plan after repair.
 
 Physical dependencies do not excuse unfinished independent software work, and

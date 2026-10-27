@@ -1,6 +1,6 @@
 # Contribution delivery and review stack
 
-Updated October 26, 2026. Twenty-six host and six firmware pull requests are open as drafts in the owner's repositories. Each PR names its predecessor and validation evidence. They are review candidates, not merged releases or accepted upstream contributions.
+Updated October 26, 2026. Twenty-seven host and six firmware pull requests are open as drafts in the owner's repositories. Each PR names its predecessor and validation evidence. They are review candidates, not merged releases or accepted upstream contributions.
 
 ## Repository relationships
 
@@ -38,6 +38,7 @@ Updated October 26, 2026. Twenty-six host and six firmware pull requests are ope
 | [H15](https://github.com/joenewbry/creality-for-llm/pull/24) | Journaled assigned job/prompt tools and scoped evidence | `stack/h14-assigned-sender` |
 | [H16](https://github.com/joenewbry/creality-for-llm/pull/25) | Source-bound serial reports, arrival age and capture lifecycle | `stack/h15-assigned-job-tools` |
 | [H17](https://github.com/joenewbry/creality-for-llm/pull/26) | Reject unqualified assigned resend and timeout recovery | `stack/h16-assigned-observations` |
+| [H18](https://github.com/joenewbry/creality-for-llm/pull/27) | Owner About identifiers and deferred camera scope | `stack/h17-assigned-replay-boundary` |
 
 ## Firmware stack
 
