@@ -35,9 +35,11 @@ include docs/blocker-matrix.md
 include docs/camera-interface.md
 include docs/contributions.md
 include docs/development-hardware.md
+include docs/firmware-parity.md
 include docs/firmware-stack-builds.md
 include docs/goal-audit.md
 include docs/interface.md
+include docs/maintained-firmware.md
 include docs/mcp.md
 include docs/model-demo.md
 include docs/pause-resume.md
@@ -245,6 +247,7 @@ include validation/clean-export-86bde0b.json
 include validation/clean-export-8d8453f.json
 include validation/development-about-owner-20261026.json
 include validation/development-readonly-stage130.json
+include validation/firmware-parity-stage134.json
 include validation/firmware-stack-stage76.json
 include validation/host-core-boundary-stage90.json
 include validation/host-llm-interface-boundary-stage97.json
@@ -268,6 +271,8 @@ include validation/linux-package-stage131.json
 include validation/linux-package-stage132.json
 include validation/machine-events-stage84.json
 include validation/macos-discovery-stage108.json
+include validation/maintained-firmware-stage135.json
+include validation/manufacturer-recovery-stage133.json
 include validation/model-hot-stage75.json
 include validation/native-handoff-stage81.json
 include validation/native-thermal-stage78.json
@@ -276,6 +281,7 @@ include validation/receive-arrival-stage120.json
 include validation/service-startup-stage118.json
 include validation/source-hazard-stage131.json
 include validation/streamed-host-restart-stage109.json
+include validation/thermal-handoff-stage136.json
 include validation/transport-readiness-stage110.json
 include validation/tty-ownership-stage89.json
 include validation/tty-prompt-stage119.json

@@ -15,7 +15,9 @@ private; its SHA-256 and transcription are in
 This resolves the requested About values. The `F4` suffix is consistent with the
 F401 build family in the older vendor source, and the hardware/firmware strings
 match the previously downloaded recovery candidate's name. It does not establish
-its authenticity or qualify recovery.
+its authenticity or qualify recovery. Separate October 27 [manufacturer-download
+research](recovery.md) now establishes package-channel provenance and mirror
+payload identity; hardware compatibility and restoration are still unqualified.
 
 The hardware label is not an independent processor identification. The pinned
 [official configuration](https://github.com/CrealityOfficial/Ender-3S1/blob/7fffa9270ff8fb5ee208a5b04f832e20bab19c60/Marlin/Configuration.h)
@@ -63,8 +65,9 @@ only if remaining uncertainty cannot be resolved sufficiently through other
 reliable evidence. Do not open electronics merely to continue host software work.
 
 A historical development-only `M503` settings transcript exists; it is not a
-current settings backup or a validated restoration procedure. Matching archive
-names and embedded version strings do not authenticate a recovery image.
+current settings backup or a validated restoration procedure. Manufacturer-channel provenance and all 216 candidate payloads are now checked
+separately in [recovery research](recovery.md). Matching archive names and
+embedded version strings alone do not authenticate an image or prove restoration.
 The screen reports V1.0.5; identify its physical part only if a display update
 becomes necessary. No display update is required merely because an archive
 contains screen assets. The protected printer remains excluded.

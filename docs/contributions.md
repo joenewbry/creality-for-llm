@@ -1,6 +1,6 @@
 # Contribution delivery and review stack
 
-Updated October 26, 2026. Twenty-seven host and six firmware pull requests are open as drafts in the owner's repositories. Each PR names its predecessor and validation evidence. They are review candidates, not merged releases or accepted upstream contributions.
+Updated October 27, 2026. Thirty host, six earlier Creality firmware and four maintained-source firmware pull requests are open as drafts in the owner's repositories. Each PR names its predecessor and validation evidence. They are review candidates, not merged releases or accepted upstream contributions.
 
 ## Repository relationships
 
@@ -27,18 +27,21 @@ Updated October 26, 2026. Twenty-seven host and six firmware pull requests are o
 | [H4e](https://github.com/joenewbry/creality-for-llm/pull/13) | Qualify streamed restart and external-client concurrency | `stack/h4d-readiness-authority` |
 | [H5](https://github.com/joenewbry/creality-for-llm/pull/14) | Camera interface, architecture and overview mount prototype | `stack/h4e-restart-and-clients` |
 | [H6](https://github.com/joenewbry/creality-for-llm/pull/15) | Assigned camera broker and durable controls | `stack/h5-camera-design` |
-| [H7](https://github.com/joenewbry/creality-for-llm/pull/16) | Upstream Marlin submission and qualification evidence | `stack/h6-camera-broker` |
+| [H7](https://github.com/joenewbry/creality-for-llm/pull/16) | Upstream Marlin contribution and qualification evidence | `stack/h6-camera-broker` |
 | [H8](https://github.com/joenewbry/creality-for-llm/pull/17) | Bounded capture-owner HTTP client and frame invalidation | `stack/h7-upstream-contribution` |
 | [H9](https://github.com/joenewbry/creality-for-llm/pull/18) | Capture-owner API with atomic frame and control evidence | `stack/h8-capture-owner-http` |
 | [H10](https://github.com/joenewbry/creality-for-llm/pull/19) | Lease-first backend startup and full goal audit | `stack/h9-capture-owner-api` |
-| [H11](https://github.com/joenewbry/creality-for-llm/pull/20) | Assigned Linux prompt connection and post-read receipt deadlines | `stack/h10-startup-and-audit` |
-| [H12](https://github.com/joenewbry/creality-for-llm/pull/21) | Preserve buffered arrival age without weakening deadlines | `stack/h11-assigned-prompt-transport` |
-| [H13](https://github.com/joenewbry/creality-for-llm/pull/22) | One assigned receive owner and dispatch failure gate | `stack/h12-receive-arrival-age` |
-| [H14](https://github.com/joenewbry/creality-for-llm/pull/23) | Pinned sender attachment and fair bounded connection admission | `stack/h13-shared-receive-owner` |
-| [H15](https://github.com/joenewbry/creality-for-llm/pull/24) | Journaled assigned job/prompt tools and scoped evidence | `stack/h14-assigned-sender` |
-| [H16](https://github.com/joenewbry/creality-for-llm/pull/25) | Source-bound serial reports, arrival age and capture lifecycle | `stack/h15-assigned-job-tools` |
-| [H17](https://github.com/joenewbry/creality-for-llm/pull/26) | Reject unqualified assigned resend and timeout recovery | `stack/h16-assigned-observations` |
-| [H18](https://github.com/joenewbry/creality-for-llm/pull/27) | Owner About identifiers and deferred camera scope | `stack/h17-assigned-replay-boundary` |
+| [H11](https://github.com/joenewbry/creality-for-llm/pull/20) | Compose assigned Linux prompt transport and reject late receipts | `stack/h10-startup-and-audit` |
+| [H12](https://github.com/joenewbry/creality-for-llm/pull/21) | Preserve buffered prompt arrival age and current deadline checks | `stack/h11-assigned-prompt-transport` |
+| [H13](https://github.com/joenewbry/creality-for-llm/pull/22) | Share one assigned receive and dispatch owner across job and prompt copies | `stack/h12-receive-arrival-age` |
+| [H14](https://github.com/joenewbry/creality-for-llm/pull/23) | Attach pinned sender to one owned endpoint with fair bounded admission | `stack/h13-shared-receive-owner` |
+| [H15](https://github.com/joenewbry/creality-for-llm/pull/24) | Journal assigned job and prompt tools with immutable staged bytes and scoped evidence | `stack/h14-assigned-sender` |
+| [H16](https://github.com/joenewbry/creality-for-llm/pull/25) | Preserve assigned serial source identity and arrival age in durable reports | `stack/h15-assigned-job-tools` |
+| [H17](https://github.com/joenewbry/creality-for-llm/pull/26) | Retire unqualified assigned resend and timeout recovery before further writes | `stack/h16-assigned-observations` |
+| [H18](https://github.com/joenewbry/creality-for-llm/pull/27) | Record development identification, read-only observations and deferred inspection | `stack/h17-assigned-replay-boundary` |
+| [H19](https://github.com/joenewbry/creality-for-llm/pull/28) | Retire assigned dispatch on source-bound sensor and firmware hazards | `stack/h18-development-identity` |
+| [H20](https://github.com/joenewbry/creality-for-llm/pull/29) | Own assigned sender and prompt-consumer lifecycle | `stack/h19-source-hazard-interlock` |
+| [H21](https://github.com/joenewbry/creality-for-llm/pull/30) | Verify stock recovery provenance and firmware feature limits | `stack/h20-assigned-lifecycle` |
 
 ## Firmware stack
 
@@ -84,3 +87,27 @@ Source links: [Creality branches](https://github.com/CrealityOfficial/Ender-3S1/
 [PrintMCP source](https://github.com/SourceBox-LLC/PrintMCP/tree/fee17fb2615e638848b840fc0c5a5a98906ecfd2),
 [OctoPrint contribution policy](https://github.com/OctoPrint/OctoPrint/blob/64d8cd115f2a1283351ec66ab4ef9357ceb86c24/CONTRIBUTING.md#on-ai-use-when-contributing-to-octoprint).
 
+
+
+## Maintained S1 Pro v040 firmware stack
+
+The owner's existing [Marlin fork](https://github.com/joenewbry/Marlin) retains
+its default branch. `reference/toka-v040` pins ThomasToka's actual v040 release
+source; this separate lineage retains input shaping. The earlier Creality stack
+and the host's firmware-test pin are unchanged. These draft changes have no
+physical commissioning or full thermal-manager qualification.
+
+| PR | Focus | Depends on base branch |
+| --- | --- | --- |
+| [M1](https://github.com/joenewbry/Marlin/pull/1) | Add printing-only S1 Pro v040 build profile | `reference/toka-v040` |
+| [M2](https://github.com/joenewbry/Marlin/pull/2) | Port session-bound LLM prompt control to S1 Pro v040 | `stack/v040-f1-profile` |
+| [M3](https://github.com/joenewbry/Marlin/pull/3) | Carry heater watch protection fixes onto S1 Pro v040 | `stack/v040-f2-protocol` |
+| [M4](https://github.com/joenewbry/Marlin/pull/4) | Complete thermal protection handoff at runtime | `stack/v040-f3-thermal` |
+
+The first three source layers need the runtime correction in M4 to complete
+the near-target backport. The corrected candidate builds with 13,600 bytes free;
+32 actual-source thermal paths, 11 prompt cases, six watch-template scenarios,
+three threshold checks and 66 host checks pass. All physical dependencies are recording stubs;
+full manager/physical shutdown and printing remain unqualified. The 1,156-test
+installed Linux qualification and older firmware-test pin are unchanged.
+[Detailed current source and limits](maintained-firmware.md).
