@@ -18,6 +18,17 @@ class SharedFrameWriter:
         self._lock_timeout = lock_timeout
         self._lock = threading.Lock()
         self._fault = None
+        self._observer = None
+        self._sequence = 0
+
+    def attach_observer(self, observer):
+        """Attach one internal trace before any frame; never a second writer."""
+        if not all(callable(getattr(observer, name, None)) for name in ('before_write', 'after_write')):
+            raise TypeError('complete frame observer required')
+        with self._lock:
+            if self._observer is not None or self._sequence or self._fault:
+                raise ValueError('attach one observer before first write')
+            self._observer = observer
 
     @property
     def fault(self):
@@ -44,6 +55,9 @@ class SharedFrameWriter:
             if self._fault is not None:
                 raise OSError('shared transport is uncertain')
             try:
+                self._sequence += 1
+                if self._observer is not None:
+                    self._observer.before_write(self._sequence, data)
                 written = self._writer(data)
             except BaseException:
                 # Even cancellation can interrupt a write after an unknown prefix.
@@ -52,6 +66,12 @@ class SharedFrameWriter:
             if type(written) is not int or written != len(data):
                 self._fault = 'partial_or_unconfirmed_write'
                 raise OSError('incomplete frame write')
+            try:
+                if self._observer is not None:
+                    self._observer.after_write(self._sequence, data)
+            except BaseException:
+                self._fault = 'write_observation_interrupted'
+                raise
             return written
         finally:
             self._lock.release()

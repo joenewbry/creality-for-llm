@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-27",
+  "scope": "assigned completion barrier primitive; source tests, not installed-package or physical qualification",
+  "source_commit": "8a4808b20da78160cebcf069147bbba1e2f2caaf",
+  "linux": {
+    "passed": 195,
+    "skipped": 0,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 113.28,
+    "xml_sha256": "d3e26595b57c6d4b6fc97854bf6bc303d77fbe4754024e8fab759cf0119d5bc7"
+  },
+  "mac": {
+    "passed": 184,
+    "skipped": 11,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 3.46,
+    "xml_sha256": "4f80e09c1afccfde53ecca5991dcb33d7e0cb02ef10031b05cf5530dbf5e64b5"
+  },
+  "export_checks_passed": 9,
+  "runtime_and_selected_test_inputs_matched": 56,
+  "new_primitive_exercised_with": "owned software endpoint, real shared writer, journal, lease and source recorder",
+  "nearby_linux_regressions": "existing pinned-sender and assigned-job scenarios; new barrier not yet integrated into those scenarios",
+  "observed_cases": [
+    "durable intent before enqueue",
+    "exact writes and valid frame checksums",
+    "original correlated arrival",
+    "receive before marker write returns",
+    "wrong and duplicate marker",
+    "intervening or subsequent frame",
+    "reset and source identity loss",
+    "operation authority loss",
+    "deadline expiry during commit before enqueue",
+    "partial write and enqueue interruption",
+    "no successor replay"
+  ],
+  "diagnostic": "An intermediate test wait counted both raw and classified echo events. Final wait counts only source-line events; the corrected suites pass. Production runtime bytes were unchanged by this test correction.",
+  "firmware_flashed": false,
+  "physical_printer_access": false,
+  "camera_access": false,
+  "resume_authorized": false,
+  "remaining": [
+    "connect barrier to pinned-sender job evidence provider",
+    "qualify installed firmware semantics and identity",
+    "configuration, sensors, motor and part continuity evidence",
+    "development commissioning and demonstration",
+    "separate post-repair printing qualification"
+  ],
+  "full_suite_repeated": false
+}

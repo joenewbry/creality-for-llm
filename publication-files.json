@@ -317,6 +317,10 @@
     "tests/test_state_fixture.py",
     "tests/test_native_state_path.py",
     "docs/native-state-path.md",
-    "validation/native-state-path-stage140.json"
+    "validation/native-state-path-stage140.json",
+    "docs/assigned-completion-barrier.md",
+    "printer_control/assigned_barrier.py",
+    "tests/test_assigned_barrier.py",
+    "validation/assigned-barrier-stage141.json"
   ]
 }

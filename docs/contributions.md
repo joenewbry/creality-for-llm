@@ -136,3 +136,13 @@ cases with no skips/failures; all 99 dependencies, all 16 native inputs and inst
 runtime bytes match. Production runtime remains unchanged from the earlier full
 `c8d079c` result. Hardware stubs and virtual motion are distinct models; this
 proof does not complete the physical provider or commissioning.
+
+## Assigned completion barrier follow-up
+
+The operation-bound barrier primitive adds an actual shared-write trace and
+durable source-marker correlation. Linux source validation passes 195 checks;
+Mac passes 184 with 11 Linux-only checks skipped. Nine export checks pass.
+See [implementation and integration limits](assigned-completion-barrier.md) and
+[scoped validation](../validation/assigned-barrier-stage141.json). This is not a
+new installed-package/full-suite result. Pinned-sender provider integration and
+physical commissioning remain open; neither printer was accessed.
