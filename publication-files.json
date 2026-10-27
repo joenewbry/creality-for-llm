@@ -286,6 +286,7 @@
     "validation/linux-package-stage131.json",
     "validation/source-hazard-stage131.json",
     "validation/linux-package-stage132.json",
-    "validation/assigned-lifecycle-stage132.json"
+    "validation/assigned-lifecycle-stage132.json",
+    "validation/manufacturer-recovery-stage133.json"
   ]
 }

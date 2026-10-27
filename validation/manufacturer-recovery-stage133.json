@@ -1,0 +1,1144 @@
+{
+  "schema_version": 1,
+  "observed_date": "2026-10-27",
+  "scope": "manufacturer catalog/download provenance and offline payload comparison; not restoration qualification",
+  "manufacturer_catalog_page": "https://www.crealitycloud.com/downloads/firmware/ender-series/ender-3-s1-pro",
+  "manufacturer_catalog_api": "https://www.crealitycloud.com/api/cxy/search/firmwareSearch",
+  "catalog_query": {
+    "page": 1,
+    "pageSize": 100,
+    "type": 2,
+    "seriesId": "2",
+    "subType": "618ddfba8f5f262859ef20c8"
+  },
+  "catalog_entry_id": "64d47bc978708804f388cafd",
+  "catalog_entry_name": "Ender-3 S1_Pro_HWv24S1_301_SWV2.0.8.28F4_F401_FDM_LASER",
+  "catalog_created_utc": "2023-08-10T05:55:21+00:00",
+  "manufacturer_download_url": "https://file2-cdn.creality.com/file/a82fb260f26c12871551de3789b9ba1a/Ender-3S1_Pro_HWv24S1_301_SWV2.0.8.28F4_F401_FDM_LASER.rar",
+  "reported_version": "2.0.8.28",
+  "reported_hardware": "V2.4.S1.301",
+  "vendor_required_processor": "STM32F401",
+  "manufacturer_channel_provenance_verified": true,
+  "cryptographic_vendor_signature_verified": false,
+  "catalog_response_sha256": "147226c14f7fe446797f61c95885d4f087dc8e730344375e623fda4ee029752d",
+  "archive": {
+    "format": "RAR",
+    "bytes": 23137236,
+    "sha256": "1b68556722db3a875d52276152405c58f1b38a45c2138a32d2869614a515727d",
+    "integrity_test": "7-Zip 26.05 test passed; 216 files, 8 folders, 33432387 uncompressed bytes"
+  },
+  "payload_comparison": {
+    "manufacturer_files": 216,
+    "mirror_files": 216,
+    "common_files": 216,
+    "identical_common_files": 216,
+    "changed_common_files": [],
+    "manufacturer_only": [],
+    "mirror_only": []
+  },
+  "mainboard": {
+    "path": "STM32F4_UPDATE/Ender-3S1_Pro_HWv24S1_301_SWV2.0.8.28F4_F401_FDM_LASER.bin",
+    "bytes": 181488,
+    "sha256": "de6290525b7cd183f32dbae3b0f4e752374196eb90bf864beae637f2d045dcc2",
+    "initial_stack_pointer_hex": "0x20010000",
+    "reset_vector_hex": "0x8011e2d",
+    "embedded_metadata": [
+      "2.0.8.28F4",
+      "Jun 19 2023",
+      "18:06:53"
+    ]
+  },
+  "manifest": [
+    {
+      "path": "DWIN_SET/0_DWIN_ASC.HZK",
+      "bytes": 3082752,
+      "sha256": "f60fa277cc463f2e35fe399a22270df59b28d2447dcf6d815a7e78450a9ed8b6"
+    },
+    {
+      "path": "DWIN_SET/0_start.jpg",
+      "bytes": 11129,
+      "sha256": "fbb3bb271dfeb353330f047a251fffbefc4457752c443d8e0249d4c4875bfd7b"
+    },
+    {
+      "path": "DWIN_SET/10_pause.jpg",
+      "bytes": 50716,
+      "sha256": "2b55d21e2c0a55d26f200638cd25af23e9d33aebb44460c8aaa59c030907773c"
+    },
+    {
+      "path": "DWIN_SET/11_pause_stop.jpg",
+      "bytes": 16773,
+      "sha256": "847c1e2b4165841c93fd95ffcccac7aa537b4daabb1ea22db5173ed1bdac734c"
+    },
+    {
+      "path": "DWIN_SET/12_resume.jpg",
+      "bytes": 50700,
+      "sha256": "24aa6c7e183672f7fe10e867ac8224201a8d5a0b09fbf84c85c08ead9179be1b"
+    },
+    {
+      "path": "DWIN_SET/13TouchFile.bin",
+      "bytes": 20962,
+      "sha256": "d7a51c20edb47fd8086c0c0b18c5876854ebb907271c8b94af5abde8f660f843"
+    },
+    {
+      "path": "DWIN_SET/13_continue_stop.jpg",
+      "bytes": 16773,
+      "sha256": "847c1e2b4165841c93fd95ffcccac7aa537b4daabb1ea22db5173ed1bdac734c"
+    },
+    {
+      "path": "DWIN_SET/14ShowFile.bin",
+      "bytes": 40640,
+      "sha256": "e13b318fabd24c9a4dacba4e9b8f62d60d8ae862f63e8493d3fe671bb807ea18"
+    },
+    {
+      "path": "DWIN_SET/14_adjust.jpg",
+      "bytes": 39478,
+      "sha256": "195f0acb4d6d7080cb7affc66edcf357708b74b2eed682989f568fb615a4809c"
+    },
+    {
+      "path": "DWIN_SET/15_prepare.jpg",
+      "bytes": 34537,
+      "sha256": "cedff560f88737bdf484d75996e63945a1e34eb37ea60506bb7ee0340a5f7b2c"
+    },
+    {
+      "path": "DWIN_SET/16_moveaxis_10.jpg",
+      "bytes": 76224,
+      "sha256": "b8840d36d9e85cc19a7df3a00cd711e26eb0ce322a9cc1efe7a70e25876001e8"
+    },
+    {
+      "path": "DWIN_SET/16_screen90.icl",
+      "bytes": 1568932,
+      "sha256": "aebb93209c67416e93e83b41866a7410319e63f78c414109e6e710c3383f804c"
+    },
+    {
+      "path": "DWIN_SET/17_moveaxis_1.jpg",
+      "bytes": 76062,
+      "sha256": "351ea9f314f25e746ee2f0c799f90546c70dcf4d0b2bd447c7ac6104e7fd2d83"
+    },
+    {
+      "path": "DWIN_SET/18_moveaxis_01.jpg",
+      "bytes": 76496,
+      "sha256": "a9ad8bdbe30091980b3cab627bb014130817848704bf2e768f6c38ffd8a37854"
+    },
+    {
+      "path": "DWIN_SET/19_feedreturn.jpg",
+      "bytes": 41951,
+      "sha256": "2aae749db25dba0d5ecb68b084a5411fb44d3e87668be7a220ac46e9f42d5cde"
+    },
+    {
+      "path": "DWIN_SET/1_main.jpg",
+      "bytes": 52280,
+      "sha256": "04e82258fff107a9f206113a1f8cc6fafa8e854b5d4847d7323c6f80fe5bebab"
+    },
+    {
+      "path": "DWIN_SET/20_control.jpg",
+      "bytes": 60975,
+      "sha256": "c956bf529cb59f30a071530239ddf9280927c047b30acdc86f141b870c8f7a06"
+    },
+    {
+      "path": "DWIN_SET/21_temp.jpg",
+      "bytes": 50744,
+      "sha256": "4654ceac1d0be969ece07d29eb8d37063de1ef02ba4cea83f9d051803e701628"
+    },
+    {
+      "path": "DWIN_SET/22_Config.bin",
+      "bytes": 131076,
+      "sha256": "1f6318119e21a367e0a968a1eeaca796613e0909262d86a26d3eb2a9f73c681f"
+    },
+    {
+      "path": "DWIN_SET/22_PLA_temp.jpg",
+      "bytes": 37100,
+      "sha256": "2c52ecbbe2d0c6f860cc0ed4c0bdd64ed01c00c8bea149fc6db04bd045d0750f"
+    },
+    {
+      "path": "DWIN_SET/23_ABS_temp.jpg",
+      "bytes": 37100,
+      "sha256": "2c52ecbbe2d0c6f860cc0ed4c0bdd64ed01c00c8bea149fc6db04bd045d0750f"
+    },
+    {
+      "path": "DWIN_SET/23_setting.icl",
+      "bytes": 515432,
+      "sha256": "36c01240f4ebe3cf84878941b35dd6847f20af94f7e0556b8e96a051d65cbad2"
+    },
+    {
+      "path": "DWIN_SET/24_infomation.jpg",
+      "bytes": 34260,
+      "sha256": "758d68825b738574eccc88b4d643812ed3146da4aa5a2c76e484c0104d869ec9"
+    },
+    {
+      "path": "DWIN_SET/25_levelingmode.jpg",
+      "bytes": 56294,
+      "sha256": "83398b69ccbfcd5a07fd6c309ef9f6bda27201d49bea11ac882c843806af05b1"
+    },
+    {
+      "path": "DWIN_SET/25_progress.icl",
+      "bytes": 1881480,
+      "sha256": "33e9dcf4892251b09c3ddb5b4caead3786d2462e8992fc7939a12917fd2289d0"
+    },
+    {
+      "path": "DWIN_SET/26_Leveling.jpg",
+      "bytes": 24967,
+      "sha256": "36b0375dfa163520f3dbf3034576d0f85304f38e8ebe76a8e71526b8f862526e"
+    },
+    {
+      "path": "DWIN_SET/27_powercontinue.jpg",
+      "bytes": 14470,
+      "sha256": "a78420c65cd546c061429250c1e9430ffff6e04456944bd3d04c062fc42ed388"
+    },
+    {
+      "path": "DWIN_SET/28_language.jpg",
+      "bytes": 12708,
+      "sha256": "b3398c698d64837915233ce3b1c115735c1991b8f0ee7a6526703028f688ec7e"
+    },
+    {
+      "path": "DWIN_SET/29_Keyboard.jpg",
+      "bytes": 72234,
+      "sha256": "00151a05d8d7fe9fba2404674c9226443d81bde5f9e5ecfa0bc037937eea20ec"
+    },
+    {
+      "path": "DWIN_SET/2_file1.jpg",
+      "bytes": 46412,
+      "sha256": "be5adb7847397ba5275fa141e9cb2503157bcd85643a9689347a378dfa8cdde0"
+    },
+    {
+      "path": "DWIN_SET/30_Keyboard_confirm.jpg",
+      "bytes": 98732,
+      "sha256": "f56d30179c842dad087697a5b4031ef01c7c5bfa30f513d307abc50e45c724ec"
+    },
+    {
+      "path": "DWIN_SET/31_thermal_runaway.jpg",
+      "bytes": 44903,
+      "sha256": "eda9f6e5669cfe86c1329df09f87dc7afe36bba2e294d00f74bd3e5f27844314"
+    },
+    {
+      "path": "DWIN_SET/32_level_offest.jpg",
+      "bytes": 34537,
+      "sha256": "cedff560f88737bdf484d75996e63945a1e34eb37ea60506bb7ee0340a5f7b2c"
+    },
+    {
+      "path": "DWIN_SET/33_control_device.jpg",
+      "bytes": 62040,
+      "sha256": "e98c01910bd22ca84282de5cb66aa8ab46b165dff22733e7166df323b4476330"
+    },
+    {
+      "path": "DWIN_SET/33_home.icl",
+      "bytes": 497816,
+      "sha256": "f4499721f0425a19b2729c21579e01ee94762819f1847d48bbc5374992558043"
+    },
+    {
+      "path": "DWIN_SET/34_motion.jpg",
+      "bytes": 45085,
+      "sha256": "92cc842f2b07c5c5bc166d98d60c408f4d22b581212f6c176dd7b049e0c1e9a5"
+    },
+    {
+      "path": "DWIN_SET/35_adjust.icl",
+      "bytes": 515760,
+      "sha256": "4fcf76958eaf930462cc47b06e506d104f73814f8186a7d90f6825606038fad9"
+    },
+    {
+      "path": "DWIN_SET/35_max_feedrate.jpg",
+      "bytes": 45951,
+      "sha256": "06c1e69ae837e153a4f0406357ecd04e12d4c882c1e7ed9d5e444f3f3461d1ed"
+    },
+    {
+      "path": "DWIN_SET/36_acceleration.jpg",
+      "bytes": 48419,
+      "sha256": "150f77c92ddd2d572fab2253ba9d146e4f0f751e0b25329625b5961286b981a8"
+    },
+    {
+      "path": "DWIN_SET/37_jerk.jpg",
+      "bytes": 45951,
+      "sha256": "06c1e69ae837e153a4f0406357ecd04e12d4c882c1e7ed9d5e444f3f3461d1ed"
+    },
+    {
+      "path": "DWIN_SET/37_prepare.icl",
+      "bytes": 521320,
+      "sha256": "29e7d7bd60ab4469f323416e959e40826d0079132f5d93919e68f230b75846fe"
+    },
+    {
+      "path": "DWIN_SET/38_stepsmm.jpg",
+      "bytes": 43299,
+      "sha256": "8ed1d928702ef568703218805c5010429be5ea73a9db8b65fbc3185f1dd11d16"
+    },
+    {
+      "path": "DWIN_SET/38_stepsmm.png",
+      "bytes": 11667,
+      "sha256": "bfb9d83b3d9bf4c809a52b7c0506e57dfa67a2ff81715b6290b7033e1e1966fc"
+    },
+    {
+      "path": "DWIN_SET/39_PIDcontrol.jpg",
+      "bytes": 43479,
+      "sha256": "59a4ab780d409d2edf4cf257329058f09510cabf4ab2171fb96cea3bcba5165c"
+    },
+    {
+      "path": "DWIN_SET/39_start_lcd.icl",
+      "bytes": 732572,
+      "sha256": "7512100695f059c631bd197137dac9055268a7440e1ba16b761f57164e6cd2e1"
+    },
+    {
+      "path": "DWIN_SET/3_file2.jpg",
+      "bytes": 46925,
+      "sha256": "b2a440f9e018549abbc015913ae8cd603c00cc36b30458f7dcd97206886d2484"
+    },
+    {
+      "path": "DWIN_SET/40_Autohome.jpg",
+      "bytes": 11129,
+      "sha256": "fbb3bb271dfeb353330f047a251fffbefc4457752c443d8e0249d4c4875bfd7b"
+    },
+    {
+      "path": "DWIN_SET/41_abnormal.jpg",
+      "bytes": 32095,
+      "sha256": "5ea1e2bc1316a6c367bc32536ce6f18c4e2d05719d0673a1d975b561940f231e"
+    },
+    {
+      "path": "DWIN_SET/42_status_icon.icl",
+      "bytes": 261884,
+      "sha256": "1f7d06bcd7cb701dde750ea21e5147667042af27a58633955893c9344b971af9"
+    },
+    {
+      "path": "DWIN_SET/42_wifi_confirm.jpg",
+      "bytes": 14470,
+      "sha256": "a78420c65cd546c061429250c1e9430ffff6e04456944bd3d04c062fc42ed388"
+    },
+    {
+      "path": "DWIN_SET/43_factoryreset_confirm.jpg",
+      "bytes": 14470,
+      "sha256": "a78420c65cd546c061429250c1e9430ffff6e04456944bd3d04c062fc42ed388"
+    },
+    {
+      "path": "DWIN_SET/43_level.icl",
+      "bytes": 199080,
+      "sha256": "6dfc44678a12c617fd0a0002b1ee8a5b0d712cdb451cd4d59c14e15cea3f32f8"
+    },
+    {
+      "path": "DWIN_SET/44_information.icl",
+      "bytes": 296320,
+      "sha256": "b56e9c9746202e4ca228257097381190648b5e20772e76cf5a6a0e65c3b485bd"
+    },
+    {
+      "path": "DWIN_SET/44_shutdown.jpg",
+      "bytes": 14470,
+      "sha256": "a78420c65cd546c061429250c1e9430ffff6e04456944bd3d04c062fc42ed388"
+    },
+    {
+      "path": "DWIN_SET/46_adv_info.icl",
+      "bytes": 511128,
+      "sha256": "64b71ddd57e148e2c37baa8701be0c41b29c813b49b62fb42bb7b7f00ba83024"
+    },
+    {
+      "path": "DWIN_SET/46_filamentcheck.jpg",
+      "bytes": 14470,
+      "sha256": "a78420c65cd546c061429250c1e9430ffff6e04456944bd3d04c062fc42ed388"
+    },
+    {
+      "path": "DWIN_SET/47_sdcardcheck.jpg",
+      "bytes": 14470,
+      "sha256": "a78420c65cd546c061429250c1e9430ffff6e04456944bd3d04c062fc42ed388"
+    },
+    {
+      "path": "DWIN_SET/48_motion.icl",
+      "bytes": 445732,
+      "sha256": "181bdff5dafc8589df4c2a7a6e5cf141df50f46398c3a4087f07a421ce4d9728"
+    },
+    {
+      "path": "DWIN_SET/4_file3.jpg",
+      "bytes": 47019,
+      "sha256": "28d9a28b33a2730810613a23412555ecd66dc0003042f561a887af7e1fa020c3"
+    },
+    {
+      "path": "DWIN_SET/50_jerk.icl",
+      "bytes": 483352,
+      "sha256": "b60972f1f254a317b7f4a3177cd559ce17c1ebf1a744155663908eacc41bd55d"
+    },
+    {
+      "path": "DWIN_SET/50_laser_fdm.jpg",
+      "bytes": 43472,
+      "sha256": "5bb3af99dc7a94b0cc2b67197abef891258675ee2313dd1cbbb943db588ad78a"
+    },
+    {
+      "path": "DWIN_SET/51_main_laser.jpg",
+      "bytes": 40659,
+      "sha256": "a1eef01c2456a6414563eddb8ec970af6853341abc88467c500ca3ad2e7d0a1a"
+    },
+    {
+      "path": "DWIN_SET/52_PID.icl",
+      "bytes": 180456,
+      "sha256": "9acc06dc2070391aeea10922ddc8297e5c3aa863284effd451fd75bd817405e9"
+    },
+    {
+      "path": "DWIN_SET/52_file1.jpg",
+      "bytes": 46412,
+      "sha256": "be5adb7847397ba5275fa141e9cb2503157bcd85643a9689347a378dfa8cdde0"
+    },
+    {
+      "path": "DWIN_SET/53_file2.jpg",
+      "bytes": 46925,
+      "sha256": "b2a440f9e018549abbc015913ae8cd603c00cc36b30458f7dcd97206886d2484"
+    },
+    {
+      "path": "DWIN_SET/53_status_title.icl",
+      "bytes": 2029988,
+      "sha256": "768c913a7d36a99eaba8e9e6b7e1c340a494f8cb884e241989d44fa73c579ff3"
+    },
+    {
+      "path": "DWIN_SET/54_file3.jpg",
+      "bytes": 47019,
+      "sha256": "28d9a28b33a2730810613a23412555ecd66dc0003042f561a887af7e1fa020c3"
+    },
+    {
+      "path": "DWIN_SET/55_file4.jpg",
+      "bytes": 46849,
+      "sha256": "fb4f01a7ea590a7b4f969703da107e8d50b3323dd1e7aeb68662aa9044332e03"
+    },
+    {
+      "path": "DWIN_SET/56_sw_laser_tips.jpg",
+      "bytes": 31545,
+      "sha256": "78d2d563dae3597ede69d4a53566bbb23d51c1c821e6d51728d332f5cc5adfce"
+    },
+    {
+      "path": "DWIN_SET/57_sw_fdm_tips.jpg",
+      "bytes": 31545,
+      "sha256": "78d2d563dae3597ede69d4a53566bbb23d51c1c821e6d51728d332f5cc5adfce"
+    },
+    {
+      "path": "DWIN_SET/58_stop_confirm.jpg",
+      "bytes": 14470,
+      "sha256": "a78420c65cd546c061429250c1e9430ffff6e04456944bd3d04c062fc42ed388"
+    },
+    {
+      "path": "DWIN_SET/59_pause_laser.jpg",
+      "bytes": 39224,
+      "sha256": "e579cdc9b30c4d585b4b060e1fa2f5d6df57524f6e7e95e70e81a843466722f1"
+    },
+    {
+      "path": "DWIN_SET/5_file4.jpg",
+      "bytes": 46849,
+      "sha256": "fb4f01a7ea590a7b4f969703da107e8d50b3323dd1e7aeb68662aa9044332e03"
+    },
+    {
+      "path": "DWIN_SET/60_finish_laser.jpg",
+      "bytes": 38316,
+      "sha256": "aaa2c51a57c1abbf10115493418332eb5bd0ef8f8c8b7192fa40c4dab96dc658"
+    },
+    {
+      "path": "DWIN_SET/61_resume_laser.jpg",
+      "bytes": 39023,
+      "sha256": "f8e8f7404f6919efdd55be4d9d5560b8cf2de609e393c1bc0a894bd3cb88b69c"
+    },
+    {
+      "path": "DWIN_SET/61_temp_title.icl",
+      "bytes": 491080,
+      "sha256": "16048d93647e3584c9c89ce381443c79f4f8a813c1d5914b90b126985b14673f"
+    },
+    {
+      "path": "DWIN_SET/62_pause_confirm.jpg",
+      "bytes": 14470,
+      "sha256": "a78420c65cd546c061429250c1e9430ffff6e04456944bd3d04c062fc42ed388"
+    },
+    {
+      "path": "DWIN_SET/63_focus.jpg",
+      "bytes": 32923,
+      "sha256": "c90f81deae3185cd8c74f6930fdf8473bad291ede4eb7fb0ff34f90310633670"
+    },
+    {
+      "path": "DWIN_SET/63_level_icon.icl",
+      "bytes": 259336,
+      "sha256": "490d3e4bb1cb127481c67b773c7d32181c534032163ff61478f380b80de78a89"
+    },
+    {
+      "path": "DWIN_SET/64_device_laser.jpg",
+      "bytes": 50864,
+      "sha256": "6d4cb2a1d9ca59d771b062e6b1804c92daea94c7775decfa9ffca7f94504e81b"
+    },
+    {
+      "path": "DWIN_SET/65_lange.jpg",
+      "bytes": 29988,
+      "sha256": "e1718a45697041315a00e129872a4cb333dff73e965817b3bda4b3e05c071200"
+    },
+    {
+      "path": "DWIN_SET/66_infomation_laser.jpg",
+      "bytes": 34260,
+      "sha256": "758d68825b738574eccc88b4d643812ed3146da4aa5a2c76e484c0104d869ec9"
+    },
+    {
+      "path": "DWIN_SET/67_accel_laser.jpg",
+      "bytes": 41273,
+      "sha256": "e0232f7a8701ebdc242ef28343c4f8589b0d30923bd6e8cebda7b22e1264e3b3"
+    },
+    {
+      "path": "DWIN_SET/68_jerk_speed_laser.jpg",
+      "bytes": 39742,
+      "sha256": "cbf69a4f0ddedc7daac0f048278adff5ddc92056f4fca11c0c01b9735886aa72"
+    },
+    {
+      "path": "DWIN_SET/69_max_speed_laser.jpg",
+      "bytes": 39093,
+      "sha256": "317d8d59e00e55d90d795c413afaebba50174403f663aa0027f1fb25ae519611"
+    },
+    {
+      "path": "DWIN_SET/70_axis_move_10_.jpg",
+      "bytes": 76240,
+      "sha256": "c14b055ebc11fcc3335dc06db534f0040bdf9346dbec2426df8aa4da58d67fd5"
+    },
+    {
+      "path": "DWIN_SET/71_axis_move_1_.jpg",
+      "bytes": 76079,
+      "sha256": "8f8ed367a03a081b34b331b7d84c36f2ecd1b0e12add81284c4cced87dcbe61f"
+    },
+    {
+      "path": "DWIN_SET/72_axis_move_01_.jpg",
+      "bytes": 76512,
+      "sha256": "b0b159a2e7087ce6fab0c4d856bf8d439597d4481b4b075ad8e34a6ba6041319"
+    },
+    {
+      "path": "DWIN_SET/73_run_range.jpg",
+      "bytes": 35862,
+      "sha256": "c5ba02cf82675ca67516623debe12ba1aedeb40b02f9167b07f4048a9594b470"
+    },
+    {
+      "path": "DWIN_SET/74_adjust_laser.jpg",
+      "bytes": 22823,
+      "sha256": "87cad17a3d24a4edeeeab18e957ee8129e6e8959750112d6458cf0bb0096a1eb"
+    },
+    {
+      "path": "DWIN_SET/75_engrave_tips.jpg",
+      "bytes": 55600,
+      "sha256": "76ac10f5e2b20869ae33efe948f2fa3bb5c8bc4de9e6888a9fbbb37a2a37c4bb"
+    },
+    {
+      "path": "DWIN_SET/76_ratio.jpg",
+      "bytes": 32281,
+      "sha256": "8fc181a281b350dbd1c3a5d3dca7c859ac8f0253b3d02503b9bab727ed60125d"
+    },
+    {
+      "path": "DWIN_SET/77_sw_focus.jpg",
+      "bytes": 29431,
+      "sha256": "8ec5ac4383b56ea14727ed6c166955572a4a0b26fc279193ec16aaae4699894b"
+    },
+    {
+      "path": "DWIN_SET/78_axis_adjust_10.jpg",
+      "bytes": 62080,
+      "sha256": "f5a522a683be05def0631b88887ba3a96a6bff42fda0b77864b2ea427e7efda5"
+    },
+    {
+      "path": "DWIN_SET/79_axis_adjust_1.jpg",
+      "bytes": 61575,
+      "sha256": "b0860404a854aad88599330ef5075a4d68472e2cfead10ce5d26baac2aa448e8"
+    },
+    {
+      "path": "DWIN_SET/7_filamentuseup.jpg",
+      "bytes": 14470,
+      "sha256": "a78420c65cd546c061429250c1e9430ffff6e04456944bd3d04c062fc42ed388"
+    },
+    {
+      "path": "DWIN_SET/80_axis_adjust_01.jpg",
+      "bytes": 62198,
+      "sha256": "cfb6811a9632714c50694ee284f807c74680ef8e76945992f21985f3200c7a00"
+    },
+    {
+      "path": "DWIN_SET/81_auto_pid.jpg",
+      "bytes": 25653,
+      "sha256": "ce6b3d2f7ecdddac3af68bae62686b4cb92a5298706e8727fa2025ce6edad489"
+    },
+    {
+      "path": "DWIN_SET/82_nozzle_autoPID.jpg",
+      "bytes": 30402,
+      "sha256": "ac223de2be4a67cd7380d74738b07f1f7d8fef0b07f6a8b31c9db520f7ab6f19"
+    },
+    {
+      "path": "DWIN_SET/83_bed_autoPID.jpg",
+      "bytes": 30010,
+      "sha256": "96e73a474951cfec4523dd4311bf4ef8bb5cc637b24a55d4860401c33a90ecd7"
+    },
+    {
+      "path": "DWIN_SET/84_preview_picture.jpg",
+      "bytes": 29624,
+      "sha256": "c455dbb93572df0e3c3c16a80f19509ea6d8285162cfe0f479bfd01d05558f8c"
+    },
+    {
+      "path": "DWIN_SET/85_edit_leveling.jpg",
+      "bytes": 35554,
+      "sha256": "6985795624cd83a0d6b2d4df4125ebb8886c40cd0c847a9b43907fcc988aa47f"
+    },
+    {
+      "path": "DWIN_SET/86_edit_leveling.jpg",
+      "bytes": 28599,
+      "sha256": "f4963cbe0acaf0783292279cd33ce34c7eaa60c9dca399f03e268168d74b294b"
+    },
+    {
+      "path": "DWIN_SET/8_filamentload.jpg",
+      "bytes": 14470,
+      "sha256": "a78420c65cd546c061429250c1e9430ffff6e04456944bd3d04c062fc42ed388"
+    },
+    {
+      "path": "DWIN_SET/9_finish.jpg",
+      "bytes": 49255,
+      "sha256": "96f63a8985dbdb93780518b906c4f28dbedc59c89314dd47d0f41e0c414cc623"
+    },
+    {
+      "path": "DWIN_SET/DWINOS_page_change.bin",
+      "bytes": 4273,
+      "sha256": "2fbdb67b37fa14b87bd3c97ab12d8ee961c7d3051b2ab223b32637761f98090b"
+    },
+    {
+      "path": "DWIN_SET/T5LCFG_CRZ2.CFG",
+      "bytes": 48,
+      "sha256": "6b354ef8a242e742e30ba0cb91106cdad6764b48dbb7fc6d632e1e87f1c6c480"
+    },
+    {
+      "path": "Readme_更新固件前请阅读.txt",
+      "bytes": 3100,
+      "sha256": "f6d910ea4592d9b98d045ab3a0d40058f2f052904224206647d5bb52d6a830ff"
+    },
+    {
+      "path": "STM32F4_UPDATE/Ender-3S1_Pro_HWv24S1_301_SWV2.0.8.28F4_F401_FDM_LASER.bin",
+      "bytes": 181488,
+      "sha256": "de6290525b7cd183f32dbae3b0f4e752374196eb90bf864beae637f2d045dcc2"
+    },
+    {
+      "path": "firmware.zlib",
+      "bytes": 405653,
+      "sha256": "3cd1d63b62ae41f924e000e857b0b20b5b975bee8e589ee2f27427688942d1f6"
+    },
+    {
+      "path": "private/bin/13.bin",
+      "bytes": 20962,
+      "sha256": "d7a51c20edb47fd8086c0c0b18c5876854ebb907271c8b94af5abde8f660f843"
+    },
+    {
+      "path": "private/bin/14.bin",
+      "bytes": 40640,
+      "sha256": "e13b318fabd24c9a4dacba4e9b8f62d60d8ae862f63e8493d3fe671bb807ea18"
+    },
+    {
+      "path": "private/bin/22.bin",
+      "bytes": 131076,
+      "sha256": "1f6318119e21a367e0a968a1eeaca796613e0909262d86a26d3eb2a9f73c681f"
+    },
+    {
+      "path": "private/bin/pinyin.bin",
+      "bytes": 23244,
+      "sha256": "867da4a6b873fb2d70f5321f2496a5ff747fc934944dd808ed547d84a14358c8"
+    },
+    {
+      "path": "private/config.txt",
+      "bytes": 88,
+      "sha256": "4c744eef9c89688695f0eac698890d5e9c383002be2d66b82b6aaa6972a41709"
+    },
+    {
+      "path": "private/icon/23.zico",
+      "bytes": 518885,
+      "sha256": "051ad797d700c747f98d22a0527dc2c876fd82970f62fe04fc12e0fbf014098e"
+    },
+    {
+      "path": "private/icon/25.zico",
+      "bytes": 4007224,
+      "sha256": "e6133a47522903128cd277a3a41b74eddf7ab394675d500618bb64f49c685a64"
+    },
+    {
+      "path": "private/icon/33.zico",
+      "bytes": 553085,
+      "sha256": "25d299abe4c0dce17f2560f2f6879fa0490f79cc8715a84b35c095257dbc82c7"
+    },
+    {
+      "path": "private/icon/35.zico",
+      "bytes": 261111,
+      "sha256": "f25f36c1bc92ecdb58726a1ee0dad233d9773b47d34c323189a8c50cb3c1ecda"
+    },
+    {
+      "path": "private/icon/37.zico",
+      "bytes": 541160,
+      "sha256": "c3c32c62c027bb0b7d692e2cd0a0db662f572c811a293f22167aa29e358d6d3d"
+    },
+    {
+      "path": "private/icon/39.zico",
+      "bytes": 1036116,
+      "sha256": "f194b0b939dca29183cc88dc118f3a382c9695730cf439894d8573fa46b97739"
+    },
+    {
+      "path": "private/icon/42.zico",
+      "bytes": 296185,
+      "sha256": "1402f9a506c2efd9c63df43061b83a415bc58ff7f8cdb1a4419290a59dafb473"
+    },
+    {
+      "path": "private/icon/43.zico",
+      "bytes": 192827,
+      "sha256": "2e7e2458e7de1680c94e9c628ba5ce39dc031869aa7d723646b78b0847a00b4d"
+    },
+    {
+      "path": "private/icon/44.zico",
+      "bytes": 272814,
+      "sha256": "9cb92dfd5c3ceef3b91f2cee5eace27ebd1864f8f3128b73c42ec711e9cffcd0"
+    },
+    {
+      "path": "private/icon/46.zico",
+      "bytes": 568818,
+      "sha256": "8a9d485661f6d3d54231070207405d2837c5c90dd2a5fcb2291120bb3ad20e3e"
+    },
+    {
+      "path": "private/icon/48.zico",
+      "bytes": 476435,
+      "sha256": "ac76654d4e8e881944ad02ac9c91e85b282c8a1def3905f1acfa63bdf8e7906e"
+    },
+    {
+      "path": "private/icon/50.zico",
+      "bytes": 536906,
+      "sha256": "e5661acee87533795ef92636815dd6b622c80d6c4366531d7cfe8ce7eac24f95"
+    },
+    {
+      "path": "private/icon/52.zico",
+      "bytes": 184117,
+      "sha256": "e3aa14399cee7c736c671e315b515c90db053376756218896efe2e227a486a32"
+    },
+    {
+      "path": "private/icon/53.zico",
+      "bytes": 2523579,
+      "sha256": "549590950e1267393b667e0689e91955f30f3f1f195fbc867b96c5aea32053aa"
+    },
+    {
+      "path": "private/icon/61.zico",
+      "bytes": 570681,
+      "sha256": "a6c98b7fd1605dd4abbb398e270c405d1bb5db989ae9b04397a5b059a9e7d35a"
+    },
+    {
+      "path": "private/icon/63.zico",
+      "bytes": 287671,
+      "sha256": "b8b9fcc1a828a0861d60c0be2e3afa165e3aba0e21c69032df84328df4ee5275"
+    },
+    {
+      "path": "private/image/0.zbmp",
+      "bytes": 785,
+      "sha256": "e6fdd6f630e2e8776344a67def242eab4fe50897c2cdcf561b87d8f1c121bbb2"
+    },
+    {
+      "path": "private/image/1.zbmp",
+      "bytes": 26164,
+      "sha256": "939f09bf748ddc8ebf9575f984c38e084a75eef34de84c6623f2e757c6707da3"
+    },
+    {
+      "path": "private/image/10.zbmp",
+      "bytes": 26295,
+      "sha256": "1ce468eff5382fd6f7cf5207741e57491f0ea7b8f391abe8a5f1e1d9a62fedc9"
+    },
+    {
+      "path": "private/image/11.zbmp",
+      "bytes": 4586,
+      "sha256": "3cfede5decf297e1502c6e24f655e95595575eedb8458ddecedaa0770c30b4bf"
+    },
+    {
+      "path": "private/image/12.zbmp",
+      "bytes": 26340,
+      "sha256": "b3d64aa17adaf4e52f21944685e41c9e30bfef80d890473c8989c8c3d5ec3b46"
+    },
+    {
+      "path": "private/image/13.zbmp",
+      "bytes": 4586,
+      "sha256": "3cfede5decf297e1502c6e24f655e95595575eedb8458ddecedaa0770c30b4bf"
+    },
+    {
+      "path": "private/image/14.zbmp",
+      "bytes": 18415,
+      "sha256": "bd39299fcdeb18bc82395ecdaa355cd239b90cf5ec3e9c40941c2e2b7c5d502e"
+    },
+    {
+      "path": "private/image/15.zbmp",
+      "bytes": 15682,
+      "sha256": "a5d3780c853f8a1544e1e4b7753e7ac161db6893e2a7c0585a9d4d29f6a9fc77"
+    },
+    {
+      "path": "private/image/16.zbmp",
+      "bytes": 45322,
+      "sha256": "cd28e4f2be2cfeed78b7b70f7a605171d5f6a0568645d5f368858611a5456cb5"
+    },
+    {
+      "path": "private/image/17.zbmp",
+      "bytes": 45633,
+      "sha256": "124f4e3a53f3e2f9c59b6381c8dc4634d46eeb83b37b13fa0db79e41dc801a11"
+    },
+    {
+      "path": "private/image/18.zbmp",
+      "bytes": 45488,
+      "sha256": "e1b289a3f0e49d4a7bdc6163c41d3b024179f5ed60ed85721cd98a16ad798209"
+    },
+    {
+      "path": "private/image/19.zbmp",
+      "bytes": 22951,
+      "sha256": "6178995d43cedfa229ab2a26ce98fbaa990b10781de9a42b4fd4450f9d4f8e46"
+    },
+    {
+      "path": "private/image/2.zbmp",
+      "bytes": 23090,
+      "sha256": "b9eac1e08b2765e7cd06aace92b3cbde9299be057bd152ee679099dd40cf28b2"
+    },
+    {
+      "path": "private/image/20.zbmp",
+      "bytes": 30325,
+      "sha256": "4af947c62efbafd3e66e33f793a719d60e3c25cc5df3902fe9181aba16d656f1"
+    },
+    {
+      "path": "private/image/21.zbmp",
+      "bytes": 23959,
+      "sha256": "0be8415ca4d2228d815d6314118d6215cc9e55f1f837b4eb2d0d1a1f359b15d3"
+    },
+    {
+      "path": "private/image/22.zbmp",
+      "bytes": 13589,
+      "sha256": "2425d3aa99a979113b599035ecb67571be0bae2e678641bd198d00d610f4033d"
+    },
+    {
+      "path": "private/image/23.zbmp",
+      "bytes": 13589,
+      "sha256": "2425d3aa99a979113b599035ecb67571be0bae2e678641bd198d00d610f4033d"
+    },
+    {
+      "path": "private/image/24.zbmp",
+      "bytes": 12896,
+      "sha256": "d3cd5e18ff48d920905a17fc82c14b2d74a8cf876d2ef0307fd230527868cc4f"
+    },
+    {
+      "path": "private/image/25.zbmp",
+      "bytes": 26226,
+      "sha256": "cfc0125cbfddede18f5098ed5ac77cbafb9b7b0e829a09c41bfe0b6e900de2bc"
+    },
+    {
+      "path": "private/image/26.zbmp",
+      "bytes": 7011,
+      "sha256": "cfa8f3da395240445143e1d9a6cd5877e84dc789d639fb21be6ee65fb13ce408"
+    },
+    {
+      "path": "private/image/27.zbmp",
+      "bytes": 2484,
+      "sha256": "753ecad3d31b8a3d6ffd4fd06e5a6c0492b64e86c5662da6751833259c38fad8"
+    },
+    {
+      "path": "private/image/28.zbmp",
+      "bytes": 1985,
+      "sha256": "7ee289096746668827f027f22fb6048a4bb93cd29440b0c293037cfbc8029026"
+    },
+    {
+      "path": "private/image/29.zbmp",
+      "bytes": 22606,
+      "sha256": "7831aa69ba29cb666c0ef37793f8b7d75cc01b48839fd6622aecd303383503a0"
+    },
+    {
+      "path": "private/image/3.zbmp",
+      "bytes": 23392,
+      "sha256": "4a3f723c37bf04423e9bdc549558cfaa72ec23c0d2b75134e253679a05bcc551"
+    },
+    {
+      "path": "private/image/30.zbmp",
+      "bytes": 47712,
+      "sha256": "1b740dec4231859c36251d668147bbc19be503b7a3333480e629c3176916bb9e"
+    },
+    {
+      "path": "private/image/31.zbmp",
+      "bytes": 25045,
+      "sha256": "192b76b1afec07a5eb470a6a6290d4fc88937fdf9d4834317725771eb20dcc9a"
+    },
+    {
+      "path": "private/image/32.zbmp",
+      "bytes": 15682,
+      "sha256": "a5d3780c853f8a1544e1e4b7753e7ac161db6893e2a7c0585a9d4d29f6a9fc77"
+    },
+    {
+      "path": "private/image/33.zbmp",
+      "bytes": 30631,
+      "sha256": "80267def74344b96786ec7b24aea925632ca3d527169ae4328e070be03935677"
+    },
+    {
+      "path": "private/image/34.zbmp",
+      "bytes": 17224,
+      "sha256": "e080441e1a8e90ad072a40640e6c4eb3f251dd5820d56bbe344a9c1d949f8ec6"
+    },
+    {
+      "path": "private/image/35.zbmp",
+      "bytes": 22045,
+      "sha256": "3955b6ec0cb550ed74219f16f8316e4ddaae4019edff2c850bc08ed9eed59068"
+    },
+    {
+      "path": "private/image/36.zbmp",
+      "bytes": 23764,
+      "sha256": "928c0bca6670475d96dd62b173bb9a73b2f260a401fdbc9939a6eaea5d8c988b"
+    },
+    {
+      "path": "private/image/37.zbmp",
+      "bytes": 23414,
+      "sha256": "56f458fec5a8edbf9b3c3a0f8b90be4f3e308b3792a9c3bb008cae2cfa1f3d17"
+    },
+    {
+      "path": "private/image/38.zbmp",
+      "bytes": 16924,
+      "sha256": "57d1d892d6d2bd131436345e552b7e2a85ea6383730b0a63495778149ee5bf88"
+    },
+    {
+      "path": "private/image/39.zbmp",
+      "bytes": 20204,
+      "sha256": "a4548a8aaffb22106abd6278e6500fcd0bdd85f6d22d305e8f630d5fdaf86e82"
+    },
+    {
+      "path": "private/image/4.zbmp",
+      "bytes": 23438,
+      "sha256": "24f2e52d2a1c44171f1476e439fa488dda311a2555a8429a93cf333f59f7fdb3"
+    },
+    {
+      "path": "private/image/40.zbmp",
+      "bytes": 785,
+      "sha256": "e6fdd6f630e2e8776344a67def242eab4fe50897c2cdcf561b87d8f1c121bbb2"
+    },
+    {
+      "path": "private/image/41.zbmp",
+      "bytes": 15856,
+      "sha256": "d7436a8f2ed03e9b7ae5784521a1b32c78cc641957260f8c21bd38acf63ba4a2"
+    },
+    {
+      "path": "private/image/42.zbmp",
+      "bytes": 2484,
+      "sha256": "753ecad3d31b8a3d6ffd4fd06e5a6c0492b64e86c5662da6751833259c38fad8"
+    },
+    {
+      "path": "private/image/43.zbmp",
+      "bytes": 2484,
+      "sha256": "753ecad3d31b8a3d6ffd4fd06e5a6c0492b64e86c5662da6751833259c38fad8"
+    },
+    {
+      "path": "private/image/44.zbmp",
+      "bytes": 2484,
+      "sha256": "753ecad3d31b8a3d6ffd4fd06e5a6c0492b64e86c5662da6751833259c38fad8"
+    },
+    {
+      "path": "private/image/46.zbmp",
+      "bytes": 2484,
+      "sha256": "753ecad3d31b8a3d6ffd4fd06e5a6c0492b64e86c5662da6751833259c38fad8"
+    },
+    {
+      "path": "private/image/47.zbmp",
+      "bytes": 2484,
+      "sha256": "753ecad3d31b8a3d6ffd4fd06e5a6c0492b64e86c5662da6751833259c38fad8"
+    },
+    {
+      "path": "private/image/5.zbmp",
+      "bytes": 23291,
+      "sha256": "82a4f5241471dab1b17bf29c84a4bc45de145f59b20b234356a67d7f40c50bad"
+    },
+    {
+      "path": "private/image/50.zbmp",
+      "bytes": 25114,
+      "sha256": "0405ed15ba7ab8060d7f15f8369767e92c3aa596063ac65d68b5cceea2f71589"
+    },
+    {
+      "path": "private/image/51.zbmp",
+      "bytes": 19345,
+      "sha256": "f058ee2c8f607a74873e4b05cf210e037596c7ce5f3641dc90653fd95b08534f"
+    },
+    {
+      "path": "private/image/52.zbmp",
+      "bytes": 23090,
+      "sha256": "b9eac1e08b2765e7cd06aace92b3cbde9299be057bd152ee679099dd40cf28b2"
+    },
+    {
+      "path": "private/image/53.zbmp",
+      "bytes": 23392,
+      "sha256": "4a3f723c37bf04423e9bdc549558cfaa72ec23c0d2b75134e253679a05bcc551"
+    },
+    {
+      "path": "private/image/54.zbmp",
+      "bytes": 23438,
+      "sha256": "24f2e52d2a1c44171f1476e439fa488dda311a2555a8429a93cf333f59f7fdb3"
+    },
+    {
+      "path": "private/image/55.zbmp",
+      "bytes": 23291,
+      "sha256": "82a4f5241471dab1b17bf29c84a4bc45de145f59b20b234356a67d7f40c50bad"
+    },
+    {
+      "path": "private/image/56.zbmp",
+      "bytes": 14460,
+      "sha256": "f4a226ec56efe2c32e15910d1595881b64aefff40a66242394dbaedb427a105b"
+    },
+    {
+      "path": "private/image/57.zbmp",
+      "bytes": 14460,
+      "sha256": "f4a226ec56efe2c32e15910d1595881b64aefff40a66242394dbaedb427a105b"
+    },
+    {
+      "path": "private/image/58.zbmp",
+      "bytes": 2484,
+      "sha256": "753ecad3d31b8a3d6ffd4fd06e5a6c0492b64e86c5662da6751833259c38fad8"
+    },
+    {
+      "path": "private/image/59.zbmp",
+      "bytes": 19469,
+      "sha256": "bfc6b7ee9b6fafba24c28d136bb29fcf75d523d362ca19cc05509f79adb0928e"
+    },
+    {
+      "path": "private/image/60.zbmp",
+      "bytes": 19229,
+      "sha256": "178bb99537f06dd737119ccf34f285630de99bdd3e540d0d67cf5ad7dde1443e"
+    },
+    {
+      "path": "private/image/61.zbmp",
+      "bytes": 19617,
+      "sha256": "17067e10c33fb53dffad0ea3899846e2eaf5c5d9876dd2132f6b485f622b789d"
+    },
+    {
+      "path": "private/image/62.zbmp",
+      "bytes": 2484,
+      "sha256": "753ecad3d31b8a3d6ffd4fd06e5a6c0492b64e86c5662da6751833259c38fad8"
+    },
+    {
+      "path": "private/image/63.zbmp",
+      "bytes": 15936,
+      "sha256": "ec6a81707153afda4df7dbbc5e41bb69816b7e0f2a61058a8f460d79d7fb1402"
+    },
+    {
+      "path": "private/image/64.zbmp",
+      "bytes": 24401,
+      "sha256": "967629ac8e677ef02883bb7c7bc47e8fd0927972eb5d2b575ec1690ec75d025f"
+    },
+    {
+      "path": "private/image/65.zbmp",
+      "bytes": 12702,
+      "sha256": "75fd9755a2931fd6835fe259099df17ad8d32332433e06333ec8adde4ad00f74"
+    },
+    {
+      "path": "private/image/66.zbmp",
+      "bytes": 12896,
+      "sha256": "d3cd5e18ff48d920905a17fc82c14b2d74a8cf876d2ef0307fd230527868cc4f"
+    },
+    {
+      "path": "private/image/67.zbmp",
+      "bytes": 20328,
+      "sha256": "865b0b553f0786cbcf8c040a242dc9bb3b26c3ec8f0c0ee5b7d307f7f84b4c89"
+    },
+    {
+      "path": "private/image/68.zbmp",
+      "bytes": 19323,
+      "sha256": "613eeab4d78d5217531bcb72c34cdc19d5abba13524bfe7100002440ca198d69"
+    },
+    {
+      "path": "private/image/69.zbmp",
+      "bytes": 19158,
+      "sha256": "82b440855788a904e9034558da66192de96d878aadbb8f31b1f016366063226d"
+    },
+    {
+      "path": "private/image/7.zbmp",
+      "bytes": 2484,
+      "sha256": "753ecad3d31b8a3d6ffd4fd06e5a6c0492b64e86c5662da6751833259c38fad8"
+    },
+    {
+      "path": "private/image/70.zbmp",
+      "bytes": 44617,
+      "sha256": "811f98a4d9018cf47c1c24e50bb2759d22c39dff5dc910d6c1f5603f3ff11d0b"
+    },
+    {
+      "path": "private/image/71.zbmp",
+      "bytes": 44928,
+      "sha256": "13016c989f59e19ec6ca1d7455c6a34298d3c63543aa9c6de567e099a986bde2"
+    },
+    {
+      "path": "private/image/72.zbmp",
+      "bytes": 44914,
+      "sha256": "46fb0896abd64fb284796dcbbd5c39b586027298aa865af5f1da45bf2a5575ba"
+    },
+    {
+      "path": "private/image/73.zbmp",
+      "bytes": 14483,
+      "sha256": "a35d1094b2744c4d3676a21838faef20c124a953551690e45aa788dc186336c9"
+    },
+    {
+      "path": "private/image/74.zbmp",
+      "bytes": 8306,
+      "sha256": "f2cd26c426370aa614355b7e467aac19fb7a34b70d39b3b4e95dc0ea124e77e8"
+    },
+    {
+      "path": "private/image/75.zbmp",
+      "bytes": 31976,
+      "sha256": "d9427f3518ac8aea38290fe9fe09489a3242dd540a94e5a584cf8ef90dd27b1b"
+    },
+    {
+      "path": "private/image/76.zbmp",
+      "bytes": 14446,
+      "sha256": "4ba8e4c52639c3fd20845ea4011479fe501e7b5ee66c08481917c939955d2475"
+    },
+    {
+      "path": "private/image/77.zbmp",
+      "bytes": 14603,
+      "sha256": "2baba7f93f0062a06bad66f64dc34c1269b4e92bf3270b45ed7359829f547b92"
+    },
+    {
+      "path": "private/image/78.zbmp",
+      "bytes": 37056,
+      "sha256": "ea875a0936fa3e1fa81c9f298dba74d438c1e85ab4b26dea03ba9cf75506890b"
+    },
+    {
+      "path": "private/image/79.zbmp",
+      "bytes": 36906,
+      "sha256": "00bd7c64943944ef0130daaa8c43922cf7613c4e86e2c6ab6ed3fdbaddbc5cdc"
+    },
+    {
+      "path": "private/image/8.zbmp",
+      "bytes": 2484,
+      "sha256": "753ecad3d31b8a3d6ffd4fd06e5a6c0492b64e86c5662da6751833259c38fad8"
+    },
+    {
+      "path": "private/image/80.zbmp",
+      "bytes": 37231,
+      "sha256": "48970df5605d584175b96b2151ec44b8f71fcc0ccede305932022b285dab6c59"
+    },
+    {
+      "path": "private/image/81.zbmp",
+      "bytes": 7492,
+      "sha256": "b8aff368a60050a7de19912ef255528c124ed473b984811d3eeb7f2561da290b"
+    },
+    {
+      "path": "private/image/82.zbmp",
+      "bytes": 8010,
+      "sha256": "2a72124dea2afced88c4f89c382f78889384cb17c62921037aacfe0ab5425490"
+    },
+    {
+      "path": "private/image/83.zbmp",
+      "bytes": 7266,
+      "sha256": "5882f9b3b73b6bdda0d10ac7ca5e7f98db8f3450203b9cf79c1353b7d11ee6f7"
+    },
+    {
+      "path": "private/image/84.zbmp",
+      "bytes": 9424,
+      "sha256": "16f8c9d012a635879f7e658b63549c88a08ee26358e584eb8cef098c618c96ce"
+    },
+    {
+      "path": "private/image/85.zbmp",
+      "bytes": 10990,
+      "sha256": "516a67faa1ec1d7d0101b44ba2c22bdf8a35be1d41ab9f9927399aa900b48668"
+    },
+    {
+      "path": "private/image/86.zbmp",
+      "bytes": 9903,
+      "sha256": "28f8a78bf2ebbf8c181f74d218c6cebe7a16b67d20251760396d43fd484a81cc"
+    },
+    {
+      "path": "private/image/9.zbmp",
+      "bytes": 25404,
+      "sha256": "e57df69e9878cbc4d2a164429997648c53d845179beb1b64ea9fd7f952ec8cc8"
+    },
+    {
+      "path": "private/truefont/font.ttf",
+      "bytes": 190100,
+      "sha256": "fea839d4ceb1ee40d2ba88fa2cb4dbd27b6347c5316c035ef0d7c8f41953c4ee"
+    },
+    {
+      "path": "private/truefont/truefont.ini",
+      "bytes": 26,
+      "sha256": "7eb8dd739c650b78f654e092b6f9fa18576a84221128d88ef2c4c9a41d57d804"
+    }
+  ],
+  "extraction_observation": "macOS bsdtar listed archive and extracted mainboard, but some payloads failed with Parsing filters is unsupported; task-local official 7-Zip completed full integrity/extraction/comparison",
+  "physical_processor_identified": false,
+  "bootloader_verified": false,
+  "installed_firmware_readback_compared": false,
+  "settings_restoration_verified": false,
+  "physical_rollback_tested": false,
+  "screen_update_qualified": false,
+  "firmware_flashed": false,
+  "physical_device_access": false,
+  "raw_firmware_redistributed": false,
+  "camera_scope": "deferred_by_owner"
+}

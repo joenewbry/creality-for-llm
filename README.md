@@ -9,7 +9,7 @@ It does not yet implement a qualified hardware controller. Tests use virtual dev
 
 Current installed-package qualification: **1156 tests passed, zero skips on Linux/Python 3.11.13** at the [public source snapshot](https://github.com/joenewbry/creality-for-llm/tree/4e820fa0e2ec4dcc5656b780e335ca9377cbb347). Installed runtime bytes and all 99 locked dependencies were verified. See [the qualification record](validation/linux-package-stage132.json), [goal audit](docs/goal-audit.md), [contribution stack](docs/contributions.md) and [post-repair printing plan](docs/printing-qualification-plan.md). Firmware commissioning and physical printer/camera operation remain unqualified.
 
-The [owner About intake](docs/development-hardware.md) records firmware 2.0.8.28F4, screen V1.0.5 and reported hardware CR-FDM-v24S1_301. Physical processor/recovery/sensor checks remain open. Logitech work is deferred at the owner’s request.
+The [owner About intake](docs/development-hardware.md) records firmware 2.0.8.28F4, screen V1.0.5 and reported hardware CR-FDM-v24S1_301. The [manufacturer recovery package](docs/recovery.md) now has verified channel provenance and matching mirror payloads; target, bootloader, settings restoration and sensor qualification remain open. Logitech work is deferred at the owner’s request.
 
 The [assigned job adapter](docs/assigned-job.md) now owns explicit sender startup,
 passive prompt consumption between tool calls and coordinated shutdown joining.
