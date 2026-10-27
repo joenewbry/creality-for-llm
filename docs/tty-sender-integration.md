@@ -30,8 +30,9 @@ software bounds, not measured physical USB response guarantees. Queue capacity
 is bounded, default 64 KiB per copy, and job line content is at most 2048 bytes.
 An enabled job copy needs an active consumer; unread overflow is an explicit fault.
 Both enabled copies must be drained independently of LLM tool-call frequency.
-The enclosing controller needs a coordinated prompt-processing loop; the
-receive hub creates no background consumer. A receive fault is not evidence that
+The receive hub creates no background consumer. In the assigned job path,
+`AssignedJobBackend.start()` now owns the coordinated prompt-copy loop; the
+standalone prompt factory still requires its enclosing controller to drain it. A receive fault is not evidence that
 motion or heaters stopped.
 
 ## Evidence
@@ -70,13 +71,15 @@ requests are deduplicated. Physical serial opens and discovery/fallback factorie
 are denied for the entire experiment. Job methods in these tests are sender calls,
 not journaled job tools; no physical job backend is supplied or commissioned.
 
-Real production integration still requires a job backend with immutable staging,
-state/sensor/configuration gates, transport observations, qualified checkpoints,
+The journaled adapter below now supplies immutable staging and its explicit
+start/close lifecycle. Real production integration still requires independent
+state/sensor/configuration evidence, qualified checkpoints,
 shutdown/restart handling, acknowledgment/resend/barrier and queue-saturation
 qualification, plus fixed isolated settings/hooks/scripts. The
 existing virtual backend deliberately refuses this endpoint. No default launcher
 or existing printer service changes. Board/processor/screen/recovery, sensor,
-clearance, actual USB driver/device isolation and camera qualification remain open.
+clearance and actual USB driver/device isolation remain open. Camera work is
+deferred by the owner and does not gate current printer integration.
 
 ## Journaled adapter on this connection
 

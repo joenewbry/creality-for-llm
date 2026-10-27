@@ -101,3 +101,34 @@ fault also retires the shared connection synchronously, before durable capture
 completes. The backend then reports an unknown job outcome and invalidates resume;
 no provider proof can restore that retired connection. See the source hazard
 interlock in [assigned observations](assigned-observations.md).
+
+## Owned sender and prompt-copy lifecycle
+
+Attach `AssignedMachineEventRecorder` before calling `AssignedJobBackend.start()`.
+Start verifies active capture and the existing controller lease, then starts the
+pinned sender and one passive prompt-copy consumer exactly once. Neither start
+nor the consumer discovers or opens a port. The consumer drains observations
+without LLM tool calls and does not invoke the external evidence provider. It
+uses the same backend guard as foreground operations; all source reads still
+belong to the sender's single endpoint reader.
+
+Capture loss, prompt-channel uncertainty or a consumer callback exception
+retires shared dispatch and invalidates resume. Startup interruption is also
+sticky: no retry/reopen occurs. Status exposes whether the consumer started,
+whether its thread is running, its sample count and its bounded error category.
+These are software-lifecycle observations, not physical readiness evidence.
+
+Close signals and joins this consumer before closing the sender, durable capture,
+transport and controller lease. The bounded lock-acquisition loop can observe
+stop while `OperationService.close()` holds the backend guard. A consumer still
+running at the join deadline prevents backend cleanup and retains ownership;
+callers can retry close after it exits, never replay I/O. Transport metadata and
+read callbacks must still meet their bounded contract. A callback stuck while
+holding the backend guard can delay a service close reaching the join; ownership
+is retained throughout, and no shutdown deadline or physical stop is promised.
+
+The older direct-sender experiments remain historical. The journaled assigned
+job/prompt terminal scenarios now use this lifecycle rather than a test-owned
+prompt-draining thread. An idle-report scenario sends more than one copy-buffer's
+capacity while making no LLM tool calls; the source report remains observable
+without overflow. Native physical transport/provider/commissioning remain open.
