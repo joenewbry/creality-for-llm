@@ -59,3 +59,12 @@ No printer or camera is discovered/opened and no firmware is installed.
 The production runtime modules are unchanged from the full installed Linux
 snapshot `c8d079c` (1,271 passed, one Mac-native fixture skipped). The new combined
 fixture has its own focused qualification in [the record](../validation/native-state-path-stage140.json).
+
+
+The exact focused installed snapshot `d585922` passes 171 cases with zero skips or
+failures, including the combined getter/wire/sender/tool scenario and existing
+job, sender, reader, source-integrity and archive cases. Installed runtime bytes
+match the export; all 99 locked dependencies and all 16 native inputs are verified.
+Mac source checks pass 75 with the Linux-only scenario skipped; the Mac native
+getter/wire checks run separately. The application's runtime modules are unchanged
+from `c8d079c`; the full suite was not repeated for these fixture/tool changes.
