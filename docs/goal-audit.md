@@ -36,9 +36,9 @@ full-suite run.
 | Camera and mount — deferred by owner | Earlier broker/client/owner API tests and CAD/view models retained | Owner deferred Logitech work on October 26. Native capture/control and physical qualification remain unqualified and do not gate current printer work. |
 | Publication | Owned explanation page, architecture, platform/repository distinctions, PR dependencies and screenshot review | Firmware commissioning or an accepted upstream release |
 
-The [current installed Linux qualification](../validation/linux-package-stage131.json)
-passes 1145 tests with zero skips at public source `f74da56`, including the camera,
-startup, shared serial ownership, journaled assigned job/prompt tools, source-bound serial history and explicit transport-uncertainty retirement and synchronous source-hazard dispatch inhibition. The earlier 986-case qualification
+The [current installed Linux qualification](../validation/linux-package-stage132.json)
+passes 1156 tests with zero skips at public source `4e820fa`, including the camera,
+startup, shared serial ownership, journaled assigned job/prompt tools, source-bound serial history and explicit transport-uncertainty retirement and synchronous source-hazard dispatch inhibition and an owned sender/prompt-copy lifecycle. The earlier 986-case qualification
 remains historical. Subsequent delivery changes are documentation/qualification
 metadata only. Neither test counts nor a successful source export prove physical
 readiness.

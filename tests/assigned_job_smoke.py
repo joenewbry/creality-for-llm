@@ -62,8 +62,8 @@ class FixtureEvidence:
 
 
 def main(scenario):
-    denied=[];service=sender=peer=bridge=recorder=None;master=None;drain_thread=None
-    drain_stop=threading.Event();drain_errors=[];gate=threading.Event();witness=StreamWitness()
+    denied=[];service=sender=peer=bridge=recorder=None;master=None
+    gate=threading.Event();witness=StreamWitness()
     def forbidden(*a,**k):denied.append('forbidden_open_or_discovery');raise AssertionError('no physical serial access')
     with tempfile.TemporaryDirectory(prefix='assigned-job-fixture-') as temp,ExitStack() as stack:
         temp=Path(temp);stack.enter_context(patch.object(serial.Serial,'open',forbidden));stack.enter_context(patch.object(comm,'serialList',forbidden))
@@ -110,15 +110,21 @@ def main(scenario):
             backend=service.backend
             recorder=AssignedMachineEventRecorder(service.journal,endpoint=sender._assigned_endpoint,lease=service.lease,clock=time.time)
             backend.attach_machine_events(recorder)
-            bridge=PeerBridge(master,peer);sender.start()
-            def drain():
-                try:
-                    while not drain_stop.wait(.005):
-                        with backend.guard():backend.context()
-                except Exception as exc:
-                    if not drain_stop.is_set():drain_errors.append(repr(exc))
-            drain_thread=threading.Thread(target=drain,daemon=True);drain_thread.start()
+            bridge=PeerBridge(master,peer);backend.start()
             wait_for(sender.isOperational,'assigned job handshake');router=ToolRouter(service);receipts=[];counter=[0]
+            if scenario=='idle_reports':
+                line='echo:idle-copy-'+('x'*600)
+                report_count=128  # Cross the byte limit without thousands of SQLite commits.
+                for _ in range(report_count):peer._send(line)
+                peer._send('ok T:23.00 /0.00 B:22.00 /0.00')
+                wait_for(lambda:recorder.snapshot()['reports'].get('temperature',{}).get('data',{}).get('values',{}).get('T',{}).get('actual')==23.,'idle source reports',timeout=20)
+                assert not backend.prompt.receive_hub.fault and backend._pump_thread.is_alive()
+                assert backend._pump_samples>0 and not denied and not bridge.errors
+                assert len((line+'\n').encode())*report_count>65536
+                print(json.dumps(dict(scenario=scenario,prompt_copy_bytes=len((line+'\n').encode())*report_count,
+                    controller_pump_samples=backend._pump_samples,no_tool_calls_during_capture=True,
+                    physical_serial_open_or_discovery_attempts=len(denied))))
+                return
             def submit(name,args=None):
                 counter[0]+=1;state=router.call('printer.status',{})
                 if args is None:args={'job_id':'fixture-job'}
@@ -167,7 +173,7 @@ def main(scenario):
                     for name in ('job.resume','prompt.inspect','prompt.bind'):
                         _,blocked=submit(name,{} if name.startswith('prompt.') else None)
                         assert blocked['status']=='rejected',blocked
-                assert not denied and not bridge.errors and not drain_errors
+                assert not denied and not bridge.errors
                 print(json.dumps(dict(scenario=scenario,transport_fault=expected_fault,job_state=state['job_state'],
                     physical_stop_confirmed=False,automatic_emergency_frame_emitted=False,physical_serial_open_or_discovery_attempts=len(denied),
                     no_additional_wire_frames_after_retirement=True,no_original_move_replay=True,source_bound_serial_capture=True)))
@@ -191,7 +197,7 @@ def main(scenario):
                 assert peer.completed_moves==expected
             else:
                 assert router.call('job.inspect',{})['job_state']=='cancelled' and len(peer.completed_moves)<80
-            assert not denied and not bridge.errors and not drain_errors
+            assert not denied and not bridge.errors
             assert not backend.capabilities()['physical_control_qualified']
             wait_for(lambda:'reported_position' in recorder.snapshot()['reports'],'durable assigned position report')
             page=router.call('printer.machine_events',{'after':0,'limit':1000})
@@ -205,15 +211,18 @@ def main(scenario):
                 'native_prompt_frames':len(peer.prompt_writes) if scenario=='native_prompt' else 0,
                 'physical_serial_open_or_discovery_attempts':len(denied),'source_changed_after_stage':True,'physical_provider_implemented':False,'source_bound_serial_capture':True}))
         finally:
-            gate.set();drain_stop.set()
-            if drain_thread:drain_thread.join(2);assert not drain_thread.is_alive()
+            gate.set()
             if bridge:bridge.close()
-            if service:service.close()
-            elif sender:sender.close()
-            if peer:peer.close()
-            if master is not None:os.close(master)
+            try:
+                if service:service.close()
+                elif sender:sender.close()
+            finally:
+                # A retained capture/lease must not leave unrelated fixture
+                # peer threads alive and obscure the original cleanup error.
+                if peer:peer.close()
+                if master is not None:os.close(master)
 
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('--scenario',choices=['resume','native_prompt','cancel','denied','resend','ack_timeout','sensor_fault','thermal_fault'],required=True)
+    parser=argparse.ArgumentParser();parser.add_argument('--scenario',choices=['resume','native_prompt','cancel','denied','resend','ack_timeout','sensor_fault','thermal_fault','idle_reports'],required=True)
     main(parser.parse_args().scenario)

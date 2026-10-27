@@ -284,6 +284,8 @@
     "validation/development-about-owner-20261026.json",
     "validation/development-readonly-stage130.json",
     "validation/linux-package-stage131.json",
-    "validation/source-hazard-stage131.json"
+    "validation/source-hazard-stage131.json",
+    "validation/linux-package-stage132.json",
+    "validation/assigned-lifecycle-stage132.json"
   ]
 }

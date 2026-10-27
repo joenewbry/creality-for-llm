@@ -10,6 +10,7 @@ import hashlib
 import math
 from pathlib import Path
 import queue
+import os
 import tempfile
 import threading
 import uuid
@@ -68,6 +69,9 @@ class AssignedJobBackend:
         self.path=self.source_path
         self._staging=tempfile.TemporaryDirectory(prefix='assigned-staged-job-')
         self.machine_events=None
+        self._owner_pid=os.getpid()
+        self._pump_started=False;self._pump_thread=None;self._pump_stop=threading.Event()
+        self._pump_error=None;self._pump_samples=0
         self._lock=threading.RLock();self._closed=False;self._fault=None
         self._phase='available';self._revision=0;self._signature=None
         self._staged=False;self._stage_revision=0;self._started=False;self._printing=0
@@ -75,6 +79,61 @@ class AssignedJobBackend:
         self._events=queue.SimpleQueue()
         self._callback=_CallbackTap(sender._callback,self._events)
         sender._callback=self._callback
+
+    def start(self):
+        """Start the pinned sender and passive prompt-copy consumer once.
+
+        Requires source capture attached under the same lease. This does not
+        open a port, establish readiness or supply external physical evidence.
+        """
+        if os.getpid()!=self._owner_pid:raise OSError('assigned lifecycle belongs to another process')
+        from .assigned_observations import AssignedMachineEventRecorder
+        with self._lock:
+            if self._closed or self._pump_started:raise ValueError('assigned lifecycle is closed or already started')
+            if (type(self.machine_events) is not AssignedMachineEventRecorder
+                    or self.machine_events.endpoint is not self.sender._assigned_endpoint
+                    or not self.machine_events.capturing):
+                raise ValueError('attach active source capture before start')
+            self.prompt.controller_lease.check()
+            if self.sender._assigned_endpoint._claimed:raise ValueError('assigned sender already claimed')
+            self._pump_started=True
+            self._pump_thread=threading.Thread(target=self._pump_prompts,name='assigned-prompt-copy',daemon=False)
+            try:
+                self.sender.start()
+                self._pump_thread.start()
+            except BaseException:
+                self._pump_stop.set();self._pump_error='assigned_start_interrupted'
+                self._fault=self._fault or {'reason':self._pump_error}
+                self.sender._assigned_endpoint.retire(self._pump_error)
+                raise
+
+    def _pump_prompts(self):
+        while not self._pump_stop.wait(.005):
+            # Service.close holds this same guard. Bounded acquisition lets the
+            # consumer observe stop without deadlocking that close/join path.
+            if not self._lock.acquire(timeout=.05):continue
+            try:
+                if self._pump_stop.is_set():return
+                try:
+                    if not self.machine_events.capturing:raise OSError('capture lost')
+                    self.prompt.context()  # No external evidence-provider callback.
+                    self._pump_samples+=1
+                    if (self.prompt.channel.state in ('uncertain','disconnected')
+                            or self.prompt.receive_hub.fault or self.prompt.frame_writer.fault):
+                        raise OSError('prompt connection uncertain')
+                except BaseException:
+                    # Either validated receive copy may observe a hazard first.
+                    # Preserve its cause rather than winning the sticky fence
+                    # with a generic consumer error.
+                    self._pump_error=self.prompt.receive_hub.fault or {
+                        'sensor_suspect':'assigned_serial_sensor_suspect',
+                        'firmware_fault':'assigned_serial_fault',
+                    }.get(getattr(self.prompt.channel,'invalidation_reason',None),'assigned_prompt_pump_unavailable')
+                    self._fault=self._fault or {'reason':self._pump_error}
+                    self._phase='outcome_unknown';self.checkpoint=None;self.witness.invalidate_resume()
+                    self.sender._assigned_endpoint.retire(self._pump_error)
+                    return
+            finally:self._lock.release()
 
     def attach_machine_events(self,recorder):
         from .assigned_observations import AssignedMachineEventRecorder
@@ -310,16 +369,25 @@ class AssignedJobBackend:
                     sender_state=self.sender.getStateString(),evidence_scope=self.evidence_kind,
                     resumable=paused and not blockers,resume_blockers=blockers,blocking_fault=self._fault,
                     physical_control_qualified=False,external_evidence_provider_required=True,
+                    prompt_pump=dict(started=self._pump_started,running=bool(self._pump_thread and self._pump_thread.is_alive()),
+                        samples=self._pump_samples,error=self._pump_error),
                     serial_reports=self.machine_events.snapshot() if self.machine_events is not None else None)
 
     def capabilities(self):
         return dict(scope='experimental_assigned_job_adapter',physical_control_qualified=False,
                     external_evidence_provider_required=True,evidence_scope=self.evidence_kind,
+                    coordinated_prompt_pump_supported=True,
                     automatic_resend_supported=False,timeout_ack_credit_supported=False,
                     transport_recovery='reconciliation_required_on_resend_or_timeout',unsupported=['physical_qualification','raw_gcode','reconnect','physical_setup'])
 
     def close(self):
+        if os.getpid()!=self._owner_pid:raise OSError('assigned lifecycle belongs to another process')
         if not self._closed:
+            self._pump_stop.set()
+            if self._pump_thread is not None and self._pump_thread.ident is not None:
+                if self._pump_thread is threading.current_thread():raise RuntimeError('prompt consumer cannot close itself')
+                self._pump_thread.join(2)
+                if self._pump_thread.is_alive():raise TimeoutError('prompt consumer still running; ownership retained')
             self.sender.close()
             if self.machine_events is not None:self.machine_events.close()
             if self.sender._callback is self._callback:self.sender._callback=self._callback.original

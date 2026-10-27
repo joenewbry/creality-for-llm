@@ -134,7 +134,7 @@ def test_completion_provider_exception_is_observable_unknown(runtime):
     assert runtime[1].capabilities()['physical_control_qualified'] is False
 
 
-@pytest.mark.parametrize('scenario',['resume','native_prompt','cancel','denied','resend','ack_timeout','sensor_fault','thermal_fault'])
+@pytest.mark.parametrize('scenario',['resume','native_prompt','cancel','denied','resend','ack_timeout','sensor_fault','thermal_fault','idle_reports'])
 def test_journaled_assigned_job_tools_over_owned_software_terminal(scenario):
     if sys.platform!='linux':pytest.skip('Linux owned-terminal integration')
     root=Path(__file__).resolve().parents[1]
@@ -142,6 +142,8 @@ def test_journaled_assigned_job_tools_over_owned_software_terminal(scenario):
     assert run.returncode==0,run.stderr[-5000:]
     result=json.loads(run.stdout);assert result['physical_serial_open_or_discovery_attempts']==0
     if scenario=='denied':assert result['rejected_before_start']
+    elif scenario=='idle_reports':
+        assert result['prompt_copy_bytes']>65536 and result['controller_pump_samples']>0 and result['no_tool_calls_during_capture']
     elif scenario in ('resend','ack_timeout','sensor_fault','thermal_fault'):
         assert result['job_state']=='outcome_unknown' and not result['physical_stop_confirmed'] and not result['automatic_emergency_frame_emitted']
         assert result['no_additional_wire_frames_after_retirement'] and result['no_original_move_replay'] and result['source_bound_serial_capture']
@@ -230,3 +232,97 @@ def test_capture_close_failure_retains_lease_and_transport(runtime):
     service.lease.check()
     assert 'transport_closed' not in actions and not backend._closed
     backend.machine_events=None
+
+
+def lifecycle(runtime):
+    import threading
+    from printer_control.assigned_observations import AssignedMachineEventRecorder
+    service,backend,_,sender,_,_,_,actions,_=runtime
+    capture=AssignedMachineEventRecorder.__new__(AssignedMachineEventRecorder)
+    capture._condition=threading.Condition();capture._closing=capture._closed=False;capture._fault=None
+    capture.endpoint=sender._assigned_endpoint;capture.close=lambda:None
+    backend.machine_events=capture
+    backend.prompt.controller_lease=service.lease
+    sender._assigned_endpoint._claimed=False
+    sender._assigned_endpoint.retire=lambda reason:setattr(backend.prompt.receive_hub,'fault',reason)
+    sender.start=lambda:actions.append('sender.start')
+    return backend,capture
+
+
+def wait_lifecycle(predicate):
+    import time
+    until=time.monotonic()+1
+    while not predicate():
+        assert time.monotonic()<until
+        time.sleep(.005)
+
+
+def test_managed_start_refuses_missing_capture_before_sender_start(runtime):
+    runtime[3].start=lambda:pytest.fail('unobserved sender started')
+    with pytest.raises(ValueError,match='source capture'):runtime[1].start()
+
+
+def test_managed_prompt_pump_runs_without_tools_or_external_provider_calls(runtime):
+    backend,_=lifecycle(runtime)
+    runtime[2].completed=lambda *a:pytest.fail('background physical evidence callback')
+    backend.start();wait_lifecycle(lambda:backend._pump_samples>0)
+    assert runtime[7]==['sender.start']
+    with pytest.raises(ValueError,match='already started'):backend.start()
+    with backend.guard():runtime[0].close()
+    assert not backend._pump_thread.is_alive() and backend._closed
+    runtime[0].lease.acquire()  # Existing fixture performs its own final close.
+
+
+def test_close_can_join_prompt_consumer_waiting_for_service_guard(runtime):
+    backend,_=lifecycle(runtime)
+    with backend.guard():
+        backend.start()
+        runtime[0].close()
+    assert not backend._pump_thread.is_alive()
+    runtime[0].lease.acquire()
+
+
+def test_stalled_prompt_consumer_retains_lease_and_transport_until_join(runtime):
+    import threading
+    backend,_=lifecycle(runtime);entered=threading.Event();release=threading.Event();closed=[]
+    def blocked():entered.set();assert release.wait(5)
+    backend.prompt.context=blocked
+    backend.prompt.close=lambda:closed.append('transport')
+    backend.start();assert entered.wait(1)
+    try:
+        with pytest.raises(TimeoutError,match='ownership retained'):backend.close()
+        runtime[0].lease.check()
+        assert not closed and not backend._closed
+    finally:release.set()
+    wait_lifecycle(lambda:not backend._pump_thread.is_alive())
+    runtime[0].close();assert closed==['transport']
+    runtime[0].lease.acquire()
+
+
+@pytest.mark.parametrize('cause',['callback','capture','channel','sensor','thermal'])
+def test_prompt_consumer_loss_retires_shared_dispatch_without_tool_poll(runtime,cause):
+    backend,capture=lifecycle(runtime)
+    if cause=='callback':
+        def fail():raise OSError('fixture failure')
+        backend.prompt.context=fail
+    elif cause in ('channel','sensor','thermal'):
+        backend.prompt.channel.state='uncertain'
+        if cause!='channel':backend.prompt.channel.invalidation_reason='sensor_suspect' if cause=='sensor' else 'firmware_fault'
+    if cause=='capture':
+        # Start with a usable capture, then lose it after the consumer is live.
+        backend.start();capture._fault='fixture_capture_failed'
+    else:backend.start()
+    wait_lifecycle(lambda:backend._pump_error is not None)
+    expected={'sensor':'assigned_serial_sensor_suspect','thermal':'assigned_serial_fault'}.get(cause,'assigned_prompt_pump_unavailable')
+    assert backend.prompt.receive_hub.fault==expected and backend._pump_error==expected
+    assert backend._fault and backend._phase=='outcome_unknown' and backend.checkpoint is None
+
+
+def test_interrupted_sender_start_retires_connection_and_is_not_retried(runtime):
+    backend,_=lifecycle(runtime)
+    def fail():raise OSError('fixture start interrupted')
+    runtime[3].start=fail
+    with pytest.raises(OSError):backend.start()
+    assert backend.prompt.receive_hub.fault=='assigned_start_interrupted'
+    with pytest.raises(ValueError,match='already started'):backend.start()
+    assert not backend._pump_thread.is_alive()
