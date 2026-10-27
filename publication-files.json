@@ -339,6 +339,7 @@
     "docs/checkpoint-inspection.md",
     "printer_control/checkpoint_inspection.py",
     "tests/test_checkpoint_inspection.py",
-    "validation/checkpoint-inspection-stage147.json"
+    "validation/checkpoint-inspection-stage147.json",
+    "docs/physical-provider-plan.md"
   ]
 }

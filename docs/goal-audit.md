@@ -97,6 +97,27 @@ journaled state read. It holds the native wait through inspection, then explicit
 responds, pauses/resumes and completes all 80 original modeled moves once.
 Snapshot `d585922` passes 171 focused installed cases. Production modules remain
 byte-identical to full-suite snapshot `c8d079c`. This closes the earlier combined-
-path test gap. Hardware sampling and virtual motion are still separate models;
-operation-correlated barriers, configuration/physical continuity, the actual job
-provider, Mac transport and physical commissioning remain unfinished.
+path test gap. Hardware sampling and virtual motion are still separate models.
+Operation-correlated barriers and ordered post-drain source inspection are now
+implemented in later focused source snapshots. Configuration/physical continuity,
+the actual job provider, Mac transport and physical commissioning remain unfinished.
+
+
+## Physical provider dependency review
+
+The current source implements bounded cold command screening, controller-managed
+stage/start inspection and separate post-drain pause/resume inspection. The latest
+focused cohort passes 403 Linux cases and 372 Mac cases with 31 Linux-only skips;
+see [post-drain evidence](../validation/checkpoint-inspection-stage147.json).
+These are source checks with synthetic physical proofs, not an updated full
+installed-package or physical qualification.
+
+The [physical provider plan](physical-provider-plan.md) maps each existing callback
+to its required producer, separates pre-open admission from post-open firmware/
+configuration checks, and identifies the actual missing target and sensor facts.
+No physical provider/readiness checker is implemented by that plan. Its next
+implementation must use the qualified development-printer profile rather than
+fixture counters or unknown facts filled with defaults. Board/processor evidence
+and a resolved cold nozzle reading are still needed for commissioning; ordinary
+source work remains independent. The owner has been asked for the missing facts.
+No new printer or camera access is part of this review.

@@ -49,6 +49,7 @@ include docs/mcp.md
 include docs/model-demo.md
 include docs/native-state-path.md
 include docs/pause-resume.md
+include docs/physical-provider-plan.md
 include docs/printing-qualification-plan.md
 include docs/prior-art.md
 include docs/prompt-backend.md

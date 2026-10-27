@@ -10,7 +10,9 @@ Attach it to the source recorder before the first shared-writer frame. One trace
 observes both prompt and ordinary frames at the actual write boundary. It accepts
 only the exact barrier/marker pair (including valid numbered frame checksums),
 records write-start time and full-write confirmation, and rejects intervening or
-subsequent frames. A receive can precede a write's return: its original source
+unplanned subsequent frames. The optional [post-drain inspection](checkpoint-inspection.md)
+durably permits one exact child query after the marker; it does not permit a
+general read-command exception. A receive can precede a write's return: its original source
 arrival is retained, but no result is available until both writes are confirmed.
 
 The marker must come from the durable assigned capture under the same lease,
