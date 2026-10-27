@@ -58,6 +58,8 @@
   "installed_test_corpus_outside_source": true,
   "installed_module_bytes_match_export": true,
   "test_command": "python -I with installed-package paths and copied tests outside source; pytest -q -c /dev/null tests",
-  "test_harness_warnings": "Both installed runs reported two pytest cache warnings because -c /dev/null selected /dev as cache root; no test failures. No runtime device operation was attempted.",
-  "full_suite_rerun": false
+  "test_harness_warnings": "Both installed runs reported two pytest cache warnings because -c /dev/null selected /dev as cache root; no test failures. No physical device operation was attempted.",
+  "full_suite_rerun": false,
+  "public_code_snapshot": "https://github.com/joenewbry/creality-for-llm/tree/85653300e28ce9622090c2df6834751527d92f5f",
+  "public_code_bytes_match_qualified_files": true
 }
