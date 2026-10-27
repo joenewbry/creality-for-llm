@@ -59,7 +59,7 @@ class ToolRouter:
                                     inputSchema=dict(type='object', properties=properties, required=list(context), additionalProperties=False)))
         for name in sorted(self.reads):
             properties = {}
-            if name == 'operation.get':
+            if name in ('operation.get','printer.machine_state'):
                 properties = {'operation_id': {'type': 'string', 'minLength': 1, 'maxLength': 128}}
             elif name in ('printer.events', 'printer.observations', 'printer.machine_events'):
                 properties = {'after': {'type': 'integer', 'minimum': 0}, 'limit': {'type': 'integer', 'minimum': 1, 'maximum': 1000}}
@@ -91,6 +91,10 @@ class ToolRouter:
                 if set(arguments) != {'after', 'limit'}:
                     raise RequestRejected('invalid_machine_event_query')
                 return service.backend.machine_events.read(**arguments)
+            if name == 'printer.machine_state':
+                if set(arguments) != {'operation_id'}:
+                    raise RequestRejected('invalid_machine_state_query')
+                return service.backend.state_reader.read(arguments['operation_id'])
             if name == 'printer.observations':
                 if set(arguments) != {'after', 'limit'}:
                     raise RequestRejected('invalid_observation_query')

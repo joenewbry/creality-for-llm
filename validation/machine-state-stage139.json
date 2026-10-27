@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "scope": "source-bound controller-variable input; physical job evidence provider still unfinished",
+  "firmware_source_commit": "0f8d1ca1055b9030cabf6ff8e3a6762fdb4dfee7",
+  "firmware_repository": "https://github.com/joenewbry/Marlin",
+  "firmware_branch": "stack/v040-f5-machine-state",
+  "firmware_dependency": "https://github.com/joenewbry/Marlin/pull/4",
+  "native": {
+    "wire_scenarios": 5,
+    "getter_variants": 4,
+    "existing_prompt_scenarios": 11,
+    "compiler": "/usr/bin/clang++",
+    "physical_access": false,
+    "firmware_flashed": false,
+    "sources": {
+      "Marlin/src/feature/host_machine_state.cpp": "dc6739d580f06be4727b71ccef01fcdb0b431f8506815ef5488a7a533f5cbf6b",
+      "Marlin/src/feature/host_machine_state.h": "0552f10b94781b016ee4ebbbfada8c9c538f454798a59e801f9d36817cd1ab2c",
+      "Marlin/src/feature/host_prompt_wire.cpp": "a3a38e8476d54d88e2334cdd172750b5350f948a11f508d264035d27502ee685"
+    }
+  },
+  "firmware_flashed": false,
+  "physical_access": false,
+  "paid_model_calls": 0,
+  "cross_build": {
+    "environment": "STM32F401RC_creality_e3s1pro_llm",
+    "flash_used": 183960,
+    "flash_capacity": 196608,
+    "ram_used": 39860,
+    "ram_capacity": 65536,
+    "log_sha256": "8e629cc328b2854c8edf0cef67942615ec02c579caf9e397bbcda12982d9ac38",
+    "artifacts": [
+      {
+        "name": "firmware-20261027-044757-E3S1Pro-llm-v040-F4.bin",
+        "bytes": 184476,
+        "sha256": "e1ee89d1dd58866acf42cfd91225a09372c232cd70aa2e1229be761a822867da"
+      },
+      {
+        "name": "firmware-20261027-044757-E3S1Pro-llm-v040-F4.elf",
+        "bytes": 31419684,
+        "sha256": "b7b48f6882086cad6cfaf39e1a86b66ff22aaa1780a046d6ff6f18bd3e5517b3"
+      }
+    ]
+  },
+  "focused_host": {
+    "passed": 177,
+    "failed": 0,
+    "scope": "Mac source checks: decoder, assigned source correlation, tools, parser, existing prompt channels/backends",
+    "junit_sha256": "c98d74e355deae189e9c548932caedbf5e8ce5a787b0cc4e546f2e5148a4a0c2"
+  },
+  "installed_full_suite": null,
+  "limitations": [
+    "Controller variables are not independent physical measurements",
+    "No motion barrier, physical motor power, sensor health or part continuity proof",
+    "No complete configuration or firmware-image fingerprint",
+    "Physical provider, Mac transport, recovery and commissioning remain unfinished",
+    "The maintained candidate remains separate from the older host firmware-test pin"
+  ]
+}

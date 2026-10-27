@@ -39,6 +39,7 @@ include docs/firmware-parity.md
 include docs/firmware-stack-builds.md
 include docs/goal-audit.md
 include docs/interface.md
+include docs/machine-state.md
 include docs/macos-owners.md
 include docs/maintained-firmware.md
 include docs/mcp.md
@@ -78,6 +79,7 @@ include printer_control/__init__.py
 include printer_control/assigned_job.py
 include printer_control/assigned_observations.py
 include printer_control/assigned_sender.py
+include printer_control/assigned_state.py
 include printer_control/camera.py
 include printer_control/camera_http.py
 include printer_control/camera_owner.py
@@ -87,6 +89,7 @@ include printer_control/combined_virtual.py
 include printer_control/devices.py
 include printer_control/journal.py
 include printer_control/machine_events.py
+include printer_control/machine_state.py
 include printer_control/macos_discovery.py
 include printer_control/macos_owners.py
 include printer_control/mcp_adapter.py
@@ -135,6 +138,7 @@ include scripts/qualify_macos_pty.py
 include sources.json
 include tests/assigned_job_smoke.py
 include tests/assigned_sender_smoke.py
+include tests/fixtures/machine-state-native.json
 include tests/hot_fixture_router.py
 include tests/hot_pause_faults.py
 include tests/hot_resume_scenario.py
@@ -158,6 +162,7 @@ include tests/stream_disconnect_scenario.py
 include tests/test_assigned_job.py
 include tests/test_assigned_observations.py
 include tests/test_assigned_sender.py
+include tests/test_assigned_state.py
 include tests/test_assigned_transport.py
 include tests/test_camera.py
 include tests/test_camera_http.py
@@ -172,6 +177,7 @@ include tests/test_firmware_host_actions.py
 include tests/test_firmware_parser.py
 include tests/test_journal.py
 include tests/test_machine_events.py
+include tests/test_machine_state.py
 include tests/test_macos_discovery.py
 include tests/test_macos_owners.py
 include tests/test_marlin_modal_virtual.py
@@ -277,6 +283,7 @@ include validation/linux-package-stage131.json
 include validation/linux-package-stage132.json
 include validation/linux-package-stage137.json
 include validation/machine-events-stage84.json
+include validation/machine-state-stage139.json
 include validation/macos-discovery-stage108.json
 include validation/macos-owners-stage138.json
 include validation/maintained-firmware-stage135.json

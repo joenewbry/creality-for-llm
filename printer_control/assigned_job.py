@@ -68,7 +68,7 @@ class AssignedJobBackend:
         self.sha256=hashlib.sha256(data).hexdigest()
         self.path=self.source_path
         self._staging=tempfile.TemporaryDirectory(prefix='assigned-staged-job-')
-        self.machine_events=None
+        self.machine_events=None;self.state_reader=None
         self._owner_pid=os.getpid()
         self._pump_started=False;self._pump_thread=None;self._pump_stop=threading.Event()
         self._pump_error=None;self._pump_samples=0
@@ -143,8 +143,10 @@ class AssignedJobBackend:
                 raise TypeError('capture must belong to this assigned endpoint')
             if self.machine_events is not None or self._closed or recorder.endpoint._claimed or not recorder.capturing:
                 raise ValueError('attach one capture before sender starts')
-            self.machine_events=recorder
-            self.supported_reads=type(self).supported_reads+('printer.machine_events',)
+            from .assigned_state import AssignedStateReader
+            reader=AssignedStateReader(recorder)
+            self.machine_events=recorder;self.state_reader=reader
+            self.supported_reads=type(self).supported_reads+('printer.machine_events','printer.machine_state')
 
     def guard(self):return self._lock
 

@@ -1,0 +1,18 @@
+{
+  "scope": "actual native wire serializer with stubbed machine snapshot; not physical",
+  "line": "//llmstate:v1 Q00000003 T00000000000000000000000000000001 N00000001 U000004d2 F0f H05 K01 E0b B07 R08 A00 P3e8000003fa000004010000040500000 Oc0000000bf80000000000000 D4080000040a0000040c00000 V3f8000004148000042c8000042be00004300000041bc00000000000041b2000000000000",
+  "proof": {
+    "wire_scenarios": 5,
+    "getter_variants": 4,
+    "existing_prompt_scenarios": 11,
+    "compiler": "/usr/bin/clang++",
+    "physical_access": false,
+    "firmware_flashed": false,
+    "sources": {
+      "Marlin/src/feature/host_machine_state.cpp": "dc6739d580f06be4727b71ccef01fcdb0b431f8506815ef5488a7a533f5cbf6b",
+      "Marlin/src/feature/host_machine_state.h": "0552f10b94781b016ee4ebbbfada8c9c538f454798a59e801f9d36817cd1ab2c",
+      "Marlin/src/feature/host_prompt_wire.cpp": "a3a38e8476d54d88e2334cdd172750b5350f948a11f508d264035d27502ee685"
+    }
+  },
+  "firmware_source_commit": "0f8d1ca1055b9030cabf6ff8e3a6762fdb4dfee7"
+}
