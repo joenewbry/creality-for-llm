@@ -59,7 +59,10 @@ class ToolRouter:
                                     inputSchema=dict(type='object', properties=properties, required=list(context), additionalProperties=False)))
         for name in sorted(self.reads):
             properties = {}
-            if name in ('operation.get','printer.machine_state'):
+            if name=='job.cold_preflight':
+                properties={'job_id':{'type':'string','minLength':1,'maxLength':128},
+                    'operation_id':{'type':'string','minLength':1,'maxLength':128}}
+            elif name in ('operation.get','printer.machine_state'):
                 properties = {'operation_id': {'type': 'string', 'minLength': 1, 'maxLength': 128}}
             elif name in ('printer.events', 'printer.observations', 'printer.machine_events'):
                 properties = {'after': {'type': 'integer', 'minimum': 0}, 'limit': {'type': 'integer', 'minimum': 1, 'maximum': 1000}}
@@ -91,6 +94,10 @@ class ToolRouter:
                 if set(arguments) != {'after', 'limit'}:
                     raise RequestRejected('invalid_machine_event_query')
                 return service.backend.machine_events.read(**arguments)
+            if name == 'job.cold_preflight':
+                if set(arguments)!={'job_id','operation_id'}:
+                    raise RequestRejected('invalid_cold_preflight_query')
+                return service.backend.inspect_cold_preflight(arguments['job_id'],arguments['operation_id'])
             if name == 'printer.machine_state':
                 if set(arguments) != {'operation_id'}:
                     raise RequestRejected('invalid_machine_state_query')

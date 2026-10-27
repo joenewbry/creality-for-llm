@@ -185,3 +185,15 @@ withholding its final marker leaves the job unknown even after all moves finish.
 See [qualification](../validation/lifecycle-completion-stage144.json) and
 [design](assigned-completion-barrier.md). Hardware provider and commissioning
 remain unfinished.
+
+## Bounded cold command screening
+
+Added immutable cold command policy, strict nonprinting XYZ plan validation and
+a source-backed preview using a completed bound inspect. The optional assigned
+gate resamples source age after external preflight and before staging/start.
+The read-only job.cold_preflight interface exposes neither raw commands nor policy
+arguments. It never grants physical authority. Linux passes 323 source checks;
+Mac 305 with 18 Linux-only skips, including an official Model Context Protocol
+client over memory streams. The fresh-inspection coordinator and full hardware/
+configuration/continuity provider remain unfinished. See [design and scope](cold-preflight.md)
+and [qualification](../validation/cold-preflight-stage145.json).

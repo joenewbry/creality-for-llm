@@ -326,6 +326,12 @@
     "tests/test_fresh_resume.py",
     "validation/fresh-resume-stage143.json",
     "tests/test_lifecycle_completion.py",
-    "validation/lifecycle-completion-stage144.json"
+    "validation/lifecycle-completion-stage144.json",
+    "printer_control/cold_preflight.py",
+    "printer_control/assigned_preflight.py",
+    "tests/test_cold_preflight.py",
+    "tests/test_assigned_preflight.py",
+    "docs/cold-preflight.md",
+    "validation/cold-preflight-stage145.json"
   ]
 }

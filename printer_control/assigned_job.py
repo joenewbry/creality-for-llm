@@ -80,7 +80,7 @@ class AssignedJobBackend:
         self.sha256=hashlib.sha256(data).hexdigest()
         self.path=self.source_path
         self._staging=tempfile.TemporaryDirectory(prefix='assigned-staged-job-')
-        self.machine_events=None;self.state_reader=None
+        self.machine_events=None;self.state_reader=None;self.cold_preflight=None;self._cold_stage_screening=None
         self.completion_barrier=None;self._barrier_tokens={}
         self._resume_dispatched=set();self._resume_admission={}
         self._completion_window_seconds=30.;self._completion_window=None;self._completion_result=None
@@ -162,6 +162,25 @@ class AssignedJobBackend:
             reader=AssignedStateReader(recorder)
             self.machine_events=recorder;self.state_reader=reader
             self.supported_reads=type(self).supported_reads+('printer.machine_events','printer.machine_state')
+
+    def attach_cold_preflight(self,policy):
+        """Add command screening before start; never grants hardware readiness."""
+        from .assigned_preflight import AssignedColdPreflight
+        with self._lock:
+            if (self.state_reader is None or self._closed or self._pump_started
+                    or self.sender._assigned_endpoint._claimed or self.cold_preflight is not None):
+                raise ValueError('attach one cold preflight after capture and before start')
+            self.cold_preflight=AssignedColdPreflight(self.state_reader,policy)
+            self.supported_reads=(*self.supported_reads,'job.cold_preflight')
+
+    def inspect_cold_preflight(self,job_id,operation_id):
+        if self.cold_preflight is None or job_id!=self.job_id or self._closed or self._started:
+            raise RequestRejected('cold_preflight_job_unavailable')
+        data=self._read_bounded(self.path if self._staged else self.source_path)
+        return self.cold_preflight.evaluate(data,self.identity(),operation_id)
+
+    def _check_cold_preflight(self,data):
+        if self.cold_preflight is not None:return self.cold_preflight.check(data,self.identity())
 
     def attach_completion_barrier(self,*,completion_window_seconds=30.):
         """Opt in before start; keep external physical checkpoint proofs required."""
@@ -335,7 +354,9 @@ class AssignedJobBackend:
             if self._started or state!=self.sender.STATE_OPERATIONAL:raise RequestRejected('printer_not_idle_for_stage')
             data=self._read_bounded(self.source_path)
             if len(data)>16*1024*1024 or hashlib.sha256(data).hexdigest()!=self.sha256:raise RequestRejected('source_file_changed')
+            self._check_cold_preflight(data)
             if self.evidence.preflight(data,self.identity()) is not True:raise RequestRejected('job_preflight_unqualified')
+            self._check_cold_preflight(data)
             return
         if not self._staged:raise RequestRejected('job_not_staged')
         cursor=self.sender.getFilePosition()
@@ -346,6 +367,7 @@ class AssignedJobBackend:
             return  # An owned cancellation must not depend on a valid job file.
         if not self._file_valid():raise RequestRejected('staged_job_missing_or_changed')
         if operation=='job.start':
+            self._check_cold_preflight(self._read_bounded(self.path))
             if self._started or state!=self.sender.STATE_OPERATIONAL:raise RequestRejected('job_not_ready_to_start')
             blockers=self.evidence.start_blockers(self.identity())
             if type(blockers) is not list or len(blockers)>32 or any(type(x) is not str or not 1<=len(x)<=128 for x in blockers):raise RequestRejected('invalid_start_evidence')
@@ -368,13 +390,17 @@ class AssignedJobBackend:
         if operation=='job.stage':
             data=self._read_bounded(self.source_path)
             if not 0<len(data)<=16*1024*1024 or hashlib.sha256(data).hexdigest()!=self.sha256:raise RequestRejected('source_changed_before_stage')
+            self._check_cold_preflight(data)
             if self.evidence.preflight(data,self.identity()) is not True:raise RequestRejected('job_preflight_unqualified')
+            screening=self._check_cold_preflight(data)
             destination=(Path(self._staging.name)/(uuid.uuid4().hex+'.gcode')).resolve()
             with destination.open('xb') as output:output.write(data)
             destination.chmod(0o400)
             self.sender.selectFile(str(destination),False)
+            self._cold_stage_screening=screening
             self.path=destination;self._staged=True;self._stage_revision+=1;self.checkpoint=None;self._phase='staged'
         elif operation=='job.start':
+            self._check_cold_preflight(self._read_bounded(self.path))
             self.witness.start_job();self._started=True;self._start_operation_id=operation_id;self._phase='starting';self.sender.startPrint()
         elif operation=='job.pause':self._phase='pausing';self.sender.setPause(True)
         elif operation=='job.resume':
@@ -458,7 +484,8 @@ class AssignedJobBackend:
         if operation=='job.stage':
             cursor=self.sender.getFilePosition()
             if cursor and Path(cursor.get('filename','')).resolve()==self.path and self._file_valid():
-                return Outcome('completed',{'evidence_type':'assigned_file_selected','job_id':self.job_id,'file_sha256':self.sha256})
+                return Outcome('completed',{'evidence_type':'assigned_file_selected','job_id':self.job_id,'file_sha256':self.sha256,
+                    **({'cold_preflight':json.loads(json.dumps(self._cold_stage_screening))} if self._cold_stage_screening is not None else {})})
         if operation=='job.resume' and self.completion_barrier is not None and operation_id not in self._resume_dispatched:
             if state!=self.sender.STATE_PAUSED:
                 return self._resume_refusal('sender_left_pause_before_resume_admission')
@@ -562,6 +589,8 @@ class AssignedJobBackend:
                     pause_cancel_barrier_enabled=self.completion_barrier is not None,
                     resume_completion_barrier_enabled=self.completion_barrier is not None,
                     lifecycle_completion_barrier_enabled=self.completion_barrier is not None,
+                    cold_preflight_enabled=self.cold_preflight is not None,
+                    cold_preflight_authorizes_physical_control=False,
                     completion_window_seconds=self._completion_window_seconds if self.completion_barrier is not None else None,
                     external_evidence_provider_required=True,evidence_scope=self.evidence_kind,
                     coordinated_prompt_pump_supported=True,
