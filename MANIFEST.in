@@ -53,6 +53,7 @@ include docs/prompt-wire.md
 include docs/publication.md
 include docs/recovery.md
 include docs/reproduce.md
+include docs/sender-error-close.md
 include docs/setup.md
 include docs/shared-transport.md
 include docs/source-audit.md

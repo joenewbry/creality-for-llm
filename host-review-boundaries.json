@@ -827,7 +827,8 @@
         "docs/maintained-firmware.md": "docs/maintained-firmware.md",
         "validation/maintained-firmware-stage135.json": "validation/maintained-firmware-stage135.json",
         "validation/thermal-handoff-stage136.json": "validation/thermal-handoff-stage136.json",
-        "docs/dispatch-admission.md": "docs/dispatch-admission.md"
+        "docs/dispatch-admission.md": "docs/dispatch-admission.md",
+        "docs/sender-error-close.md": "docs/sender-error-close.md"
       }
     }
   }

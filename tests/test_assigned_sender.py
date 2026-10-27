@@ -146,3 +146,91 @@ def test_assigned_sender_never_delegates_unqualified_replay_or_ack_credit(endpoi
     from printer_control.prompt_wire import PromptWireCommand
     with pytest.raises(OSError):serial.backend.frame_writer.write_prompt(PromptWireCommand('inspect',1).encode())
     assert writes==[b'M400\n']
+
+
+@pytest.fixture
+def error_sender(monkeypatch):
+    """Actual MachineCom error/close methods; no reader threads or device IO."""
+    import logging
+    import queue
+    import threading
+    import octoprint.util.comm as comm
+    errors, closes, states = [], [], []
+    sender = AssignedSender.__new__(AssignedSender)
+    sender._assigned_initialized = False
+    sender._assigned_error_lock = threading.RLock()
+    sender._assigned_error_closing = False
+    sender._state = sender.STATE_OPERATIONAL
+    sender._currentFile = None
+    sender._send_m112_on_error = False
+    sender._connection_closing = False
+    sender._temperature_timer = sender._sd_status_timer = None
+    sender._serial = SimpleNamespace(close=lambda: closes.append('closed'))
+    sender._clear_to_send = threading.Semaphore(1)
+    sender._send_queue = queue.Queue()
+    sender._monitoring_active = sender._send_queue_active = True
+    sender._logger = logging.getLogger('assigned-error-unit')
+    sender._log = lambda *a: None
+    sender.isSdPrinting = lambda: False
+    sender._payload_for_error = lambda *a, **k: {}
+    sender._callback = SimpleNamespace(
+        on_comm_error=lambda text, reason, **kwargs: errors.append((text, reason)),
+        on_comm_state_change=lambda state: states.append(state))
+    monkeypatch.setattr(comm, 'settings', lambda: SimpleNamespace(getBoolean=lambda *a: False))
+    monkeypatch.setattr(comm, 'eventManager', lambda: SimpleNamespace(fire=lambda *a: None))
+    return sender, errors, closes, states
+
+
+def test_late_firmware_error_cannot_overwrite_terminal_error_close(error_sender):
+    sender, errors, closes, states = error_sender
+    sender._trigger_error('transport unavailable', 'connection')
+    assert sender.getState() == sender.STATE_CLOSED_WITH_ERROR
+    sender._trigger_error('THERMAL RUNAWAY', 'firmware')
+    assert sender.getState() == sender.STATE_CLOSED_WITH_ERROR
+    assert errors == [('transport unavailable', 'connection')]
+    assert closes == ['closed']
+    assert states == [sender.STATE_ERROR, sender.STATE_CLOSED_WITH_ERROR]
+
+
+def test_nonclosing_error_does_not_consume_later_error_closure(error_sender):
+    sender, errors, closes, states = error_sender
+    sender._trigger_error('diagnostic', 'connection', close=False)
+    assert not closes and sender.getState() == sender.STATE_ERROR
+    sender._trigger_error('transport unavailable', 'connection')
+    assert sender.getState() == sender.STATE_CLOSED_WITH_ERROR
+    assert len(errors) == 2 and closes == ['closed']
+
+
+def test_competing_errors_share_one_terminal_close(error_sender):
+    import threading
+    sender, errors, closes, states = error_sender
+    entered, release, attempted = threading.Event(), threading.Event(), threading.Event()
+    failures = []
+    def close():
+        closes.append('closed')
+        entered.set()
+        assert release.wait(2)
+    sender._serial.close = close
+    def trigger(text):
+        try:
+            if text == 'second':
+                attempted.set()
+            sender._trigger_error(text, 'connection')
+        except BaseException as error:
+            failures.append(error)
+    first = threading.Thread(target=trigger, args=('first',))
+    second = threading.Thread(target=trigger, args=('second',))
+    first.start()
+    try:
+        assert entered.wait(2)
+        second.start()
+        assert attempted.wait(2)
+    finally:
+        release.set()
+        first.join(3)
+        if second.ident is not None:
+            second.join(3)
+    assert not failures and not first.is_alive() and not second.is_alive()
+    assert sender.getState() == sender.STATE_CLOSED_WITH_ERROR
+    assert errors == [('first', 'connection')] and closes == ['closed']
+    assert states == [sender.STATE_ERROR, sender.STATE_CLOSED_WITH_ERROR]

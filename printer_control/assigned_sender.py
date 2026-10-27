@@ -131,6 +131,8 @@ class AssignedSerialEndpoint:
 class AssignedSender(PositionWakeMixin,MachineCom):
     def __init__(self,endpoint,*,callbackObject,printerProfileManager):
         self._assigned_initialized=False
+        self._assigned_error_lock=threading.RLock()
+        self._assigned_error_closing=False
         if type(endpoint) is not AssignedSerialEndpoint:
             raise TypeError('explicit assigned endpoint required')
         self._assigned_endpoint=endpoint
@@ -159,6 +161,19 @@ class AssignedSender(PositionWakeMixin,MachineCom):
 
     def _perform_detection_step(self,init=False):
         self._trigger_error('Assigned autodetection is disabled','connection')
+
+    def close(self,*args,**kwargs):
+        # Error handlers and explicit close share ownership of the terminal
+        # sender state. A late error may not overwrite an already closed state.
+        with self._assigned_error_lock:
+            return super().close(*args,**kwargs)
+
+    def _trigger_error(self,text,reason,close=True):
+        with self._assigned_error_lock:
+            if self._assigned_error_closing or self._connection_closing:
+                return
+            if close:self._assigned_error_closing=True
+            return super()._trigger_error(text,reason,close=close)
 
     def _retire_replay(self,reason):
         self._assigned_endpoint.retire(reason)
