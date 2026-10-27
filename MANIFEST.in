@@ -253,6 +253,7 @@ include tests_print_mcp/test_virtual_faults.py
 include tests_print_mcp/test_virtual_job_mcp.py
 include tests_print_mcp/test_virtual_setup_mcp.py
 include tests_print_mcp/test_virtual_stop_evidence.py
+include validation/assigned-barrier-stage141.json
 include validation/assigned-job-stage123.json
 include validation/assigned-lifecycle-stage132.json
 include validation/assigned-observations-stage124.json
@@ -319,4 +320,3 @@ include validation/upstream-submission-stage115.json
 include validation/upstream-watch-builds-stage82.json
 include validation/upstream-watch-native-stage83.json
 include validation/upstream-watch-stage80.json
-include validation/assigned-barrier-stage141.json
