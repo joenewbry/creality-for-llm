@@ -89,3 +89,9 @@ and uint32 elapsed helper, alongside the real getter and serializer. Eight
 getter configurations and boundary/wrap/zero cases run with hardware stubs;
 the integrated software-terminal scenario reads the V2 timers through the
 actual assigned sender/recorder/tool path. See runtime-timers-stage151 validation.
+
+
+The optional [cold provider](cold-provider.md) now implements admission/checkpoint
+mapping using these owned reports plus required trusted physical observations.
+Its code does not supply the development unit's missing qualification or live
+measurements, and physical control remains unqualified.

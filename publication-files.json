@@ -349,6 +349,12 @@
     "validation/checkpoint-configuration-stage150.json",
     "tests/test_machine_inactivity.py",
     "tests/fixtures/machine-state-timers-native.json",
-    "validation/runtime-timers-stage151.json"
+    "validation/runtime-timers-stage151.json",
+    "printer_control/cold_provider.py",
+    "printer_control/cold_startup.py",
+    "tests/test_cold_provider.py",
+    "tests/test_cold_startup.py",
+    "docs/cold-provider.md",
+    "validation/cold-provider-stage152.json"
   ]
 }

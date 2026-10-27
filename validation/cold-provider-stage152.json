@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-27",
+  "source_commit": "2a592095491d98bf8cc6fd4d85702363445c9a21",
+  "firmware_commit": "de92fd427c59dd70d177e64da6778856506eb023",
+  "scope": "focused source tests; actual owned backend/journal/readers with synthetic unit qualification and physical observations",
+  "new_provider_cases": 74,
+  "source_inputs_matched": 172,
+  "native_fixture_files": 18,
+  "export_checks": 9,
+  "implemented": [
+    "immutable cold unit qualification and bounded nonce-bound physical observations",
+    "cold preflight/start admission from real owned source primitives",
+    "durable physical claims and final before-effect admission recheck after persistence",
+    "checkpoint mapping from real sender cursor/modes and fresh compound reports",
+    "fresh independent start/resume/completion/cancel phase evidence",
+    "pre-open current unit/assignment/exclusion/driver/recovery/sensor validation",
+    "late/stale/replayed/wrong-scope and incomplete continuity refusals",
+    "historical start admission is not compared to an already moving physical position",
+    "cancellation observation remains possible after a changed job file"
+  ],
+  "physical_readiness_qualified": false,
+  "qualified_unit_profile_installed": false,
+  "live_physical_producer_installed": false,
+  "production_launcher_enabled": false,
+  "physical_printers_accessed": false,
+  "firmware_changed": false,
+  "camera_scope": "deferred",
+  "limitations": [
+    "qualification/physical observations in tests are synthetic",
+    "trusted producers must validate actual facts; digest or reference alone is insufficient",
+    "callbacks are synchronous and cannot preempt blocked acquisition",
+    "no new installed-package/full-suite or firmware-build claim",
+    "absolute cold XYZ scope, zero targets and disabled M84/M85 inactivity shutdown intervals only"
+  ],
+  "remaining": [
+    "actual unit-specific qualification and live physical observation sources",
+    "bounded observation acquisition and production factory/launcher integration",
+    "production Mac transport/startup qualification",
+    "sensor diagnosis, target/bootloader/recovery, development commissioning",
+    "separate post-repair printing qualification"
+  ],
+  "linux": {
+    "passed": 589,
+    "skipped": 0,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 346.962,
+    "xml_sha256": "b8670f19515061f6c1ac6990ae3f7cfb7f5719fc041792b05a7d4ddd9ff12857"
+  },
+  "mac": {
+    "passed": 557,
+    "skipped": 32,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 15.623,
+    "xml_sha256": "642e43c02c9e1efc17cb8548bafd171475a544339ccd62184264a2b17bcd169d"
+  }
+}

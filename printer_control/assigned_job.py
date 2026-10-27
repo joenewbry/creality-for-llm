@@ -1,6 +1,6 @@
 """Journal adapter for an assigned sender with an explicit evidence provider.
 
-No physical provider, deployment launcher or inferred mechanical qualification.
+No default physical qualification or deployment launcher. Providers remain explicit.
 Sender state alone never proves completion, clearance or resume continuity.
 """
 from dataclasses import dataclass
@@ -469,6 +469,8 @@ class AssignedJobBackend:
                 self.machine_events.lease.check()
                 self._check_cold_preflight(data)
                 if self.clock()>=deadline:raise RequestRejected('cold_deadline_before_file_selection')
+            admission_check=getattr(self.evidence,'before_effect',None)
+            if callable(admission_check):admission_check(self.identity(),operation_id,operation)
             self.sender.selectFile(str(destination),False)
             self._cold_stage_screening=screening
             self.path=destination;self._staged=True;self._stage_revision+=1;self.checkpoint=None;self._phase='staged'
@@ -479,6 +481,8 @@ class AssignedJobBackend:
                 self.machine_events.lease.check()
                 self._check_cold_preflight(self._read_bounded(self.path))
                 if self.clock()>=deadline:raise RequestRejected('cold_deadline_before_print_start')
+            admission_check=getattr(self.evidence,'before_effect',None)
+            if callable(admission_check):admission_check(self.identity(),operation_id,operation)
             self._started=True;self._start_operation_id=operation_id;self._phase='starting';self.sender.startPrint()
         elif operation=='job.pause':self._phase='pausing';self.sender.setPause(True)
         elif operation=='job.resume':
