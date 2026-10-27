@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "scope": "source-bound assigned sender dispatch interlock; software qualification only",
+  "qualified_public_snapshot": "f74da566aa884752ea20bbfea3ab114b800308e6",
+  "linux_qualification": "linux-package-stage131.json",
+  "synchronous_hazards": [
+    "sensor_suspect",
+    "fault",
+    "nonfinite_temperature"
+  ],
+  "fence": "shared job and prompt receive/write retirement gate",
+  "durable_history": "original source line and parsed events queued independently of interlock",
+  "sticky": true,
+  "automatic_emergency_or_reset_command": false,
+  "physical_stop_confirmed": false,
+  "physical_device_access": false,
+  "paid_model_calls": 0,
+  "tests": {
+    "focused_mac": {
+      "passed": 65,
+      "skipped_linux_only": 8
+    },
+    "capture_and_export_mac": {
+      "passed": 33
+    },
+    "native_wait_pause_fixture_mac": {
+      "passed": 2
+    },
+    "installed_linux": {
+      "tests": "1145",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "401.551"
+    }
+  },
+  "initial_full_run": {
+    "public_snapshot": "d13325fdb6e60f6f13e66ab5b3e20e54c87ff937",
+    "passed": 1144,
+    "failed": 1,
+    "failure": "native_prompt pause barrier timeout",
+    "trace_observation": "job reached all 80 moves and EOF without Pausing after native wait release",
+    "correction": "fixture holds move 11 after native wait until pause submission; no longer races EOF",
+    "failed_run_retained": true,
+    "junit_sha256": "c05e755d3e2de7ff311b55c22c6728b05a61348b1767bf8a9eb056ef8a6d01fa",
+    "log_sha256": "dfa04e4312b08e6890f4812a52c86cad2b007bf95c42cfdbb2a77bd842073540"
+  },
+  "limitations": [
+    "One-way authority withdrawal is not a shutdown command or evidence of physical stop",
+    "Frames admitted before retirement may have unknown outcomes",
+    "No physical readiness/provider, sensor repair, firmware commissioning or restart/reconnect qualification",
+    "Negative-temperature classification is specific to room-temperature bench profile"
+  ],
+  "camera_scope": "deferred_by_owner"
+}

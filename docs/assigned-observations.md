@@ -69,3 +69,7 @@ It does not provide the missing independent physical evidence provider or qualif
 the production hardware adapter. An initial firmware `start` remains a reset
 observation rather than a thermal hazard; this interlock does not change startup
 or reset qualification.
+
+The [qualification record](../validation/source-hazard-stage131.json) separates
+the initial native-pause fixture failure, its correction and the installed
+Linux software result. It makes no physical commissioning claim.

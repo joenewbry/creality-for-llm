@@ -282,6 +282,8 @@
     "validation/linux-package-stage125.json",
     "docs/development-hardware.md",
     "validation/development-about-owner-20261026.json",
-    "validation/development-readonly-stage130.json"
+    "validation/development-readonly-stage130.json",
+    "validation/linux-package-stage131.json",
+    "validation/source-hazard-stage131.json"
   ]
 }
