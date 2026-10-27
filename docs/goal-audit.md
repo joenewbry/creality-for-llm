@@ -1,6 +1,6 @@
 # Goal completion audit
 
-October 26, 2026. **The original goal is not complete.** Source publication,
+October 27, 2026. **The original goal is not complete.** Source publication,
 software demonstrations and review PRs do not establish a commissioned printer.
 This audit retains the original development-printer scope and excludes the working
 printer even after its job finishes. The rows describe evidence scope, not a new
@@ -13,7 +13,7 @@ full-suite run.
 | 1. Preserve source and match hardware/recovery | Pinned controller/screen sources and attributed candidate builds exist; [source relationships](contributions.md), [build records](firmware-stack-builds.md), [recovery research](recovery.md) | The owner About photo now reports firmware 2.0.8.28F4, screen V1.0.5 and hardware label CR-FDM-v24S1_301; see [hardware intake](development-hardware.md). Physical processor/board markings are deferred; bootloader and authentic compatible rollback remain unqualified. Historical settings exist but restoration is untested. The older source does not match the installed version merely because both say F4. |
 | 2. Fork, branch, focused stack and ecosystem contribution | Public host and Creality firmware repositories, dependent draft PRs and [standalone Marlin PR 28753](https://github.com/MarlinFirmware/Marlin/pull/28753) exist | The requested publication/submission artifacts exist. Review, merge and maintainer acceptance are external follow-up, not claims made by this delivery. Physical release qualification is tracked separately below. |
 | 3. Specify the whole LLM interface and blockers | [Interface](interface.md), [blocker matrix](blocker-matrix.md), typed tool schemas, exact prompt identities and explicit uncertainty rules exist | Actual display/controller pairing and the complete physical alert inventory remain unqualified. Unknown states must remain blocked. |
-| 4. Build firmware and implement host control | Candidate builds, native firmware functions, virtual sender, journal/tool service, Linux assigned prompt connection and Mac metadata discovery are tested | The assigned job/prompt adapter is software-tested with a software-only evidence provider; source-bound serial reports now retain actual sender line identity/age, while the physical evidence provider, remaining policy/recovery integration and Mac serial-driver isolation are unfinished. Pre-open startup admission now exists, but no real hardware readiness checker is supplied. |
+| 4. Build firmware and implement host control | Candidate builds, native firmware functions, virtual sender, journal/tool service, Linux assigned prompt connection and Mac metadata discovery are tested | The assigned job/prompt adapter is software-tested with a software-only evidence provider; source-bound serial reports retain actual sender line identity/age and synchronously retire dispatch on sensor/firmware hazards, while the physical evidence provider, remaining policy/recovery integration and Mac serial-driver isolation are unfinished. Pre-open startup admission now exists, but no real hardware readiness checker is supplied. |
 | 5. Simulated printer and blocker matrix | Real virtual sender, native handler/protection fixtures, MCP/model demonstrations and [streamed process-death cases](../validation/streamed-host-restart-stage109.json) provide substantial software evidence | A simulator restarted with its host does not model a surviving physical printer. Full controller/screen/ADC/interrupt integration and real timing remain open. |
 | 6. Commission only the clogged printer | No firmware was flashed; the earlier development-only query reported a negative nozzle temperature with zero target | Owner confirmed idle/clear; current read-only queries again report nozzle −15°C with zero targets. Diagnose sensing and qualify the candidate/recovery route before installation or actuation. No protected-printer substitution. |
 | 7. Exercise sequences and simulated printing | Constrained virtual jobs finish original moves once, including supported waits and powered pause/resume; [model hot-pause evidence](../validation/model-hot-stage75.json) | No motion-only hardware rehearsal or real-print continuation is qualified. A clogged nozzle does not make an ordinary print file safe to execute. |
@@ -26,7 +26,7 @@ full-suite run.
 | Identity and isolation | Assignment/generation rejection, journal lease, device-open guards, Linux kernel-terminal exclusion and read-only Mac discovery | Exact board/MCU/screen identity; OS policy against all pre-existing/privileged handles; physical driver/reset behavior |
 | Generic wait and unknown alerts | Native token/session handlers plus virtual/MCP/model response to a supported exact wait; stale/unsupported responses refused | Universal dismissal of Creality screen popups or real screen rendering |
 | Runout/reload | Native sensor substitutes and host rejection retain physical-action requirements | Actual reload evidence or extrusion through the clogged nozzle |
-| Heating waits, timeout and thermal faults | Extracted hotend/bed waits, watch/runaway/handoff branches, virtual fault reports and modeled shutdown outputs | Complete manager/ADC/interrupt/kill behavior, token-safe cancellation of an actual active heating wait, physical heater shutdown |
+| Heating waits, timeout and thermal faults | Extracted hotend/bed waits, watch/runaway/handoff branches, virtual fault reports, source-bound shared-dispatch inhibition and modeled shutdown outputs | Complete manager/ADC/interrupt/kill behavior, token-safe cancellation of an actual active heating wait, physical heater shutdown |
 | Homing/probing | Extracted validation/probe-result functions and synthetic error reports, including probe failure without an invented halt | Full G28/G29 caller/interrupt integration or a physically qualified probe/motion envelope |
 | Queue pressure and stop | Bounded prompt/mailbox/frame paths, serialized writes and virtual stop/cancel evidence | Measured MCU response bounds or a physical emergency-stop guarantee |
 | Pause/resume | Verified virtual cursor/mode/thermal restoration and original moves once; repeated cycles, invalidation and interruption tests | Endurance/adhesion/motor holding or actual extrusion continuation. Power loss/reset/reconnect resume remains unqualified. |
@@ -36,9 +36,9 @@ full-suite run.
 | Camera and mount — deferred by owner | Earlier broker/client/owner API tests and CAD/view models retained | Owner deferred Logitech work on October 26. Native capture/control and physical qualification remain unqualified and do not gate current printer work. |
 | Publication | Owned explanation page, architecture, platform/repository distinctions, PR dependencies and screenshot review | Firmware commissioning or an accepted upstream release |
 
-The [current installed Linux qualification](../validation/linux-package-stage125.json)
-passes 1136 tests with zero skips at public source `f19377a`, including the camera,
-startup, shared serial ownership, journaled assigned job/prompt tools, source-bound serial history and explicit transport-uncertainty retirement. The earlier 986-case qualification
+The [current installed Linux qualification](../validation/linux-package-stage131.json)
+passes 1145 tests with zero skips at public source `f74da56`, including the camera,
+startup, shared serial ownership, journaled assigned job/prompt tools, source-bound serial history and explicit transport-uncertainty retirement and synchronous source-hazard dispatch inhibition. The earlier 986-case qualification
 remains historical. Subsequent delivery changes are documentation/qualification
 metadata only. Neither test counts nor a successful source export prove physical
 readiness.

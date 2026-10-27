@@ -263,6 +263,7 @@ include validation/linux-package-stage122.json
 include validation/linux-package-stage123.json
 include validation/linux-package-stage124.json
 include validation/linux-package-stage125.json
+include validation/linux-package-stage131.json
 include validation/machine-events-stage84.json
 include validation/macos-discovery-stage108.json
 include validation/model-hot-stage75.json
@@ -271,6 +272,7 @@ include validation/native-thermal-stage78.json
 include validation/native-watch-stage79.json
 include validation/receive-arrival-stage120.json
 include validation/service-startup-stage118.json
+include validation/source-hazard-stage131.json
 include validation/streamed-host-restart-stage109.json
 include validation/transport-readiness-stage110.json
 include validation/tty-ownership-stage89.json

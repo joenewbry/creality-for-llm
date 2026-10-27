@@ -148,3 +148,40 @@ def test_capture_refuses_an_unrelated_lease_before_journal_writes(tmp_path):
             AssignedMachineEventRecorder(journal,endpoint=endpoint,lease=lease,clock=lambda:10.)
     with journal._db() as db:assert not db.execute("SELECT 1 FROM sqlite_master WHERE name='machine_events'").fetchone()
     endpoint.close()
+
+
+@pytest.mark.parametrize('line,reason,event_kind',[
+    (b'ok T:-15.00 /0.00 B:21.70 /0.00 @:0 B@:0\n','assigned_serial_sensor_suspect','sensor_suspect'),
+    (b'Error:THERMAL RUNAWAY\n','assigned_serial_fault','fault'),
+    (b'Error:Heating failed\n','assigned_serial_fault','fault'),
+    (b'T:'+b'9'*400+b' /0\n','assigned_serial_protocol_error','protocol_error'),
+])
+def test_source_hazard_fences_both_write_lanes_before_durable_capture(capture,line,reason,event_kind):
+    recorder,endpoint,_,_,_=capture
+    # Delay the asynchronous observer to prove the interlock is independent of
+    # persistence and cannot be defeated by a stalled journal worker.
+    entered=threading.Event();release=threading.Event();original=recorder._persist
+    def delayed(events):
+        entered.set();assert release.wait(2);return original(events)
+    recorder._persist=delayed
+    try:
+        deliver(capture,line)
+        assert endpoint.backend.receive_hub.fault==reason
+        assert recorder.snapshot()['dispatch_inhibit']['physical_stop_confirmed'] is False
+        with pytest.raises(OSError):endpoint.write(b'G1 X1\n')
+        with pytest.raises(OSError):endpoint.backend.receive_hub.write_frame(lambda _:pytest.fail('prompt bytes escaped'),b'M118\n')
+        assert entered.wait(1)
+    finally:release.set()
+    wait_for(lambda:any(row['event']['kind']==event_kind for row in recorder.read()['events']))
+    assert not recorder.snapshot()['source_usable']
+    assert recorder.snapshot()['dispatch_inhibit']['source_sequence']==1
+
+
+@pytest.mark.parametrize('line',[b'ok T:20 /0 B:21 /0\n',b'Error:checksum mismatch\n',b'echo:busy: processing\n'])
+def test_nonhazard_source_lines_do_not_grant_or_retire_dispatch(capture,line):
+    recorder,endpoint,_,_,_=capture
+    deliver(capture,line)
+    assert endpoint.backend.receive_hub.fault is None
+    snapshot=recorder.snapshot()
+    assert snapshot['dispatch_inhibit'] is None
+    assert snapshot['physical_readiness_qualified'] is False and snapshot['sensor_validity'] is None

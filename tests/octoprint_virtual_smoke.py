@@ -94,7 +94,7 @@ class RecordingVirtualPrinter(VirtualPrinter):
 
     def _performMove(self, line):
         gate = getattr(self, 'fixture_pause_gate', None)
-        if gate is not None and line.startswith('G1 X6 '):
+        if gate is not None and line.startswith(f'G1 X{getattr(self, "fixture_pause_gate_move", 6)} '):
             assert gate.wait(10), 'fixture pause handshake timed out'
         super()._performMove(line)
         time.sleep(getattr(self, "model_move_delay", 0))
@@ -117,7 +117,7 @@ def main(scenario='resume', use_service=False, console=False, journal_path=None,
     # A short virtual job can otherwise finish between MODEL_005 and submission.
     # Hold only the simulator's motion worker, never a sender/service lock.
     pause_fixture_gate = (threading.Event() if use_service and not console and
-                          scenario in ('thermal_fault', 'disconnect', *FAULT_REPORTS)
+                          scenario in ('native_prompt', 'thermal_fault', 'disconnect', *FAULT_REPORTS)
                           else None)
 
     def no_physical(*args, **kwargs):
@@ -173,6 +173,9 @@ def main(scenario='resume', use_service=False, console=False, journal_path=None,
                 device.temp[0], device.bedTemp = 200., 60.
                 device.model_move_delay = .25 if model_fixture else .02
             device.fixture_pause_gate = pause_fixture_gate
+            # Native prompt recovery must first reach MODEL_010. Hold move 11
+            # afterward so the short job cannot reach EOF before pause dispatch.
+            device.fixture_pause_gate_move = 11 if scenario == 'native_prompt' else 6
             virtual.append(device)
             return device
 

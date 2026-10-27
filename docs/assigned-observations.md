@@ -42,3 +42,34 @@ recorder supplies source-bound controller reports; it does not supply the missin
 physical evidence provider, configuration/continuity qualification, thermal
 policy, restart recovery, actual USB driver isolation or camera association.
 Neither printer nor camera is opened by these tests.
+
+## Source hazard dispatch interlock
+
+A second bounded instance of the same protocol parser classifies each original,
+provenance-validated line synchronously before the sender receive hook returns.
+A `sensor_suspect`, firmware `fault`, or nonfinite-temperature parser error
+retires the shared connection immediately. Durable recording remains asynchronous;
+a stalled journal worker cannot keep dispatch authority alive after classification.
+The raw line and parsed event are still queued for the durable history. The
+interlock records the source sequence and original arrival time in
+`serial_reports.dispatch_inhibit`.
+
+This is a one-way withdrawal of authority. Normal temperatures do not certify
+sensor health, clear the inhibition or permit reconnect/resume. Both job and
+prompt writes share the retirement fence. A frame already admitted before the
+fence may have an unknown outcome, and buffered motion/heating may continue on
+the printer. No stop/reset/emergency command, automatic retry or physical
+shutdown claim is made. The existing negative-temperature classifier is specific
+to this room-temperature development profile; different environments require a
+qualified sensing policy. Checksum diagnostics remain transport observations;
+the assigned sender's separate resend/timeout fence still applies.
+
+This closes the gap between source hazard observation and later host dispatch.
+It does not provide the missing independent physical evidence provider or qualify
+the production hardware adapter. An initial firmware `start` remains a reset
+observation rather than a thermal hazard; this interlock does not change startup
+or reset qualification.
+
+The [qualification record](../validation/source-hazard-stage131.json) separates
+the initial native-pause fixture failure, its correction and the installed
+Linux software result. It makes no physical commissioning claim.

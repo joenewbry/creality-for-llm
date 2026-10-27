@@ -95,3 +95,9 @@ still need integration/qualification on this path. Existing virtual hot-pause an
 restart evidence retains its original scope. Exact development hardware/recovery,
 sensor diagnosis and clearance precede commissioning. The protected printer and
 existing acquisition/sender services remain excluded.
+
+When source capture is attached, a provenance-validated sensor warning or firmware
+fault also retires the shared connection synchronously, before durable capture
+completes. The backend then reports an unknown job outcome and invalidates resume;
+no provider proof can restore that retired connection. See the source hazard
+interlock in [assigned observations](assigned-observations.md).
