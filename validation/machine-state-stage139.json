@@ -47,12 +47,73 @@
     "scope": "Mac source checks: decoder, assigned source correlation, tools, parser, existing prompt channels/backends",
     "junit_sha256": "c98d74e355deae189e9c548932caedbf5e8ce5a787b0cc4e546f2e5148a4a0c2"
   },
-  "installed_full_suite": null,
+  "installed_full_suite": {
+    "source_commit": "c8d079cfb93c6a6ca26b4e1bc71a7c33c597c827",
+    "source_files": 309,
+    "source_hashes_unchanged": true,
+    "installed_runtime_bytes_match_export": true,
+    "installed_imports_from_site_packages": true,
+    "python": "3.11.13 (main, Jun 12 2025, 12:27:40) [GCC 6.3.0 20170516]",
+    "os": "Linux-5.15.148-tegra-aarch64-with-glibc2.35",
+    "machine": "aarch64",
+    "locked_packages_verified": 99,
+    "firmware_commit": "98aa03248337b8039a09bbc1a29f33432aed08ca",
+    "firmware_tree": "70ec40fa273bd88cfbda442935ac275cbf9f981b",
+    "firmware_clean": true,
+    "suite": {
+      "tests": 1272,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 1
+    },
+    "compiler": "Ubuntu clang version 15.0.7",
+    "physical_access": false,
+    "paid_model_calls": 0,
+    "schema_version": 1,
+    "scope": "installed host software qualification; not physical commissioning",
+    "public_code_snapshot": "https://github.com/joenewbry/creality-for-llm/tree/c8d079cfb93c6a6ca26b4e1bc71a7c33c597c827",
+    "installed_suite": {
+      "tests": "1272",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "1",
+      "time": "422.085"
+    },
+    "passed": 1271,
+    "skipped_case": "test_native_lsof_sees_duplicate_descriptors_in_one_process",
+    "skip_scope": "Mac-only native lsof fixture; separately passed on Mac in stage138",
+    "junit_sha256": "d5c1d65b3fbba6684b96d3dc979c93df7c8bdd334ac9f5c1ad11e4a95f11a7d2",
+    "log_sha256": "bfb03a2178141361db949530f986a1701b16f3f37667a57ab6632b80a3e69096",
+    "test_corpus_outside_source_tree": true,
+    "later_delivery_changes": "documentation/qualification and archive metadata only; runtime/test/dependency inputs unchanged"
+  },
   "limitations": [
     "Controller variables are not independent physical measurements",
     "No motion barrier, physical motor power, sensor health or part continuity proof",
     "No complete configuration or firmware-image fingerprint",
     "Physical provider, Mac transport, recovery and commissioning remain unfinished",
     "The maintained candidate remains separate from the older host firmware-test pin"
-  ]
+  ],
+  "firmware_pull_request": {
+    "baseRefName": "stack/v040-f4-runtime-handoff",
+    "headRefName": "stack/v040-f5-machine-state",
+    "headRefOid": "0f8d1ca1055b9030cabf6ff8e3a6762fdb4dfee7",
+    "isDraft": true,
+    "number": 5,
+    "state": "OPEN",
+    "title": "Report session-bound controller variables without machine actions",
+    "url": "https://github.com/joenewbry/Marlin/pull/5",
+    "key": "M5"
+  },
+  "host_pull_request": {
+    "baseRefName": "stack/h24-macos-owner-metadata",
+    "headRefName": "stack/h25-machine-state",
+    "headRefOid": "c8d079cfb93c6a6ca26b4e1bc71a7c33c597c827",
+    "isDraft": true,
+    "number": 34,
+    "state": "OPEN",
+    "title": "Expose source-bound controller variables through journaled inspect tools",
+    "url": "https://github.com/joenewbry/creality-for-llm/pull/34",
+    "key": "H25"
+  }
 }

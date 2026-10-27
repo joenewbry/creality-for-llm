@@ -36,13 +36,17 @@ full-suite run.
 | Camera and mount — deferred by owner | Earlier broker/client/owner API tests and CAD/view models retained | Owner deferred Logitech work on October 26. Native capture/control and physical qualification remain unqualified and do not gate current printer work. |
 | Publication | Owned explanation page, architecture, platform/repository distinctions, PR dependencies and screenshot review | Firmware commissioning or an accepted upstream release |
 
-The [current installed Linux qualification](../validation/linux-package-stage137.json)
-passes 1175 tests with zero skips at public source `ad89416`, including the camera,
-startup, shared serial ownership, journaled assigned job/prompt tools, source-bound serial history and explicit transport-uncertainty retirement and synchronous source-hazard dispatch inhibition and an owned sender/prompt-copy lifecycle. The earlier 986-case qualification
-remains historical. The later [Mac owner metadata](macos-owners.md) component has separate focused
-installed-package checks and is outside this full-suite snapshot. The Mac transport
-remains disabled; software-terminal exclusion did not hold on this Mac. Neither test counts nor a successful source export prove physical
-readiness.
+The [current installed Linux qualification](../validation/linux-package-stage139.json)
+passes 1,271 tests with one Mac-native file-owner fixture skipped at public source
+`c8d079c`, with no failures/errors. Installed runtime bytes and all 99 locked
+dependencies are verified. It includes the Mac metadata and new source-correlated
+controller-state decoder/reader/tools; the Mac-native fixture passed separately
+on Mac. The new [state-report firmware](machine-state.md) has its own native and
+F401 build evidence and is not the host suite's older firmware-test pin. These
+reports expose firmware variables, not physical readiness, motor power, sensor
+health, part continuity or an operation-correlated motion barrier. The physical
+job provider and Mac transport remain unfinished. Neither tests nor source
+publication establish a commissioned printer.
 
 ## Startup gap found during this audit
 

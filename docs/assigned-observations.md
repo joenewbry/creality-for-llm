@@ -73,3 +73,14 @@ or reset qualification.
 The [qualification record](../validation/source-hazard-stage131.json) separates
 the initial native-pause fixture failure, its correction and the installed
 Linux software result. It makes no physical commissioning claim.
+
+
+## Correlated controller variables
+
+The maintained candidate now has an optional session/request-bound state report.
+[Controller-state evidence](machine-state.md) describes its parser, source
+interlock and typed `printer.machine_state` read. A completed prompt inspect
+receipt alone is insufficient: current source/capture, matching receipt, request
+window and original arrival age are also required. The report provides actual
+firmware variables, not the missing physical job-evidence provider or checkpoint
+proofs. No device was accessed for this software delivery.

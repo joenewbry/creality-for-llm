@@ -309,6 +309,7 @@
     "tests/test_assigned_state.py",
     "tests/fixtures/machine-state-native.json",
     "docs/machine-state.md",
-    "validation/machine-state-stage139.json"
+    "validation/machine-state-stage139.json",
+    "validation/linux-package-stage139.json"
   ]
 }

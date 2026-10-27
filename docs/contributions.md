@@ -45,6 +45,7 @@ Updated October 27, 2026. Thirty-two host, six earlier Creality firmware and fou
 | [H22](https://github.com/joenewbry/creality-for-llm/pull/31) | Revalidate dispatch admission after journal commitment | `stack/h21-manufacturer-recovery` |
 | [H23](https://github.com/joenewbry/creality-for-llm/pull/32) | Keep the sender closed after competing errors | `stack/h22-dispatch-admission` |
 | [H24](https://github.com/joenewbry/creality-for-llm/pull/33) | Inspect exact Mac owner descriptors without opening devices | `stack/h23-sender-error-close` |
+| [H25](https://github.com/joenewbry/creality-for-llm/pull/34) | Correlate controller-variable reports with journaled inspect tools | `stack/h24-macos-owner-metadata` |
 
 ## Firmware stack
 
@@ -59,7 +60,7 @@ Updated October 27, 2026. Thirty-two host, six earlier Creality firmware and fou
 
 ## Validation and physical limits
 
-The exact public snapshot `ad89416ec5362244803ed6bc364021a1147fddfe` passes the complete installed-package Linux aarch64/Python 3.11.13 suite: **1,175 passed, zero skips**. Tests run outside the source tree; installed runtime bytes and all 99 locked dependencies are verified. [Current qualification](../validation/linux-package-stage137.json) includes post-commit admission and the dependent sender error-close correction. Fourteen admission regressions and three sender regressions reproduce against the prior source. Failed attempts remain recorded, including the long-held-lock timeout and an MCP pause-fixture race. The final software-only fixture gates a virtual move until actual pause dispatch; state/deadline/physical gates are not weakened. [Admission contract](dispatch-admission.md) and [sender lifecycle](sender-error-close.md) define the boundaries. Physical/provider/driver/printing qualification remains unfinished. The later Mac owner-metadata component is separately qualified and does not change the existing sender/service modules. It is outside this full-suite snapshot. See [Mac owner metadata](macos-owners.md) and its scoped validation record.
+The earlier public snapshot `ad89416ec5362244803ed6bc364021a1147fddfe` passes the complete installed-package Linux aarch64/Python 3.11.13 suite: **1,175 passed, zero skips**. Tests run outside the source tree; installed runtime bytes and all 99 locked dependencies are verified. [Earlier qualification](../validation/linux-package-stage137.json) includes post-commit admission and the dependent sender error-close correction. Fourteen admission regressions and three sender regressions reproduce against the prior source. Failed attempts remain recorded, including the long-held-lock timeout and an MCP pause-fixture race. The final software-only fixture gates a virtual move until actual pause dispatch; state/deadline/physical gates are not weakened. [Admission contract](dispatch-admission.md) and [sender lifecycle](sender-error-close.md) define the boundaries. Physical/provider/driver/printing qualification remains unfinished. The later Mac owner-metadata component is separately qualified and does not change the existing sender/service modules. It is outside this full-suite snapshot. See [Mac owner metadata](macos-owners.md) and its scoped validation record.
 
 The first ten public review trees preserve their originally tested trees. [The goal audit](goal-audit.md) lists unmet requirements, and [the printing plan](printing-qualification-plan.md) separates post-repair physical testing from software qualification. The readiness-admission reference does not certify hardware or clear unknown receipts.
 
@@ -115,3 +116,13 @@ full manager/physical shutdown and printing remain unqualified. The current 1,17
 installed Linux qualification still uses the older firmware-test pin; v040 has
 separate focused native/build qualification.
 [Detailed current source and limits](maintained-firmware.md).
+
+
+Current host snapshot `c8d079c` passes 1,271 installed Linux tests with one Mac-native
+file-owner fixture skipped, zero failures/errors; installed runtime bytes and all
+99 locked dependencies are verified. [Qualification](../validation/linux-package-stage139.json)
+includes the Mac metadata component and controller-state reader/parser/tools.
+The [new firmware PR5](https://github.com/joenewbry/Marlin/pull/5) depends on4 and
+supplies the optional state report; its source `0f8d1ca` separately passes four
+getter variants, five state-wire cases, eleven existing prompt cases and the
+F401 build. No host firmware-test repin or physical commissioning is implied.

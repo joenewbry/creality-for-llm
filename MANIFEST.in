@@ -282,6 +282,7 @@ include validation/linux-package-stage125.json
 include validation/linux-package-stage131.json
 include validation/linux-package-stage132.json
 include validation/linux-package-stage137.json
+include validation/linux-package-stage139.json
 include validation/machine-events-stage84.json
 include validation/machine-state-stage139.json
 include validation/macos-discovery-stage108.json

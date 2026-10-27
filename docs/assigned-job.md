@@ -140,3 +140,10 @@ existing retirement cause, or maps the prompt observer's sensor/firmware cause
 to the same source-hazard category used by capture. It cannot replace a specific
 sensor warning with a generic consumer failure. Source history retains its own
 line provenance independently of which observer reaches the fence first.
+
+
+A capture attachment now also exposes `printer.machine_state` through an
+`AssignedStateReader`. It reads the optional maintained-firmware state report
+for a completed inspect operation, without issuing commands. These are source-
+correlated controller variables; the external physical job provider and all
+physical checkpoint proofs remain required. See [state evidence](machine-state.md).

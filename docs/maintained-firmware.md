@@ -132,3 +132,17 @@ Use `--output` to save detailed results and source/snippet hashes. The harness
 does not execute the complete temperature task, PID, ADC, interrupts or real
 screen/motion/kill/HAL. Physical shutdown remains unqualified, as do the target,
 screen, settings and recovery path. [Full structured evidence](../validation/thermal-handoff-stage136.json).
+
+
+## Controller-state layer
+
+[Draft PR5](https://github.com/joenewbry/Marlin/pull/5) depends on4 and adds the
+optional read-only `LLM_MACHINE_STATE` report in source `0f8d1ca`. Its F401 build
+uses 183,960 / 196,608 application flash bytes and 39,860 / 65,536 RAM bytes; four actual getter
+configurations, five wire cases and eleven existing prompt cases pass with
+hardware stubs. It copies variables under a critical section and serializes
+afterward without changing settings, releasing waits or actuating hardware.
+The source-correlated host read is described in [state evidence](machine-state.md).
+No physical sampling/interrupt timing, full state-to-checkpoint provider, sensor
+health, motor power, part continuity, recovery or commissioning is qualified.
+The host's older `98aa` firmware-test pin remains unchanged.
