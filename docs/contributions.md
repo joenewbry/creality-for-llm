@@ -242,3 +242,12 @@ settings before invoking the physical provider, copies both inputs and accounts
 for only five exact numbered read frames plus one unnumbered state query.
 Physical/configuration coverage remains separate and incomplete. No raw tool
 is added. See [checkpoint design](checkpoint-inspection.md).
+
+## Live controller inactivity input
+
+The maintained firmware V2 report samples raw activity/M84/M85 counters, compiled
+idle-axis mask and production predicates without resetting timers. The host
+validates unsigned arithmetic and retires contradictory owned reports. V1 lacks
+timer coverage explicitly. Actual native getter/wire/tool integration and candidate
+cross-build evidence remain distinct from physical qualification. Firmware PR6
+depends on5; the companion host change depends on44. See [state scope](machine-state.md).

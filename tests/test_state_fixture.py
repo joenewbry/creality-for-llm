@@ -63,6 +63,6 @@ def test_symlinked_inputs_and_existing_destination_are_preserved(tmp_path):
 def test_committed_source_manifest_pins_required_native_sources():
     manifest=json.loads((Path(__file__).resolve().parents[1]/'state-fixture-source.json').read_text())
     files={row['path'] for row in entries(manifest)}
-    assert manifest['commit']=='0f8d1ca1055b9030cabf6ff8e3a6762fdb4dfee7'
+    assert manifest['commit']=='de92fd427c59dd70d177e64da6778856506eb023'
     assert {'LICENSE','Marlin/src/feature/host_machine_state.cpp',
         'buildroot/tests/llm_machine_state_native.py'}<=files

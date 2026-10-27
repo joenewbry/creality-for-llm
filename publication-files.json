@@ -346,6 +346,9 @@
     "tests/test_configuration_report.py",
     "validation/configuration-report-stage149.json",
     "tests/test_checkpoint_configuration.py",
-    "validation/checkpoint-configuration-stage150.json"
+    "validation/checkpoint-configuration-stage150.json",
+    "tests/test_machine_inactivity.py",
+    "tests/fixtures/machine-state-timers-native.json",
+    "validation/runtime-timers-stage151.json"
   ]
 }

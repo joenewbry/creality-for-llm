@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "repository": "https://github.com/joenewbry/Marlin",
-  "commit": "0f8d1ca1055b9030cabf6ff8e3a6762fdb4dfee7",
+  "commit": "de92fd427c59dd70d177e64da6778856506eb023",
   "scope": "native test sources with stubbed physical dependencies; not the production host firmware pin",
   "files": [
     {
@@ -31,8 +31,8 @@
     },
     {
       "path": "Marlin/src/feature/host_prompt_wire.cpp",
-      "bytes": 5965,
-      "sha256": "a3a38e8476d54d88e2334cdd172750b5350f948a11f508d264035d27502ee685"
+      "bytes": 6172,
+      "sha256": "878fcd7708aed8f9aa1ed365aa097ae7ef76654da93f2fa77edb771a1a2360c4"
     },
     {
       "path": "Marlin/src/feature/host_prompt_inbox.h",
@@ -56,13 +56,13 @@
     },
     {
       "path": "Marlin/src/feature/host_machine_state.h",
-      "bytes": 541,
-      "sha256": "0552f10b94781b016ee4ebbbfada8c9c538f454798a59e801f9d36817cd1ab2c"
+      "bytes": 765,
+      "sha256": "b8f6b94f54734625f3ccb15a17e90b2ea26e12477d8d282205cb5a448b6b18c3"
     },
     {
       "path": "Marlin/src/feature/host_machine_state.cpp",
-      "bytes": 2240,
-      "sha256": "dc6739d580f06be4727b71ccef01fcdb0b431f8506815ef5488a7a533f5cbf6b"
+      "bytes": 2783,
+      "sha256": "c84ed73cbfffac14acb699bf81c546da6883a001fee1e0731ce9bd3dded3f9d3"
     },
     {
       "path": "Marlin/src/gcode/host/M876.cpp",
@@ -81,8 +81,18 @@
     },
     {
       "path": "buildroot/tests/llm_machine_state_native.py",
-      "bytes": 8437,
-      "sha256": "98a3cb7d82cf969e0357d4af29fac32cb4969409bc9c3d05b779531e22b33ede"
+      "bytes": 10489,
+      "sha256": "724e127df8143ee3d6922c66a17b1c1f4e604fe90b370748d3b0c168a5117950"
+    },
+    {
+      "path": "Marlin/src/core/millis_t.h",
+      "bytes": 1398,
+      "sha256": "c0bc972e280b16c6e320ebf693617e0c325841354ebfe66d21488375b7cacd93"
+    },
+    {
+      "path": "Marlin/src/gcode/gcode.h",
+      "bytes": 47281,
+      "sha256": "3e956294f70ab0cd9a5081c1be17f07a753041a21786c0e5152ecaedbfeb6957"
     }
   ]
 }

@@ -153,6 +153,7 @@ include state-fixture-source.json
 include tests/assigned_job_smoke.py
 include tests/assigned_sender_smoke.py
 include tests/fixtures/machine-state-native.json
+include tests/fixtures/machine-state-timers-native.json
 include tests/hot_fixture_router.py
 include tests/hot_pause_faults.py
 include tests/hot_resume_scenario.py
@@ -201,6 +202,7 @@ include tests/test_fresh_resume.py
 include tests/test_journal.py
 include tests/test_lifecycle_completion.py
 include tests/test_machine_events.py
+include tests/test_machine_inactivity.py
 include tests/test_machine_state.py
 include tests/test_macos_discovery.py
 include tests/test_macos_owners.py
@@ -329,6 +331,7 @@ include validation/native-state-path-stage140.json
 include validation/native-thermal-stage78.json
 include validation/native-watch-stage79.json
 include validation/receive-arrival-stage120.json
+include validation/runtime-timers-stage151.json
 include validation/sender-barrier-stage142.json
 include validation/sender-close-stage137.json
 include validation/service-startup-stage118.json

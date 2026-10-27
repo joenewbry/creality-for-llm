@@ -6,7 +6,7 @@ that provider or qualify physical readiness. The candidate is unflashed.
 
 The new firmware feature `LLM_MACHINE_STATE` is advertised by M115. After a
 successful session bind, the existing journaled `prompt.inspect` command produces
-a separate `//llmstate:v1` line carrying its request and bound session. The line
+a separate `//llmstate:v2` line carrying its request and bound session. The line
 contains firmware uptime and sequence, homed/trusted and logical motor-enable
 flags, commanded native position, workspace/home offsets, relative modes,
 leveling, unit factor, feedrate, feed/flow overrides, fan and temperature variables.
@@ -63,3 +63,29 @@ excluded, Logitech work stays deferred, and no device is opened by these checks.
 
 See [scoped validation](../validation/machine-state-stage139.json). The maintained
 firmware candidate and the host's older firmware-test pin remain distinct.
+
+
+## Live inactivity counters
+
+State schema V2 adds the activity-reset origin, M84 stepper interval and M85
+maximum inactivity interval, the compiled XYZE idle-axis mask, and the actual
+production timeout predicates sampled at the report uptime. The host checks
+unsigned 32-bit elapsed arithmetic against those predicates; malformed or
+contradictory reports synchronously invalidate the owned source. The existing
+request/session/sequence/arrival checks apply unchanged. V1 remains readable
+with inactivity coverage explicitly null. V2 adds no commands or timer resets.
+
+The elapsed value is modulo 2^32, not a wall-time interval or wrap count. A zero
+stepper interval can have a true raw predicate while MarlinCore separately
+requires nonzero interval, no queued blocks, no reset inhibition and eligible
+SD state before shutdown. A zero M85 interval disables its predicate. Idle-axis
+mask zero means no supported idle-axis timer; it is not a guarantee of motor
+power. Full no-sleep/pause policy, actual motor/position/part continuity, complete
+configuration and installed binary identity remain unqualified. No countdown
+or readiness grant is inferred from these values.
+
+The pinned native fixture now includes the production G-code timeout methods
+and uint32 elapsed helper, alongside the real getter and serializer. Eight
+getter configurations and boundary/wrap/zero cases run with hardware stubs;
+the integrated software-terminal scenario reads the V2 timers through the
+actual assigned sender/recorder/tool path. See runtime-timers-stage151 validation.
