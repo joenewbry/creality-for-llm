@@ -34,5 +34,7 @@
     "The job evidence provider still reads virtual-peer state and is not a physical provider",
     "No operation-correlated physical barrier, configuration or motor/sensor/part continuity qualification",
     "Physical provider, Mac transport and development commissioning remain unfinished"
-  ]
+  ],
+  "combined_getter_linked": true,
+  "linked_getter_wire_cases": 6
 }

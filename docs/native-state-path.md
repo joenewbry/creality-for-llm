@@ -39,12 +39,15 @@ no serial path, never uploads firmware and refuses an existing destination.
 Downloads are explicitly invoked, not hidden in pytest. Input paths, bounds,
 identity, digests and symlinks are checked. The builder verifies all inputs,
 compiles verified Python source bytes rather than cached `.pyc` files, runs the
-native checks, and verifies the source inputs again afterward. This is trusted
+native checks, links the actual getter to the wire executable, and verifies the
+source inputs again afterward. Six linked-getter/wire cases include a real
+HostUI wait changing only after a supported response. This is trusted
 pinned test code, not a sandbox for arbitrary local code.
 
 ## Evidence scope
 
-The native firmware uses hardware stubs; movement is modeled by a separate
+The combined executable links the actual state getter and wire serializer.
+Its sampling dependencies use hardware stubs; movement is modeled by a separate
 virtual printer. Their position values deliberately differ in the test. The
 native report therefore proves the source/transport/tool path, not an accurate
 mechanical model or a physical checkpoint. The job provider remains explicitly
