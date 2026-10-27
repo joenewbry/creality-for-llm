@@ -32,6 +32,15 @@ STM32F401 controller. The archive includes a mainboard image under
 `firmware.zlib`. These are distinct update components; the screen assets are not
 proof that the physical display has been identified or a screen update is needed.
 
+## Owner About evidence
+
+The October 26 [owner photo intake](development-hardware.md) reports
+2.0.8.28F4, screen V1.0.5 and hardware label CR-FDM-v24S1_301. This strengthens the
+identifying-string match to this candidate. The physical processor, bootloader,
+authenticity and restoration behavior remain unverified; this is still a recovery
+candidate. The current display should be preserved unless a separate screen
+update is justified and qualified.
+
 ## Qualification before using this candidate
 
 1. Confirm the development printer's assignment independently of serial-port name;

@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "observed_at": "2026-10-27T01:03:40.394176+00:00",
+  "source_kind": "owner_supplied_about_screen_photo",
+  "source_image_sha256": "795f80ea0d41dd1b357c07e20b623711c04013da3852c9c54771dd7e684e13ad",
+  "reported_identifiers": {
+    "model": "Ender-3 S1 Pro",
+    "firmware": "2.0.8.28F4",
+    "screen": "V1.0.5",
+    "hardware_label": "CR-FDM-v24S1_301",
+    "print_size_mm": [
+      220,
+      220,
+      270
+    ]
+  },
+  "physical_processor_marking_verified": false,
+  "physical_board_marking_verified": false,
+  "physical_display_part_verified": false,
+  "usb_assignment_verified_by_photo": false,
+  "bootloader_verified": false,
+  "recovery_qualified": false,
+  "current_sensor_readings_provided": false,
+  "movement_clearance_confirmed": false,
+  "firmware_flashed": false,
+  "physical_device_access": false,
+  "camera_scope": "deferred_by_owner",
+  "goal_resume_requested": true,
+  "limitations": [
+    "About fields are reported identifiers; they do not show the physical processor or bootloader",
+    "The older pinned official source uses the same hardware label across processor selections",
+    "Firmware/screen binary identity and actual sensor/part/position state cannot be established from this photo"
+  ],
+  "source_reference": "https://github.com/CrealityOfficial/Ender-3S1/blob/7fffa9270ff8fb5ee208a5b04f832e20bab19c60/Marlin/Configuration.h"
+}
