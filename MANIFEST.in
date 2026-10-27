@@ -35,6 +35,7 @@ include docs/blocker-matrix.md
 include docs/camera-interface.md
 include docs/checkpoint-inspection.md
 include docs/cold-preflight.md
+include docs/cold-provider.md
 include docs/configuration-report.md
 include docs/contributions.md
 include docs/development-hardware.md
@@ -96,6 +97,8 @@ include printer_control/camera_owner_api.py
 include printer_control/checkpoint.py
 include printer_control/checkpoint_inspection.py
 include printer_control/cold_preflight.py
+include printer_control/cold_provider.py
+include printer_control/cold_startup.py
 include printer_control/combined_virtual.py
 include printer_control/configuration_report.py
 include printer_control/devices.py
@@ -190,6 +193,8 @@ include tests/test_checkpoint.py
 include tests/test_checkpoint_configuration.py
 include tests/test_checkpoint_inspection.py
 include tests/test_cold_preflight.py
+include tests/test_cold_provider.py
+include tests/test_cold_startup.py
 include tests/test_combined_pause_interrupt.py
 include tests/test_combined_policy.py
 include tests/test_configuration_report.py
@@ -288,6 +293,7 @@ include validation/clean-export-4b768f9.json
 include validation/clean-export-86bde0b.json
 include validation/clean-export-8d8453f.json
 include validation/cold-preflight-stage145.json
+include validation/cold-provider-stage152.json
 include validation/configuration-report-stage149.json
 include validation/development-about-owner-20261026.json
 include validation/development-readonly-stage130.json

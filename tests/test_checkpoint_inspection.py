@@ -15,10 +15,10 @@ from test_machine_state import change
 pytestmark=pytest.mark.parametrize('cold_context',['checkpoint'],indirect=True)
 
 
-def prepare(context,numbered=False):
+def prepare(context,numbered=False,*,fixture_provider=True,stage_job=True):
     b,_,_,capture,wire,_,provider=context
     preview(context)
-    b.dispatch('stage','job.stage',{'job_id':'job','file_sha256':b.sha256},deadline=20.)
+    if stage_job:b.dispatch('stage','job.stage',{'job_id':'job','file_sha256':b.sha256},deadline=20.)
     b.witness=StreamWitness();b.witness.start_job()
     for cmd in ('G21','G90','M82','T0','M106 S0','M104 S0','M140 S0','G1 F600'):
         b.witness.tracker.observe(cmd)
@@ -47,8 +47,9 @@ def prepare(context,numbered=False):
                 nozzle_target=0,bed_target=0,feedrate_percent=100,flow_percent=100),
             offsets=dict(x=0.,y=0.,z=0.,e=0.),leveling_active=False,
             evidence={k:True for k in PauseCheckpoint.PROOFS}))
-    provider.checkpoint_from_controller=checkpoint
-    provider.resumed=lambda identity,op:AssignedJobEvidence.from_observation(identity,op,'resumed',b.clock(),'synthetic_only',provider.kind)
+    if fixture_provider:
+        provider.checkpoint_from_controller=checkpoint
+        provider.resumed=lambda identity,op:AssignedJobEvidence.from_observation(identity,op,'resumed',b.clock(),'synthetic_only',provider.kind)
     return b,service_for(context),seen,state
 
 

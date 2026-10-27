@@ -56,12 +56,12 @@ def cold_context(tmp_path,request):
         backend.attach_machine_events(recorder)
         mode=getattr(request,"param",False)
         backend.attach_cold_preflight(policy(),automatic_inspection=mode is True)
-        if mode in ('checkpoint','configuration','checkpoint-configuration'):
+        if mode in ('checkpoint','configuration','checkpoint-configuration','physical-cold'):
             if mode=='checkpoint':provider.checkpoint_from_controller=lambda *a:None
-            if mode=='checkpoint-configuration':provider.checkpoint_from_sources=lambda *a:None
-            backend.attach_completion_barrier(checkpoint_inspection=mode in ('checkpoint','checkpoint-configuration'),
-                checkpoint_configuration=mode=='checkpoint-configuration')
-            if mode=='configuration':backend.attach_configuration_report()
+            if mode in ('checkpoint-configuration','physical-cold'):provider.checkpoint_from_sources=lambda *a:None
+            backend.attach_completion_barrier(checkpoint_inspection=mode in ('checkpoint','checkpoint-configuration','physical-cold'),
+                checkpoint_configuration=mode in ('checkpoint-configuration','physical-cold'))
+            if mode in ('configuration','physical-cold'):backend.attach_configuration_report()
         endpoint.claim();capture=(recorder,endpoint,SimpleNamespace(_serial=endpoint),now,chunks)
         channel.dispatch('inspect',now=8,deadline=20);channel.feed(inactive(1,0),now=8.1)
         channel.dispatch('bind',now=9,deadline=20);channel.feed(inactive(2,1),now=9.1)
@@ -71,7 +71,9 @@ def cold_context(tmp_path,request):
         assert journal.claim(operation,now=10)
         prompt.dispatch(operation,'prompt.inspect',{},deadline=20);channel.feed(inactive(3,1),now=10.)
         result=prompt.poll(operation);assert result.status=='completed';journal.finish(operation,result.status,result.detail,now=10.)
-        now[0]=10.1;deliver(capture,(cold_line()+'\n').encode());wait_for(lambda:'machine_state' in recorder.snapshot()['reports'])
+        now[0]=10.1;line=cold_line()
+        if mode=='physical-cold':line=line.replace('llmstate:v1','llmstate:v2')+' I000004b00000000000000000 C07 J01'
+        deliver(capture,(line+'\n').encode());wait_for(lambda:'machine_state' in recorder.snapshot()['reports'])
         router=ToolRouter(SimpleNamespace(backend=backend,lease=lease,journal=journal))
         yield backend,router,operation,capture,wire,selected,provider
         backend.close()

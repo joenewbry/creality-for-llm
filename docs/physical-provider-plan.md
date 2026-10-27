@@ -1,9 +1,9 @@
 # Physical provider implementation and qualification plan
 
-Status: design and dependency record. No physical provider, physical readiness
-checker or production launcher is implemented or enabled by this document.
-The source-backed cold and post-drain inspections are implemented; supplying
-physical facts to their external provider interfaces remains unfinished.
+Status: cold evidence admission and pre-open checker code is implemented in
+[cold provider](cold-provider.md). No qualified development profile, actual physical
+observation producer or production launcher is installed or enabled. The owned
+controller/settings/barrier sources are implemented; commissioning remains open.
 
 ## Inputs still needed from the development printer
 
@@ -28,7 +28,7 @@ merely because a recovery archive contains display files.
 | Boundary | Required evidence and implementation | Current limit |
 | --- | --- | --- |
 | Firmware and recovery | Match the actual target to pinned candidate, layout/bootloader, settings migration and compatible stock rollback; qualify the paired display behavior | Candidate builds and manufacturer-package provenance exist; installed compatibility and physical restoration are unqualified |
-| Pre-open admission | Use OperationService.from_backend_factory with actual assignment, protected-device exclusion, host access policy, qualified driver and current operator-observed readiness | The ordering exists; no physical checker supplies those facts |
+| Pre-open admission | Use OperationService.from_backend_factory with actual assignment, protected-device exclusion, host access policy, qualified driver and current operator-observed readiness | The ordering exists; checker code exists; no qualified live physical producer supplies those facts |
 | Owned connection | Open only the assigned descriptor, retain the lease/exclusion, capture every actual read/write, establish a new journaled firmware session and verify capabilities/configuration before job actions | Linux software-terminal foundation exists. Production Mac transport rejects before open; the separate operator diagnostic is not qualification of that adapter |
 | Machine profile | Bind measured workspace, probe/frame interpretation, firmware/settings hashes, cold sensor checks and a bounded continuously powered motor/position policy | No development-printer profile is qualified or installed |
 | Operation evidence | Combine fresh source reports, exact drain/write evidence, job/file/cursor/modes and qualified physical continuity inputs | Controller variables and software fixtures cannot supply physical continuity by themselves |
@@ -49,7 +49,7 @@ that source path needs the separately qualified candidate installation.
 
 ## Callback implementation mapping
 
-The future physical provider must replace the fixture provider, not wrap its
+The cold provider implementation replaces the fixture callbacks without using its
 private virtual counters. The existing AssignedJobBackend constructor requires
 preflight, start_blockers, checkpoint and started/resumed/completed/cancelled
 callbacks. Optional post-drain mode additionally requires

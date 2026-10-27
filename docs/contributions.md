@@ -251,3 +251,12 @@ validates unsigned arithmetic and retires contradictory owned reports. V1 lacks
 timer coverage explicitly. Actual native getter/wire/tool integration and candidate
 cross-build evidence remain distinct from physical qualification. Firmware PR6
 depends on5; the companion host change depends on44. See [state scope](machine-state.md).
+
+## Cold evidence admission and pre-open checker
+
+Implemented strict cold profile and immutable physical-observation contracts,
+actual owned source/checkpoint mapping, transition evidence and pre-open readiness
+validation. Physical grants are rechecked after persistence immediately before
+file selection/start. Tests exercise the real assigned backend and journal with
+synthetic qualification/physical inputs; no actual profile, producer or deployment
+is installed. See [scope and integration](cold-provider.md).
