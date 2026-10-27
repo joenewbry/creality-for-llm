@@ -58,7 +58,8 @@ HostMachineState host_machine_state_snapshot() {
     main.write_text(text)
     compiler=shutil.which('clang++') or shutil.which('g++')
     subprocess.run([compiler,'-std=gnu++14','-Wall','-Wextra','-DINCH_MODE_SUPPORT=0',
-        '-DHAS_WORKSPACE_OFFSET=1','-DHAS_HOME_OFFSET=1',str(main),str(sampler),
+        '-DHAS_WORKSPACE_OFFSET=1','-DHAS_HOME_OFFSET=1','-DDISABLE_IDLE_X=1',
+        '-DDISABLE_IDLE_Y=1','-DDISABLE_IDLE_Z=0','-DDISABLE_IDLE_E=1',str(main),str(sampler),
         '-o',str(output/'wire/state-actions')],check=True)
     for scenario in ('bound','repeat','saturation','malformed','response'):
         subprocess.run([str(output/'wire/state-actions'),scenario],check=True,

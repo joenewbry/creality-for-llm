@@ -32,8 +32,8 @@ primitive. Mac can run the materializer/unit/native compiler checks but the
 assigned software-terminal scenario is skipped. This is unrelated to which
 firmware the physical printer needs.
 
-`state-fixture-source.json` pins 16 specific public source files and their sizes
-and SHA-256 values at maintained firmware `0f8d1ca`. This is a small native fixture,
+`state-fixture-source.json` pins 18 specific public source files and their sizes
+and SHA-256 values at maintained firmware `de92fd4`. This is a small native fixture,
 separate from the existing `98aa` firmware-test source. The materializer accepts
 no serial path, never uploads firmware and refuses an existing destination.
 Downloads are explicitly invoked, not hidden in pytest. Input paths, bounds,
@@ -68,3 +68,7 @@ match the export; all 99 locked dependencies and all 16 native inputs are verifi
 Mac source checks pass 75 with the Linux-only scenario skipped; the Mac native
 getter/wire checks run separately. The application's runtime modules are unchanged
 from `c8d079c`; the full suite was not repeated for these fixture/tool changes.
+
+The current V2 fixture adds live timers and compiles the actual production timeout
+methods and uint32 helper. Historical qualification counts above describe their
+original snapshots; current focused evidence is recorded separately in runtime-timers-stage151.

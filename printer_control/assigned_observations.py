@@ -77,7 +77,7 @@ class AssignedMachineEventRecorder(MachineEventRecorder):
                 events=self._interlock_observer.feed(packet.received.data,packet.received.observed_at)
                 hazard=next((event for event in events if event.kind in ('fault','sensor_suspect')
                     or event.kind=='protocol_error' and event.data.get('reason') in (
-                        'nonfinite_temperature','invalid_machine_state','nonfinite_machine_state',
+                        'nonfinite_temperature','invalid_machine_state','nonfinite_machine_state','invalid_machine_inactivity',
                         'machine_state_session_changed','machine_state_replayed')),None)
                 if hazard is not None:
                     reason='assigned_serial_'+hazard.kind

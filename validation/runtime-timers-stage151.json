@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-27",
+  "source_commit": "9e85e14",
+  "firmware_commit": "de92fd427c59dd70d177e64da6778856506eb023",
+  "firmware_pull_request": {
+    "baseRefName": "stack/v040-f5-machine-state",
+    "headRefName": "stack/v040-f6-runtime-timers",
+    "headRefOid": "de92fd427c59dd70d177e64da6778856506eb023",
+    "isDraft": true,
+    "number": 6,
+    "state": "OPEN",
+    "title": "Report live inactivity timers in controller state schema v2",
+    "url": "https://github.com/joenewbry/Marlin/pull/6",
+    "key": "M6"
+  },
+  "scope": "focused source qualification; native controller getters and production timer predicates with hardware stubs; owned software serial path",
+  "source_inputs_matched": 168,
+  "native_fixture_files": 18,
+  "native_getter_variants": 8,
+  "native_wire_scenarios": 5,
+  "native_prompt_scenarios": 11,
+  "firmware_build": {
+    "source_commit": "de92fd427c59dd70d177e64da6778856506eb023",
+    "environment": "STM32F401RC_creality_e3s1pro_llm",
+    "artifacts": {
+      "firmware-20261027-110029-E3S1Pro-llm-v040-F4.bin": {
+        "bytes": 184340,
+        "sha256": "86eeed2985d576d6912e5d248839cc40fa5fed7ca03a9fc1310ebbad3aa24f43"
+      },
+      "firmware-20261027-110029-E3S1Pro-llm-v040-F4.elf": {
+        "bytes": 31197328,
+        "sha256": "71b1530f4d622abaa2e083945da09b8a7086e79737659e36180e6d8a56c23606"
+      }
+    },
+    "flash_used": 183824,
+    "flash_limit": 196608,
+    "ram_used": 39860,
+    "ram_limit": 65536,
+    "flashed": false
+  },
+  "state_schema_version": 2,
+  "request_protocol_version": 1,
+  "v1_timer_coverage": null,
+  "physical_readiness_qualified": false,
+  "complete_runtime_policy": false,
+  "physical_printers_accessed": false,
+  "firmware_flashed": false,
+  "camera_scope": "deferred",
+  "verified_behaviors": [
+    "production timeout methods and uint32 elapsed helper compiled with actual getter",
+    "zero intervals, wrap, thresholds, unsigned half-range and idle-axis support variants",
+    "owned source original request/session/sequence/arrival preserved",
+    "contradictory timers synchronously retire shared dispatch",
+    "V1 remains readable with absent timer coverage",
+    "native getter/wire runs through assigned sender and LLM tools"
+  ],
+  "limitations": [
+    "hardware dependencies are stubbed; no physical timer/USB/interrupt-duration qualification",
+    "modulo counters do not count wraps or establish an unlimited pause interval",
+    "raw timeout predicates do not prove actual shutdown or motor power",
+    "full runtime pause/no-sleep/SD policy, physical continuity and installed artifact identity remain unqualified",
+    "no new installed-package or full-suite qualification"
+  ],
+  "remaining": [
+    "actual cold physical evidence provider and startup checker",
+    "qualified machine profile, installed artifact and physical continuity inputs",
+    "bounded external callback and production Mac transport/startup",
+    "sensor diagnosis, development target/recovery identification and commissioning",
+    "separate post-repair printing qualification"
+  ],
+  "linux": {
+    "passed": 515,
+    "skipped": 0,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 309.53,
+    "xml_sha256": "7948a6f93064449d41c7bd6f98609dfc25a8db29fc3b5c84bae06be5b3743e6a"
+  },
+  "mac": {
+    "passed": 483,
+    "skipped": 32,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 12.625,
+    "xml_sha256": "6b76a29c2de8290287c10b5b8db27a03079ccd0bc767d49cff7d7d8fd71371f9"
+  },
+  "export_checks": 9
+}

@@ -221,6 +221,10 @@ def main(scenario):
                         assert state_evidence['state']['request']==done['result']['wire_request']
                         assert state_evidence['state']['session']==backend.prompt.channel.session
                         assert state_evidence['state']['position']['x']==.25
+                        assert state_evidence['state']['state_schema_version']==2
+                        assert state_evidence['state']['inactivity']['previous_move_ms']==1200
+                        assert state_evidence['state']['inactivity']['stepper_interval_ms']==60000
+                        assert not state_evidence['state']['inactivity']['motor_power_proven']
                         assert not state_evidence['physical_readiness_qualified'] and not state_evidence['resume_authorized']
                         assert state_evidence['state']['position']['x']!=peer._lastX  # Separate native/virtual models.
                         prompt_frames=len(peer.prompt_writes);line=sender._current_line
