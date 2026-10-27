@@ -84,6 +84,7 @@ class AssignedJobBackend:
         self.cold_inspection=None;self._cold_admitting=False;self._cold_results={}
         self.completion_barrier=None;self._barrier_tokens={}
         self.checkpoint_inspection=None;self._checkpoint_pending=set();self._checkpoint_results={}
+        self.checkpoint_configuration=False;self._pause_configuration=None
         self.configuration_report=None;self._configuration_results={}
         self._resume_dispatched=set();self._resume_admission={}
         self._completion_window_seconds=30.;self._completion_window=None;self._completion_result=None
@@ -203,12 +204,16 @@ class AssignedJobBackend:
         if self.cold_inspection is not None and not self._cold_admitting:return None
         if self.cold_preflight is not None:return self.cold_preflight.check(data,self.identity())
 
-    def attach_completion_barrier(self,*,completion_window_seconds=30.,checkpoint_inspection=False):
+    def attach_completion_barrier(self,*,completion_window_seconds=30.,checkpoint_inspection=False,checkpoint_configuration=False):
         """Opt in before start; keep external physical checkpoint proofs required."""
         from .assigned_barrier import AssignedCompletionBarrier,AssignedCompletionWindow
         AssignedCompletionWindow(0.,completion_window_seconds)
         if type(checkpoint_inspection) is not bool:raise TypeError('boolean checkpoint inspection mode required')
-        if checkpoint_inspection and not callable(getattr(self.evidence,'checkpoint_from_controller',None)):
+        if type(checkpoint_configuration) is not bool or checkpoint_configuration and not checkpoint_inspection:
+            raise TypeError('configuration checkpoints require controller inspection')
+        if checkpoint_configuration and not callable(getattr(self.evidence,'checkpoint_from_sources',None)):
+            raise TypeError('external state/configuration checkpoint provider required')
+        if checkpoint_inspection and not checkpoint_configuration and not callable(getattr(self.evidence,'checkpoint_from_controller',None)):
             raise TypeError('external controller-backed checkpoint provider required')
         with self._lock:
             if (self.machine_events is None or self._closed or self._pump_started
@@ -216,6 +221,7 @@ class AssignedJobBackend:
                 raise ValueError('attach one completion barrier after capture and before sender start')
             self.completion_barrier=AssignedCompletionBarrier(self.machine_events)
             self._completion_window_seconds=completion_window_seconds
+            self.checkpoint_configuration=checkpoint_configuration
             if checkpoint_inspection:
                 from .checkpoint_inspection import AssignedCheckpointInspection
                 self.checkpoint_inspection=AssignedCheckpointInspection(self)
@@ -238,7 +244,8 @@ class AssignedJobBackend:
                 if self.sender.sendCommand(command,tags={'source:llm-completion-barrier'}) is not True:
                     raise RequestRejected('assigned_sender_refused_barrier_command')
             token=self.completion_barrier.dispatch(operation_id,phase,self.identity(),enqueue,
-                **({'completion_window':self._completion_window} if phase=='completed' else {}))
+                **({'completion_window':self._completion_window} if phase=='completed' else {}),
+                **({'configuration_report':True} if self.checkpoint_configuration and phase in ('paused','resuming') else {}))
             self._barrier_tokens[key]=token
         proof=self.completion_barrier.poll()
         if proof is not None and self.checkpoint_inspection is not None and phase in ('paused','resuming'):
@@ -491,8 +498,11 @@ class AssignedJobBackend:
             controller=self.checkpoint_inspection.read()
             if controller is None:raise RequestRejected('post_drain_controller_report_pending')
         try:
-            checkpoint=(self.evidence.checkpoint(self.identity()) if controller is None else
-                self.evidence.checkpoint_from_controller(self.identity(),json.loads(json.dumps(controller['controller_state']))))
+            if controller is None:checkpoint=self.evidence.checkpoint(self.identity())
+            elif self.checkpoint_configuration:
+                checkpoint=self.evidence.checkpoint_from_sources(self.identity(),
+                    json.loads(json.dumps(controller['controller_state'])),json.loads(json.dumps(controller['configuration'])))
+            else:checkpoint=self.evidence.checkpoint_from_controller(self.identity(),json.loads(json.dumps(controller['controller_state'])))
         except (RequestRejected,InvalidCheckpoint):raise
         except Exception:raise RequestRejected('checkpoint_evidence_unavailable') from None
         if controller is not None:
@@ -501,6 +511,7 @@ class AssignedJobBackend:
                     for key in ('operation_id','observed_at','capture_id','state')):
                 raise RequestRejected('checkpoint_source_changed_during_provider')
         if not isinstance(checkpoint,PauseCheckpoint):raise RequestRejected('qualified_checkpoint_unavailable')
+        if not self._file_valid():raise RequestRejected('checkpoint_file_changed')
         saved=checkpoint.to_dict();now=self.clock()
         for key,value in self.identity().items():
             if saved[key]!=value:raise RequestRejected('checkpoint_identity_mismatch')
@@ -525,6 +536,11 @@ class AssignedJobBackend:
         if self.checkpoint is None:return ['qualified_checkpoint_unavailable']
         if not self._file_valid():return ['staged_file_changed']
         if self.witness.snapshot()[2]!=self._pause_epoch:return ['commands_since_checkpoint']
+        if barrier is not None and self.checkpoint_configuration:
+            configuration=barrier.get('configuration')
+            if (self._pause_configuration is None or type(configuration) is not dict
+                    or configuration.get('reported_settings_sha256')!=self._pause_configuration['reported_settings_sha256']):
+                return ['reported_configuration_changed_since_pause']
         try:current=self._capture()
         except (RequestRejected,InvalidCheckpoint):return ['current_checkpoint_unqualified']
         if not self._file_valid():return ['staged_file_changed']
@@ -535,7 +551,8 @@ class AssignedJobBackend:
                     or barrier.get('token')!=self._barrier_tokens.get((operation_id,'resuming'))):
                 return ['resume_barrier_identity_mismatch']
             writes=barrier.get('writes')
-            if type(writes) is not list or len(writes)!=2 or any(type(w) is not dict or 'line_number' not in w for w in writes):
+            expected_writes=5 if self.checkpoint_configuration else 2
+            if type(writes) is not list or len(writes)!=expected_writes or any(type(w) is not dict or 'line_number' not in w for w in writes):
                 return ['resume_barrier_transport_line_unqualified']
             if self.checkpoint_inspection is not None:
                 tail=barrier.get('inspection',{}).get('writes')
@@ -679,6 +696,7 @@ class AssignedJobBackend:
                     result['completion_barrier']=proof
                 if not self.witness.freeze(epoch):raise RequestRejected('commands_during_checkpoint')
                 self.checkpoint=checkpoint;self._pause_epoch=epoch
+                if self.checkpoint_configuration:self._pause_configuration=json.loads(json.dumps(proof['configuration']))
                 result.update(checkpoint.envelope());result['resumable']=True
             except (RequestRejected,InvalidCheckpoint) as exc:
                 result['resume_blockers']=[str(exc)];result['reason']='pause_evidence_unqualified'
@@ -728,6 +746,7 @@ class AssignedJobBackend:
                     resume_completion_barrier_enabled=self.completion_barrier is not None,
                     lifecycle_completion_barrier_enabled=self.completion_barrier is not None,
                     post_drain_checkpoint_inspection=self.checkpoint_inspection is not None,
+                    post_drain_configuration_report=self.checkpoint_configuration,
                     owned_configuration_report=self.configuration_report is not None,
                     cold_preflight_enabled=self.cold_preflight is not None,
                     cold_automatic_inspection=self.cold_inspection is not None,

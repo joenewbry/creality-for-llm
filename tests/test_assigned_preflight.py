@@ -56,9 +56,11 @@ def cold_context(tmp_path,request):
         backend.attach_machine_events(recorder)
         mode=getattr(request,"param",False)
         backend.attach_cold_preflight(policy(),automatic_inspection=mode is True)
-        if mode in ('checkpoint','configuration'):
+        if mode in ('checkpoint','configuration','checkpoint-configuration'):
             if mode=='checkpoint':provider.checkpoint_from_controller=lambda *a:None
-            backend.attach_completion_barrier(checkpoint_inspection=mode=='checkpoint')
+            if mode=='checkpoint-configuration':provider.checkpoint_from_sources=lambda *a:None
+            backend.attach_completion_barrier(checkpoint_inspection=mode in ('checkpoint','checkpoint-configuration'),
+                checkpoint_configuration=mode=='checkpoint-configuration')
             if mode=='configuration':backend.attach_configuration_report()
         endpoint.claim();capture=(recorder,endpoint,SimpleNamespace(_serial=endpoint),now,chunks)
         channel.dispatch('inspect',now=8,deadline=20);channel.feed(inactive(1,0),now=8.1)

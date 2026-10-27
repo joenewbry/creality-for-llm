@@ -118,7 +118,7 @@ class AssignedCompletionBarrier:
                     line_number=int(re.match(rb'N([0-9]+) ',data)[1]) if re.match(rb'N([0-9]+) ',data) else None))
             else:
                 tail=action.get('inspection')
-                if (index==2 and tail is not None and not tail['writes']
+                if (index==len(action['commands']) and tail is not None and not tail['writes']
                         and command==tail['command'] and sequence==action['writes'][-1]['sequence']+1):
                     tail['writes'].append(dict(sequence=sequence,started_at=now,
                         sha256=hashlib.sha256(data).hexdigest(),confirmed=False,
@@ -131,7 +131,7 @@ class AssignedCompletionBarrier:
                 for write in self._active['writes']+self._active.get('inspection',{}).get('writes',[]):
                     if write['sequence'] == sequence: write['confirmed'] = True
 
-    def dispatch(self, operation_id, phase, identity, enqueue, *, completion_window=None):
+    def dispatch(self, operation_id, phase, identity, enqueue, *, completion_window=None, configuration_report=False):
         """Persist once, then enqueue the fixed command group through the owned sender.
 
         enqueue is an internal sender adapter, never a caller-supplied tool value.
@@ -142,6 +142,8 @@ class AssignedCompletionBarrier:
             if self._active is not None and (not self._active.get('completed')
                     or self._active.get('inspection') is not None and not self._active['inspection'].get('complete')):
                 raise RequestRejected('barrier_already_pending')
+            if type(configuration_report) is not bool or configuration_report and phase not in ('paused','resuming'):
+                raise RequestRejected('configuration_report_requires_pause_or_resume')
             if phase not in self.PHASE_OPERATIONS or not callable(enqueue):
                 raise RequestRejected('invalid_barrier_dispatch')
             if type(identity) is not dict or identity.keys() != {'printer_id','generation','host_session','job_id','file_sha256'}:
@@ -161,7 +163,8 @@ class AssignedCompletionBarrier:
             now = self._now()
             token = uuid.uuid4().hex
             commands=('M400','M118 E1 LLM_BARRIER_'+token)
-            if phase=='configuration':commands+=('M115','M503','M118 E1 LLM_CONFIG_END_'+token)
+            reports_configuration=phase=='configuration' or configuration_report
+            if reports_configuration:commands+=('M115','M503','M118 E1 LLM_CONFIG_END_'+token)
             with recorder.journal._db() as db:
                 row = db.execute('SELECT request,status FROM operations WHERE operation_id=?',(operation_id,)).fetchone()
                 if row is None: raise RequestRejected('journaled_barrier_operation_required')
@@ -180,7 +183,7 @@ class AssignedCompletionBarrier:
                     deadline=completion_window.deadline
                 cursor = db.execute('SELECT MAX(sequence) FROM machine_events').fetchone()[0] or 0
                 intent = dict(operation_id=operation_id,phase=phase,identity=identity,token=token,
-                    capture_id=recorder.capture_id,started_at=now,deadline=deadline,after=cursor,request=request,commands=commands)
+                    capture_id=recorder.capture_id,started_at=now,deadline=deadline,after=cursor,request=request,commands=commands,reports_configuration=reports_configuration)
                 if completion_window is not None:intent['completion_window']=completion_window.record()
                 try:
                     db.execute('INSERT INTO assigned_barriers VALUES (?,?,?,?,?,?)',
@@ -281,7 +284,7 @@ class AssignedCompletionBarrier:
                     if event['kind'] != 'serial_line_received': continue
                     raw = event['data']['text'].encode('ascii')
                     marker=raw.rstrip(b'\r\n')
-                    is_end=(action['phase']=='configuration' and marker==('echo:LLM_CONFIG_END_'+action['token']).encode())
+                    is_end=(action['reports_configuration'] and marker==('echo:LLM_CONFIG_END_'+action['token']).encode())
                     if not is_end and marker!=('echo:LLM_BARRIER_'+action['token']).encode():continue
                     key='end_receipt' if is_end else 'receipt'
                     write_index=4 if is_end else 1
@@ -310,7 +313,7 @@ class AssignedCompletionBarrier:
                 if end and (receipt is None or end['event_sequence']<=receipt['event_sequence']):action['fault']=action['fault'] or 'configuration_marker_order_invalid'
                 if action['fault']: raise RequestRejected(action['fault'])
                 if (not receipt or len(action['writes'])!=len(action['commands']) or not all(w['confirmed'] for w in action['writes'])
-                        or action['phase']=='configuration' and end is None):return None
+                        or action['reports_configuration'] and end is None):return None
                 result = dict(operation_id=action['operation_id'],phase=action['phase'],identity=action['identity'],
                     token=action['token'],capture_id=action['capture_id'],writes=action['writes'],receipt=receipt,
                     **({'end_receipt':end} if end is not None else {}),

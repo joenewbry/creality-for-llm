@@ -1,0 +1,64 @@
+{
+  "linux": {
+    "passed": 444,
+    "skipped": 0,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 282.023,
+    "xml_sha256": "0a93fba9675256f6b1d18d05aa6b57c8317e813d488088ee09c813fdd44498d6"
+  },
+  "mac": {
+    "passed": 413,
+    "skipped": 31,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 7.652,
+    "xml_sha256": "c98691d2dc282f04282874ff41809318ae198cbfc847d481845e3415f2e3207c"
+  },
+  "schema_version": 1,
+  "date": "2026-10-27",
+  "source_commit": "04ccf8dc5f3106775d28207605e3480a8b8308a7",
+  "scope": "same focused source cohort; compound pause/resume settings/state with synthetic reports and physical proofs",
+  "source_inputs_matched": 166,
+  "new_compound_tests": 21,
+  "export_checks": 9,
+  "mode": "checkpoint_inspection=True, checkpoint_configuration=True",
+  "external_provider": "checkpoint_from_sources(identity, controller_report, configuration_report)",
+  "fixed_read_frames": 5,
+  "state_inspection_numbered": false,
+  "original_source_max_age_seconds": 1,
+  "reported_change_blocks_before_provider": true,
+  "staged_file_rechecked_before_checkpoint": true,
+  "configuration_identity_complete": false,
+  "physical_readiness_qualified": false,
+  "physical_printers_accessed": false,
+  "firmware_changed": false,
+  "camera_scope": "deferred",
+  "verified_behaviors": [
+    "separate fresh settings and state for each pause/resume parent",
+    "exact committed five-command read group followed by one journaled unnumbered inspection",
+    "reported settings/declaration/capability changes refuse resume before provider callback",
+    "both source dictionaries copied before provider and source authority resampled afterward",
+    "only five exact numbered read frames explain transport advancement",
+    "missing, extra, repeated, stale, delayed or changed-file inputs cannot qualify",
+    "two numbered cycles rebind reports and original times",
+    "controller-loop progress without another model poll",
+    "official protocol client drives existing pause/resume interface",
+    "external source provider required; no legacy callback fallback"
+  ],
+  "remaining": [
+    "runtime idle/motor timeout producer and full profile coverage",
+    "known installed artifact and actual hardware identity",
+    "physical provider and pre-open startup checker",
+    "bounded callback and Mac transport/runtime qualification",
+    "sensor diagnosis and development commissioning",
+    "separate post-repair printing qualification"
+  ],
+  "limitations": [
+    "M503 digest identifies only reported rows and declared firmware",
+    "matching digests do not establish complete runtime, binary or physical identity",
+    "new source and physical proofs are synthetic; native/sender tests are regression coverage",
+    "no physical M503/checkpoint test or new installed-package/full-suite claim",
+    "provider callback is not preempted"
+  ]
+}

@@ -14,7 +14,9 @@ unplanned subsequent frames. The optional [post-drain inspection](checkpoint-ins
 durably permits one exact child query after the marker; it does not permit a
 general read-command exception. A separate optional [configuration-report phase](configuration-report.md)
 uses a fixed five-frame group with both begin/end markers. Its completed read
-interval is retired before ordinary pre-job traffic resumes. A receive can precede a write's return: its original source
+interval is retired before ordinary pre-job traffic resumes. Optional compound
+pause/resume uses that same exact group followed by its one state inspection;
+the job barrier remains guarded through checkpoint admission. A receive can precede a write's return: its original source
 arrival is retained, but no result is available until both writes are confirmed.
 
 The marker must come from the durable assigned capture under the same lease,

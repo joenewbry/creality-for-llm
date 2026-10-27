@@ -57,8 +57,9 @@ The result always reports configuration_identity_complete=false,
 firmware_binary_identity_verified=false, physical_readiness_qualified=false and
 resume_authorized=false. It is an input for the unfinished physical provider,
 not a startup admission or action grant. Collecting it before the first job does
-not establish that settings remain unchanged during a later pause. Post-drain
-configuration collection/coverage and physical provider integration remain open.
+not establish that settings remain unchanged during a later pause. Optional [compound checkpoint inspection](checkpoint-inspection.md) now collects
+a fresh report inside pause/resume. Complete runtime/profile coverage and
+physical provider integration remain open.
 
 Tests exercise actual journal/writer/capture/channel/backend/controller loop and
 an official Model Context Protocol client, with synthetic firmware/settings

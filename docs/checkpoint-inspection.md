@@ -1,8 +1,9 @@
 # Post-drain controller inspection
 
 Opt in with `attach_completion_barrier(checkpoint_inspection=True)` before sender
-start, after owned source capture is attached. The external evidence provider
-must implement `checkpoint_from_controller(identity, report)`. Default behavior
+start, after owned source capture is attached. The default state-only mode
+requires the external evidence provider method
+`checkpoint_from_controller(identity, report)`. Default behavior
 and the existing provider interface remain available when this mode is off.
 
 Pause and resume each acquire their own post-drain report. The assigned sender
@@ -63,3 +64,44 @@ needed for firmware commissioning; the historical negative nozzle reading is
 unresolved. Neither printer is opened by this change. The original printer stays
 protected. Logitech work remains deferred. Printing is a separate post-repair
 qualification.
+
+## Settings alongside the controller report
+
+Opt in with `checkpoint_inspection=True, checkpoint_configuration=True` when
+attaching the barrier. This requires the external provider method
+`checkpoint_from_sources(identity, controller_report, configuration_report)`.
+The adapter does not fall back to the legacy callback for this mode.
+
+Each pause/resume parent journals one fixed five-frame group: M400, unique begin
+marker, M115, M503 and unique end marker. After that report interval completes,
+the parent journals its one correlated prompt-lane state inspection. The exact
+five commands and one adjacent inspect are the only permitted writes. Both
+marker receipts and the later state report retain their original source time,
+one-second age bounds, identity/capture/session and parent deadline. The native
+state must follow the configuration end marker and inspect write. Collection
+uses the existing bounded report parser and durable assigned source, not caller
+hashes or a cached pre-job report.
+
+Pause stores the reported-settings digest with its qualified checkpoint. Resume
+acquires another report and rejects a changed firmware declaration, capability
+or reported replay setting before calling the physical provider or releasing
+motion. This remains a conservative reported-change check, not complete printer
+configuration identity. Matching reports do not establish binary identity,
+runtime timeout state or physical continuity; the provider still supplies those
+facts. Both source dictionaries are copied before the external callback and
+source authority is checked again afterward. The staged file is checked before
+a checkpoint can be returned.
+
+Numbered transports may advance only by these five exact verified frames;
+the prompt inspection is unnumbered. File cursor, modes, configuration identity,
+physical proofs and pause interval remain strict. Unexplained numbering changes,
+missing/interleaved/replayed input or a slow provider keep resume paused and
+require reconciliation. Two-cycle and official tool-client tests exercise the
+same existing job.pause/job.resume interface with synthetic physical proofs.
+This mode adds no raw-command tool and does not enable the standalone pre-job
+configuration tool during an active or paused job.
+
+A new resume operation acquires the fresh admission evidence while the sender
+stays paused. Re-reading the completed pause receipt does not refresh it. Submit
+one resume request and poll its returned operation ID; do not toggle pause or
+replay commands to make the old evidence appear current.

@@ -186,6 +186,7 @@ include tests/test_camera.py
 include tests/test_camera_http.py
 include tests/test_camera_owner.py
 include tests/test_checkpoint.py
+include tests/test_checkpoint_configuration.py
 include tests/test_checkpoint_inspection.py
 include tests/test_cold_preflight.py
 include tests/test_combined_pause_interrupt.py
@@ -279,6 +280,7 @@ include validation/camera-broker-stage114.json
 include validation/camera-owner-api-stage117.json
 include validation/camera-owner-http-stage116.json
 include validation/capture-finalization-stage86.json
+include validation/checkpoint-configuration-stage150.json
 include validation/checkpoint-inspection-stage147.json
 include validation/clean-export-4b768f9.json
 include validation/clean-export-86bde0b.json
