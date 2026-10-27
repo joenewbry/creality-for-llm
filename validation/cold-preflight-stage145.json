@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-27",
+  "scope": "source-backed bounded cold command screening component; full physical provider unfinished",
+  "source_commit": "6f6948aa795f80f7cc993e0ea01d5347e36b727a",
+  "linux": {
+    "passed": 323,
+    "skipped": 0,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 219.95,
+    "xml_sha256": "02d2776f645b1cfee3b7ddb26df2c25cf3d69a0779ce8decb8052cea202a1fb2"
+  },
+  "mac": {
+    "passed": 305,
+    "skipped": 18,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 4.3,
+    "xml_sha256": "9193435ebe2b50ad249af3a7692c107485cfc90b9adba16fb00ce9fa12d545d6"
+  },
+  "source_inputs_matched": 157,
+  "native_inputs_verified": 16,
+  "new_modules": [
+    "ColdJobPolicy",
+    "cold_job_plan",
+    "AssignedColdPreflight"
+  ],
+  "new_read": "job.cold_preflight(job_id, operation_id)",
+  "policy_arguments_exposed_to_model": false,
+  "physical_readiness_qualified": false,
+  "dispatch_authorized_by_preview": false,
+  "native_source_commit": "0f8d1ca1055b9030cabf6ff8e3a6762fdb4dfee7",
+  "new_source_tests": "synthetic cold-ready packets through real owned capture, prompt channel, journal, state reader and router; official Model Context Protocol client over memory streams",
+  "bound_fields": [
+    "immutable job hash",
+    "canonical policy hash",
+    "host/job/connection identity",
+    "inspect operation, session, capture and source sequence",
+    "original source arrival and one-second age limit"
+  ],
+  "command_limits": [
+    "absolute XYZ G1 only after exact initialization",
+    "no E, homing, arcs, calibration, raw waits, positive heat or fan targets",
+    "explicit feed, bounds, path length, move count and nominal-time budgets",
+    "bounded plain ASCII, lines and input bytes"
+  ],
+  "admission_checks": [
+    "logical controller/axis/mode/offset/override/fan/temperature screening",
+    "source resample after parsing and external preflight",
+    "same job/hash/policy on stage and start",
+    "failed check withdraws cached preview",
+    "external preflight remains required",
+    "stage receipt retains source screening input"
+  ],
+  "estimates_are_physical_clearance_or_elapsed_time_guarantees": false,
+  "new_inspections_issued_by_preview": false,
+  "controller_managed_inspection_coordinator_complete": false,
+  "physical_provider_complete": false,
+  "export_checks_passed": 9,
+  "installed_package_tested": false,
+  "full_suite_repeated": false,
+  "physical_printer_access": false,
+  "camera_access": false,
+  "firmware_flashed": false,
+  "remaining": [
+    "controller-managed fresh-inspection coordinator for stage/start",
+    "ordered source inspection compatible with checkpoint barriers",
+    "qualified hardware/firmware/configuration identity and physical continuity inputs",
+    "sensor diagnosis, development commissioning and nonprinting hardware demonstration",
+    "separate post-repair printing qualification"
+  ]
+}

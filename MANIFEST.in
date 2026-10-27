@@ -33,6 +33,7 @@ include docs/assigned-job.md
 include docs/assigned-observations.md
 include docs/blocker-matrix.md
 include docs/camera-interface.md
+include docs/cold-preflight.md
 include docs/contributions.md
 include docs/development-hardware.md
 include docs/dispatch-admission.md
@@ -81,6 +82,7 @@ include printer_control/__init__.py
 include printer_control/assigned_barrier.py
 include printer_control/assigned_job.py
 include printer_control/assigned_observations.py
+include printer_control/assigned_preflight.py
 include printer_control/assigned_sender.py
 include printer_control/assigned_state.py
 include printer_control/camera.py
@@ -88,6 +90,7 @@ include printer_control/camera_http.py
 include printer_control/camera_owner.py
 include printer_control/camera_owner_api.py
 include printer_control/checkpoint.py
+include printer_control/cold_preflight.py
 include printer_control/combined_virtual.py
 include printer_control/devices.py
 include printer_control/journal.py
@@ -168,6 +171,7 @@ include tests/stream_disconnect_scenario.py
 include tests/test_assigned_barrier.py
 include tests/test_assigned_job.py
 include tests/test_assigned_observations.py
+include tests/test_assigned_preflight.py
 include tests/test_assigned_sender.py
 include tests/test_assigned_state.py
 include tests/test_assigned_transport.py
@@ -175,6 +179,7 @@ include tests/test_camera.py
 include tests/test_camera_http.py
 include tests/test_camera_owner.py
 include tests/test_checkpoint.py
+include tests/test_cold_preflight.py
 include tests/test_combined_pause_interrupt.py
 include tests/test_combined_policy.py
 include tests/test_crash_recovery.py
@@ -268,6 +273,7 @@ include validation/capture-finalization-stage86.json
 include validation/clean-export-4b768f9.json
 include validation/clean-export-86bde0b.json
 include validation/clean-export-8d8453f.json
+include validation/cold-preflight-stage145.json
 include validation/development-about-owner-20261026.json
 include validation/development-readonly-stage130.json
 include validation/dispatch-admission-stage137.json
