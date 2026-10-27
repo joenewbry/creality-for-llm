@@ -1,6 +1,6 @@
 # Contribution delivery and review stack
 
-Updated October 27, 2026. Thirty host, six earlier Creality firmware and four maintained-source firmware pull requests are open as drafts in the owner's repositories. Each PR names its predecessor and validation evidence. They are review candidates, not merged releases or accepted upstream contributions.
+Updated October 27, 2026. Thirty-two host, six earlier Creality firmware and four maintained-source firmware pull requests are open as drafts in the owner's repositories. Each PR names its predecessor and validation evidence. They are review candidates, not merged releases or accepted upstream contributions.
 
 ## Repository relationships
 
@@ -42,6 +42,8 @@ Updated October 27, 2026. Thirty host, six earlier Creality firmware and four ma
 | [H19](https://github.com/joenewbry/creality-for-llm/pull/28) | Retire assigned dispatch on source-bound sensor and firmware hazards | `stack/h18-development-identity` |
 | [H20](https://github.com/joenewbry/creality-for-llm/pull/29) | Own assigned sender and prompt-consumer lifecycle | `stack/h19-source-hazard-interlock` |
 | [H21](https://github.com/joenewbry/creality-for-llm/pull/30) | Verify stock recovery provenance and firmware feature limits | `stack/h20-assigned-lifecycle` |
+| [H22](https://github.com/joenewbry/creality-for-llm/pull/31) | Revalidate dispatch admission after journal commitment | `stack/h21-manufacturer-recovery` |
+| [H23](https://github.com/joenewbry/creality-for-llm/pull/32) | Keep the sender closed after competing errors | `stack/h22-dispatch-admission` |
 
 ## Firmware stack
 
@@ -56,7 +58,7 @@ Updated October 27, 2026. Thirty host, six earlier Creality firmware and four ma
 
 ## Validation and physical limits
 
-The exact public snapshot `4e820fa0e2ec4dcc5656b780e335ca9377cbb347` passes the complete installed-package Linux aarch64/Python 3.11.13 suite: **1156 passed, zero skips**. Tests run outside the source tree; installed runtime bytes and all 99 locked dependencies are verified. [Current qualification](../validation/linux-package-stage132.json) includes explicit assigned resend/timeout retirement. Mac focused checks pass 101 with eight Linux-only skips; exporter checks pass nine. Two delegation regressions fail before correction. Actual sender/terminal fault cases retain unknown outcome, preserve the received resend line, emit no original move twice and send no later frames or automatic M112, including with the emergency-frame error option enabled. An admitted frame remains unknown when retirement interrupts its bounded write. Normal job/prompt/native-wait scenarios also pass. Separate virtual resend cases retain their earlier profile; physical acknowledgment/recovery semantics and hardware/camera qualification remain unfinished. Prior records remain historical; later delivery changes are documentation/qualification/source-archive metadata with tested runtime/tests/dependency inputs unchanged.
+The exact public snapshot `ad89416ec5362244803ed6bc364021a1147fddfe` passes the complete installed-package Linux aarch64/Python 3.11.13 suite: **1,175 passed, zero skips**. Tests run outside the source tree; installed runtime bytes and all 99 locked dependencies are verified. [Current qualification](../validation/linux-package-stage137.json) includes post-commit admission and the dependent sender error-close correction. Fourteen admission regressions and three sender regressions reproduce against the prior source. Failed attempts remain recorded, including the long-held-lock timeout and an MCP pause-fixture race. The final software-only fixture gates a virtual move until actual pause dispatch; state/deadline/physical gates are not weakened. [Admission contract](dispatch-admission.md) and [sender lifecycle](sender-error-close.md) define the boundaries. Physical/provider/driver/printing qualification remains unfinished. Later changes are documentation, qualification and archive metadata; tested runtime/test/dependency inputs remain unchanged.
 
 The first ten public review trees preserve their originally tested trees. [The goal audit](goal-audit.md) lists unmet requirements, and [the printing plan](printing-qualification-plan.md) separates post-repair physical testing from software qualification. The readiness-admission reference does not certify hardware or clear unknown receipts.
 
@@ -108,6 +110,7 @@ The first three source layers need the runtime correction in M4 to complete
 the near-target backport. The corrected candidate builds with 13,600 bytes free;
 32 actual-source thermal paths, 11 prompt cases, six watch-template scenarios,
 three threshold checks and 66 host checks pass. All physical dependencies are recording stubs;
-full manager/physical shutdown and printing remain unqualified. The 1,156-test
-installed Linux qualification and older firmware-test pin are unchanged.
+full manager/physical shutdown and printing remain unqualified. The current 1,175-test
+installed Linux qualification still uses the older firmware-test pin; v040 has
+separate focused native/build qualification.
 [Detailed current source and limits](maintained-firmware.md).

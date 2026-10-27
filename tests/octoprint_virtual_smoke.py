@@ -108,7 +108,7 @@ class RecordingVirtualPrinter(VirtualPrinter):
         return data + b'\n' if data and not data.endswith(b'\n') else data
 
 
-def main(scenario='resume', use_service=False, console=False, journal_path=None, mcp=False, model_fixture=False):
+def main(scenario='resume', use_service=False, console=False, journal_path=None, mcp=False, model_fixture=False, pause_fixture=False):
     if not console:
         faulthandler.dump_traceback_later(45)
     logging.basicConfig(level=logging.WARNING)
@@ -116,8 +116,9 @@ def main(scenario='resume', use_service=False, console=False, journal_path=None,
     # Keep these fault scenarios running until their pause has been requested.
     # A short virtual job can otherwise finish between MODEL_005 and submission.
     # Hold only the simulator's motion worker, never a sender/service lock.
-    pause_fixture_gate = (threading.Event() if use_service and not console and
-                          scenario in ('native_prompt', 'thermal_fault', 'disconnect', *FAULT_REPORTS)
+    pause_fixture_gate = (threading.Event() if pause_fixture or
+                          use_service and not console and scenario in
+                          ('native_prompt', 'thermal_fault', 'disconnect', *FAULT_REPORTS)
                           else None)
 
     def no_physical(*args, **kwargs):
@@ -239,6 +240,14 @@ def main(scenario='resume', use_service=False, console=False, journal_path=None,
             job.write_text(content)
             if use_service:
                 class AuditedVirtualBackend(OctoPrintVirtualBackend):
+                    def dispatch(self,operation_id,operation,arguments,*,deadline):
+                        result=super().dispatch(operation_id,operation,arguments,deadline=deadline)
+                        # Test-only: hold virtual move 6 until pause was admitted.
+                        # The real sender then drains its barrier normally. No
+                        # sender/service lock is held by the blocked move worker.
+                        if pause_fixture and operation=='job.pause':pause_fixture_gate.set()
+                        return result
+
                     def inspect(self):
                         result = super().inspect()
                         completed = list(virtual[0].completed_moves)
@@ -580,8 +589,11 @@ if __name__ == '__main__':
     parser.add_argument('--console', action='store_true', help='Serve typed tools over stdin/stdout; VIRTUAL only')
     parser.add_argument('--mcp', action='store_true', help='Serve the virtual-only console through MCP stdio')
     parser.add_argument('--model-fixture', action='store_true', help='Software-only movement delay for model latency')
+    parser.add_argument('--pause-fixture', action='store_true', help='Hold virtual move 6 until MCP/console pause dispatch; resume scenario only')
     parser.add_argument('--journal', type=Path, help='Persistent console receipt database; parent must exist')
     args = parser.parse_args()
+    if args.pause_fixture and (not (args.console or args.mcp) or args.scenario!='resume'):
+        parser.error('pause-fixture requires the resume console or MCP experiment')
     if args.scenario=='hot_console' and not (args.console or args.mcp):
         parser.error('hot_console requires --console or --mcp')
     if args.scenario == 'native_prompt' and (not args.service or args.console or args.mcp or args.model_fixture):
@@ -595,4 +607,4 @@ if __name__ == '__main__':
         evidence = Path(__file__).resolve().parents[1] / 'evidence'
         evidence.mkdir(exist_ok=True)
         journal_path = evidence / 'virtual-console.sqlite'
-    main(args.scenario, args.service or args.console or args.mcp, args.console or args.mcp, journal_path, args.mcp, args.model_fixture)
+    main(args.scenario, args.service or args.console or args.mcp, args.console or args.mcp, journal_path, args.mcp, args.model_fixture, args.pause_fixture)
