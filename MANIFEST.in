@@ -243,6 +243,7 @@ include validation/clean-export-4b768f9.json
 include validation/clean-export-86bde0b.json
 include validation/clean-export-8d8453f.json
 include validation/development-about-owner-20261026.json
+include validation/development-readonly-stage130.json
 include validation/firmware-stack-stage76.json
 include validation/host-core-boundary-stage90.json
 include validation/host-llm-interface-boundary-stage97.json

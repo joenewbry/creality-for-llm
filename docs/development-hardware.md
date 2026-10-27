@@ -24,22 +24,50 @@ The [About handler](https://github.com/CrealityOfficial/Ender-3S1/blob/7fffa9270
 sends that configured string to the display. This is evidence about the older
 published source; the installed 2.0.8.28F4 binary is not proven byte-identical to it.
 
-## Evidence still needed before commissioning
+## Current development-only read-only observations
 
-1. A readable mainboard label and processor marking from the development unit.
-   Disconnect that unit from mains and USB before inspecting its electronics.
-   An exact chip marking resolves the remaining processor choice; another About
-   photo is unnecessary. Leave the protected printer untouched.
-2. Current nozzle and bed readings on Home, with heater targets off, plus
-   confirmation that the development unit is idle and its bed/movement area is
-   clear. The earlier −15°C nozzle report needs diagnosis; this About photo
-   contains no temperature reading or mechanical-clearance evidence.
+The owner confirmed the development printer is idle and its movement area clear.
+On October 27 UTC, an operator diagnostic revalidated the assigned USB topology
+and registry identity, excluded the protected printer, and queried `M115` and
+`M105` once each. The installed firmware reports **2.0.8.28F4**, built June 19,
+2023. The nozzle reports **−15.00°C**, bed **21.70°C**, and both heater targets
+**0°C**. No additional About or Home-screen photo is needed for these facts.
 
-After those facts, qualify the actual driver/assignment, preserve readable
-settings and confirm the recovery procedure before any firmware installation.
-The current screen version is recorded; a physical display part identification
-is still needed if a display update becomes necessary. No display update is
-required merely because a recovery archive contains screen assets.
+The negative nozzle reading is invalid for this room-temperature commissioning
+context. A temperature-sensing fault is suspected; a clogged nozzle alone does
+not establish its cause. Keep heating, extrusion and motion disabled while
+sensor/wiring diagnosis and readiness qualification remain open. Zero targets
+are firmware observations, not independent proof of physical heater shutdown.
+
+The diagnostic used system Python 3.14.6, rather than the qualified installed
+Python 3.11 package. Driver exclusivity rejected second opens through both
+serial aliases with EBUSY. The first attempt sent no G-code because its owner
+parser rejected an FD record; a local-file fixture and four parser tests
+validated the correction before a separately recorded second attempt. No
+firmware, reset, motion or heater command was sent. Opening/configuring serial
+can affect hardware signals, so absence of a reset is not claimed. This is
+operator evidence, not qualification of the production physical backend.
+
+[Sanitized observation record](../validation/development-readonly-stage130.json).
+Raw identities, serial transcripts and the original photo remain private.
+
+## Hardware inspection and commissioning
+
+The owner prefers to defer mainboard/chip inspection. It is **not a prerequisite
+for source work, simulation, documentation or the current read-only diagnostic**.
+The F4 version strongly supports the F401 build family, but remains an inference.
+Open source describes supported build targets; it does not identify installed
+silicon or its bootloader. Before any firmware flash, qualify the specific
+candidate, bootloader and compatible recovery procedure. Seek a physical marking
+only if remaining uncertainty cannot be resolved sufficiently through other
+reliable evidence. Do not open electronics merely to continue host software work.
+
+A historical development-only `M503` settings transcript exists; it is not a
+current settings backup or a validated restoration procedure. Matching archive
+names and embedded version strings do not authenticate a recovery image.
+The screen reports V1.0.5; identify its physical part only if a display update
+becomes necessary. No display update is required merely because an archive
+contains screen assets. The protected printer remains excluded.
 
 ## Logitech work deferred
 

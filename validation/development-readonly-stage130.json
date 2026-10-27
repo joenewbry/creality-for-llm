@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "observation_date_utc": "2026-10-27",
+  "scope": "operator development-only read-only diagnostic; not production backend qualification",
+  "owner_confirmed_idle_and_clear": true,
+  "commands_sent_once_each": [
+    "M115",
+    "M105"
+  ],
+  "reported_firmware": "2.0.8.28F4",
+  "reported_firmware_build": "Jun 19 2023 18:06:53",
+  "reported_model": "Ender-3 S1 Pro",
+  "nozzle_c": -15.0,
+  "bed_c": 21.7,
+  "nozzle_target_c": 0.0,
+  "bed_target_c": 0.0,
+  "nozzle_reading_valid_for_commissioning": false,
+  "root_cause_established": false,
+  "capabilities": {
+    "EMERGENCY_PARSER": false,
+    "HOST_ACTION_COMMANDS": false,
+    "PROMPT_SUPPORT": false
+  },
+  "physical_processor_verified": false,
+  "processor_family_inference": "F401; version-based, not a physical marking",
+  "chip_inspection_required_for_current_readonly_work": false,
+  "protected_printer_opened": false,
+  "motion_or_heater_commands_sent": false,
+  "firmware_flashed": false,
+  "production_backend_qualified": false,
+  "runtime": "operator system Python 3.14.6; distinct from installed package qualification",
+  "serial_alias_second_opens": "both rejected EBUSY",
+  "first_attempt": "owner parser rejected FD record; zero G-code sent",
+  "parser_correction_validation": {
+    "unittest_methods_passed": 4,
+    "fixture": "local-file lsof output includes pPID and fFD"
+  },
+  "limitations": [
+    "Opening/configuring serial may affect hardware signals; absence of reset not established",
+    "Zero targets do not independently prove physical heater shutdown",
+    "Sensor/wiring fault suspected; root cause unproven",
+    "Native production driver/provider integration and physical qualification remain open"
+  ],
+  "camera_scope": "deferred_by_owner"
+}

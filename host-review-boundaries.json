@@ -815,7 +815,8 @@
         "validation/assigned-replay-stage125.json": "validation/assigned-replay-stage125.json",
         "validation/linux-package-stage125.json": "validation/linux-package-stage125.json",
         "docs/development-hardware.md": "docs/development-hardware.md",
-        "validation/development-about-owner-20261026.json": "validation/development-about-owner-20261026.json"
+        "validation/development-about-owner-20261026.json": "validation/development-about-owner-20261026.json",
+        "validation/development-readonly-stage130.json": "validation/development-readonly-stage130.json"
       }
     }
   }
