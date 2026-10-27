@@ -16,6 +16,11 @@ passive prompt consumption between tool calls and coordinated shutdown joining.
 It still requires an independent evidence provider and a qualified physical
 transport; no default physical launcher is enabled.
 
+The [firmware parity audit](docs/firmware-parity.md) identifies stock input shaping
+missing from the older .24 candidate. It remains a protocol experiment, not a
+qualified stock .28 print upgrade. The official HighSpeed branch contains
+prebuilt .27 images rather than a matching controller source tree.
+
 ## Source layout
 
 - `printer_control`: host tools, durable service, protocol, ownership and camera interfaces.

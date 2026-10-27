@@ -76,7 +76,10 @@ screen update is justified and qualified.
    settings, sensors and required non-printing behavior. Printing remains a
    separate post-repair qualification.
 
-The custom source baseline is older than the installed firmware. An authentic
+The [feature-parity audit](firmware-parity.md) confirms that the older .24
+candidate lacks the input shaping reported by stock .28. The official HighSpeed
+branch contains prebuilt .27 firmware rather than matching controller source.
+An authentic
 matching stock delivery does not resolve that source-version mismatch or prove
 our candidate preserves all stock .28 features. This is a manufacturer-sourced
 recovery **candidate**, not a validated rollback or permission to flash now.

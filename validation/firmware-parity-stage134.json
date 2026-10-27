@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "observed_date": "2026-10-27",
+  "scope": "offline stock/source feature-parity audit; no firmware commissioning",
+  "candidate_source_commit": "98aa03248337b8039a09bbc1a29f33432aed08ca",
+  "candidate_vendor_base": "7fffa9270ff8fb5ee208a5b04f832e20bab19c60",
+  "candidate_reported_version": "2.0.8.24F4",
+  "installed_reported_version": "2.0.8.28F4",
+  "historical_development_shaping_report": {
+    "capture_date": "2026-10-25",
+    "lines": [
+      "M593 X F50.00 D0.15",
+      "M593 Y F35.00 D0.15"
+    ],
+    "current_values_reverified": false
+  },
+  "candidate_M593_handler_or_dispatch_found": false,
+  "candidate_INPUT_SHAPING_source_found": false,
+  "search_scope": "all tracked Marlin files at candidate source commit",
+  "candidate_settings_source_tag": "V83",
+  "stock_binary_contains_V83_literal": true,
+  "matching_eeprom_schema_proven": false,
+  "candidate_drop_in_stock_equivalence_verified": false,
+  "physical_device_access": false,
+  "firmware_flashed": false,
+  "camera_scope": "deferred_by_owner",
+  "checked_official_branches": [
+    {
+      "name": "s1_pro_plus",
+      "commit": "7fffa9270ff8fb5ee208a5b04f832e20bab19c60",
+      "finding": "candidate vendor controller source; .24F4, no M593/input-shaping source"
+    },
+    {
+      "name": "3S1_Pro_HighSpeed",
+      "commit": "1a502c76b09c3e192f15857838f3017a9422e8d6",
+      "complete_tree_entries": 211,
+      "blob_count": 203,
+      "finding": "display payloads, update notes and prebuilt .27F4 mainboard binary; no controller C/C++ source"
+    },
+    {
+      "name": "main",
+      "commit": "b77d06db5a57a8b7743c7ccc76bdf714e244cf6a",
+      "configuration_versions": [
+        "V3.0.3",
+        "V3.0.3_Z"
+      ],
+      "M593_or_INPUT_SHAPING_source_found": false
+    },
+    {
+      "name": "ender-3s1-lasermodel",
+      "commit": "558757cfe542a4e2987b96ef964c98483edc09c9",
+      "configuration_versions": [
+        "V3.0.3",
+        "V3.0.3_Z"
+      ],
+      "M593_or_INPUT_SHAPING_source_found": false
+    },
+    {
+      "name": "Multiple_language",
+      "commit": "1e6b1df169c46a511e79d890dd89427ba9fbb75b",
+      "complete_tree_entries": 91,
+      "finding": "no Marlin Configuration.h in complete tree; not selected as matching controller source"
+    }
+  ],
+  "matching_28_controller_source_located": false,
+  "search_limit": "checked pinned branches in the official Ender-3S1 repository; not a claim about all possible source channels",
+  "feature_matrix": [
+    {
+      "feature": "input shaping",
+      "stock": "manufacturer notes advertise vibration optimization; historical development M503 reports M593 X/Y settings",
+      "candidate": "no M593/input-shaping handler/source at pinned candidate",
+      "parity": "absent from candidate"
+    },
+    {
+      "feature": "typed remote prompts",
+      "stock": "development M115 reports emergency parser/host actions/prompt support disabled",
+      "candidate": "configured emergency parser, host prompts and custom token protocol; software/native tested",
+      "parity": "added candidate software; physical controller/screen behavior unqualified"
+    },
+    {
+      "feature": "model preview and screen leveling/PID workflow",
+      "stock": "manufacturer .28 notes advertise preview, PID and leveling-data functions",
+      "candidate": "M303 PID command and leveling code exist; matching screen workflow not qualified",
+      "parity": "not established"
+    },
+    {
+      "feature": "160 mm/s printing",
+      "stock": "manufacturer release claim, not measured on this unit",
+      "candidate": "no physical speed/quality equivalence established",
+      "parity": "not qualified"
+    },
+    {
+      "feature": "settings restoration",
+      "stock": "historical settings transcript exists",
+      "candidate": "source V83 and stock binary V83 literal do not establish layout/restore compatibility",
+      "parity": "not qualified"
+    }
+  ],
+  "decision": "retain .24 as an unflashed protocol-development candidate; do not describe it as .28-equivalent or a qualified print upgrade",
+  "next_engineering_work": "evaluate a maintained S1 Pro Marlin source baseline with input shaping, port the bounded prompt changes and requalify before replacing pinned test inputs; keep existing branches/evidence intact",
+  "sources": [
+    "https://github.com/CrealityOfficial/Ender-3S1/tree/1a502c76b09c3e192f15857838f3017a9422e8d6",
+    "https://github.com/joenewbry/Ender-3S1-llm/tree/98aa03248337b8039a09bbc1a29f33432aed08ca",
+    "https://github.com/CrealityOfficial/Ender-3S1/tree/7fffa9270ff8fb5ee208a5b04f832e20bab19c60",
+    "https://www.crealitycloud.com/downloads/firmware/ender-series/ender-3-s1-pro"
+  ]
+}

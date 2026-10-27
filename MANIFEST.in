@@ -35,6 +35,7 @@ include docs/blocker-matrix.md
 include docs/camera-interface.md
 include docs/contributions.md
 include docs/development-hardware.md
+include docs/firmware-parity.md
 include docs/firmware-stack-builds.md
 include docs/goal-audit.md
 include docs/interface.md
@@ -245,6 +246,7 @@ include validation/clean-export-86bde0b.json
 include validation/clean-export-8d8453f.json
 include validation/development-about-owner-20261026.json
 include validation/development-readonly-stage130.json
+include validation/firmware-parity-stage134.json
 include validation/firmware-stack-stage76.json
 include validation/host-core-boundary-stage90.json
 include validation/host-llm-interface-boundary-stage97.json
