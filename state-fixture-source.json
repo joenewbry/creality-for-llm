@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "repository": "https://github.com/joenewbry/Marlin",
+  "commit": "0f8d1ca1055b9030cabf6ff8e3a6762fdb4dfee7",
+  "scope": "native test sources with stubbed physical dependencies; not the production host firmware pin",
+  "files": [
+    {
+      "path": "LICENSE",
+      "bytes": 35149,
+      "sha256": "98fb65289b5c3f1fe1ef6d9a909c450d649bf90bc18dcbccb9d0712539f1e725"
+    },
+    {
+      "path": "Marlin/src/feature/host_actions.cpp",
+      "bytes": 10232,
+      "sha256": "21ac0a697585cb7b9e3893037c3d98240351ca40e61c59b995fc93c1511ce917"
+    },
+    {
+      "path": "Marlin/src/feature/host_actions.h",
+      "bytes": 5099,
+      "sha256": "ae6183fd9f2a59f8aa68dc862a805f898057493a18c5972ba527fcec459bb5f3"
+    },
+    {
+      "path": "Marlin/src/feature/host_prompt_identity.h",
+      "bytes": 2797,
+      "sha256": "618fff49744fda71f68de5a1c9c27b70750091ffb14e8d4609796378fbb4aae2"
+    },
+    {
+      "path": "Marlin/src/feature/host_prompt_wire.h",
+      "bytes": 3711,
+      "sha256": "1e6418f9c768f8868335eb7557c146313a4a1cd6ef1c8748f2a7e0d6c0657af7"
+    },
+    {
+      "path": "Marlin/src/feature/host_prompt_wire.cpp",
+      "bytes": 5965,
+      "sha256": "a3a38e8476d54d88e2334cdd172750b5350f948a11f508d264035d27502ee685"
+    },
+    {
+      "path": "Marlin/src/feature/host_prompt_inbox.h",
+      "bytes": 2539,
+      "sha256": "49e9a09c9f32f487a9224361d2432b0c7628f65b6489a4ad80124e76b963a4eb"
+    },
+    {
+      "path": "Marlin/src/feature/e_parser.h",
+      "bytes": 2584,
+      "sha256": "ec37b92cbcdbcbf7919b4d9d2a69b5d974df6a79e43ab00033ef23b86b27c160"
+    },
+    {
+      "path": "Marlin/src/feature/e_parser.cpp",
+      "bytes": 8538,
+      "sha256": "742a6eb769d22f7682c5cf420b16bc46d5845347bff55c742902dcae2fa292c9"
+    },
+    {
+      "path": "Marlin/src/feature/host_prompt_rx_router.h",
+      "bytes": 1213,
+      "sha256": "96feacec32747b14e5d2d9a065a3e492f884a4006411eea3dd8894365fdf3aef"
+    },
+    {
+      "path": "Marlin/src/feature/host_machine_state.h",
+      "bytes": 541,
+      "sha256": "0552f10b94781b016ee4ebbbfada8c9c538f454798a59e801f9d36817cd1ab2c"
+    },
+    {
+      "path": "Marlin/src/feature/host_machine_state.cpp",
+      "bytes": 2240,
+      "sha256": "dc6739d580f06be4727b71ccef01fcdb0b431f8506815ef5488a7a533f5cbf6b"
+    },
+    {
+      "path": "Marlin/src/gcode/host/M876.cpp",
+      "bytes": 1356,
+      "sha256": "84d326ed8dc675c2e1dee2b4f70da218237bf04c03188edca9098ee775f4e2d7"
+    },
+    {
+      "path": "Marlin/src/gcode/control/M108_M112_M410.cpp",
+      "bytes": 1764,
+      "sha256": "0429f98431215f4fa275337708dd6ebd3865e9b166c55b60079f3a68b620eb0c"
+    },
+    {
+      "path": "buildroot/tests/llm_prompt_native.py",
+      "bytes": 9086,
+      "sha256": "8cc323040df964f5ce69775d6fa6b5e28c73d91aada5c6cef807fce41a15aa5a"
+    },
+    {
+      "path": "buildroot/tests/llm_machine_state_native.py",
+      "bytes": 8437,
+      "sha256": "98a3cb7d82cf969e0357d4af29fac32cb4969409bc9c3d05b779531e22b33ede"
+    }
+  ]
+}

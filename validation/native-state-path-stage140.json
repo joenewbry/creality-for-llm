@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "scope": "combined native report through assigned sender and journaled LLM read; no physical qualification",
+  "firmware_fixture_commit": "0f8d1ca1055b9030cabf6ff8e3a6762fdb4dfee7",
+  "firmware_fixture_files": 16,
+  "firmware_fixture_materialized_from_public_urls": true,
+  "macos_focused": {
+    "passed": 75,
+    "skipped": 1,
+    "skip": "Linux owned terminal scenario",
+    "junit_sha256": "64547ab3848d0251686e1301ffea119ff544b94bea883e73c56506c768f06c42"
+  },
+  "native_macos": {
+    "wire_cases": 5,
+    "getter_variants": 4,
+    "existing_prompt_cases": 11,
+    "log_sha256": "818ee06bec205124a93cd83c80f96d4229aee525cb6b29205e154c776d3c1217"
+  },
+  "diagnostic_linux": {
+    "native_state_read": true,
+    "moves_completed": 80,
+    "moves_at_pause": 10,
+    "native_prompt_frames": 4,
+    "physical_serial_open_or_discovery_attempts": 0
+  },
+  "installed_followup": null,
+  "production_runtime_changed": false,
+  "full_installed_runtime_snapshot": "c8d079cfb93c6a6ca26b4e1bc71a7c33c597c827",
+  "physical_access": false,
+  "firmware_flashed": false,
+  "paid_model_calls": 0,
+  "limitations": [
+    "The native controller uses stubbed hardware and its state is distinct from the virtual motion model",
+    "The job evidence provider still reads virtual-peer state and is not a physical provider",
+    "No operation-correlated physical barrier, configuration or motor/sensor/part continuity qualification",
+    "Physical provider, Mac transport and development commissioning remain unfinished"
+  ]
+}

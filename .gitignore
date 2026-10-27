@@ -3,6 +3,7 @@
 .platformio/
 upstream/
 firmware/
+state-firmware/
 evidence/
 __pycache__/
 .pytest_cache/

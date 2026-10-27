@@ -37,7 +37,7 @@ It pins the modified firmware needed by native tests as well as host dependencie
 
 
 Use Python 3.11 and `pytest==8.3.5` in an isolated virtual environment.
-Run `python -m pytest -q tests tests_mcp tests_model tests_print_mcp` for the complete suite. Software-terminal opens and read-only OS metadata checks are included; physical serial opens are denied by the virtual runners.
+Prepare both source inputs as described in [reproduction](docs/reproduce.md), including `python scripts/prepare_state_fixture.py` for the maintained native report fixture. Then run `python -m pytest -q tests tests_mcp tests_model tests_print_mcp` for the complete suite. Software-terminal opens and read-only OS metadata checks are included; physical serial opens are denied by the virtual runners.
 Firmware builds use `platformio==6.1.18` and an isolated `PLATFORMIO_CORE_DIR`.
 
 ## OctoPrint integration experiment

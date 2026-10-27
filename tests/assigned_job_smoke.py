@@ -25,6 +25,8 @@ from printer_control.preflight import cold_virtual_job
 from printer_control.checkpoint import PauseCheckpoint
 from printer_control.stream_witness import StreamWitness
 from assigned_sender_smoke import PeerBridge,Observer,RecordingVirtualPrinter,wait_for,NativeWaitMixin,build_native_harness
+from state_native_harness import build_state_native_harness
+from printer_control.journal import RequestRejected
 
 
 class FixtureEvidence:
@@ -84,13 +86,14 @@ def main(scenario):
         plugins=SimpleNamespace(get_hooks=get_hooks)
         stack.enter_context(patch.object(octoprint.plugin,'plugin_manager',lambda:plugins));stack.enter_context(patch.object(virtual_module,'plugin_manager',lambda:plugins))
         stack.enter_context(patch.object(comm,'eventManager',lambda:SimpleNamespace(fire=lambda *a,**k:None)))
+        native_scenario=scenario in ('native_prompt','native_state')
         class GatedPeer(RecordingVirtualPrinter):
             def _performMove(self,line):
-                if scenario!='native_prompt' and line.startswith('G1 X6 '):assert gate.wait(15)
+                if not native_scenario and line.startswith('G1 X6 '):assert gate.wait(15)
                 return super()._performMove(line)
         class NativePeer(NativeWaitMixin,GatedPeer):pass
-        peer_type=NativePeer if scenario=='native_prompt' else GatedPeer
-        options={'native_binary':build_native_harness(temp/'native')} if scenario=='native_prompt' else {}
+        peer_type=NativePeer if native_scenario else GatedPeer
+        options={'native_binary':(build_state_native_harness if scenario=='native_state' else build_native_harness)(temp/'native')} if native_scenario else {}
         content='G21\nG90\nM82\nT0\nM106 S0\nM104 S0\nM140 S0\nG92 E0\n'+''.join(f'G1 X{i} Y10 E{i/10:.1f} F6000\nM117 MODEL_{i:03d}\n' for i in range(1,81))
         expected=[s for s in content.splitlines() if s.startswith('G1 ')]
         job=temp/'software-only.gcode';job.write_text(content)
@@ -146,7 +149,7 @@ def main(scenario):
                 assert result['status']=='rejected' and not peer.completed_moves
                 print(json.dumps({'scenario':scenario,'rejected_before_start':True,'physical_serial_open_or_discovery_attempts':len(denied)}));return
             finish('job.start',req,result)
-            wait_for(lambda:peer.wait_active.is_set() if scenario=='native_prompt' else any('Recv: echo:MODEL_005' in s for s in observer.logs),'initial progress')
+            wait_for(lambda:peer.wait_active.is_set() if native_scenario else any('Recv: echo:MODEL_005' in s for s in observer.logs),'initial progress')
             if scenario in ('resend','ack_timeout','sensor_fault','thermal_fault'):
                 if scenario=='resend':peer._send('Resend: 1')
                 elif scenario=='sensor_fault':peer._send('ok T:-15.00 /0.00 B:21.70 /0.00')
@@ -180,12 +183,31 @@ def main(scenario):
                 return
             pause_req,pending=submit('job.pause');assert pending['status']=='running',pending
             gate.set()
-            if scenario=='native_prompt':
-                for name in ('prompt.inspect','prompt.bind','prompt.respond'):
+            state_evidence=None
+            if native_scenario:
+                sequence=('prompt.inspect','prompt.bind','prompt.inspect','prompt.respond') if scenario=='native_state' else ('prompt.inspect','prompt.bind','prompt.respond')
+                for index,name in enumerate(sequence):
                     state=router.call('printer.status',{})
                     args={'prompt':state['prompt_snapshot']['prompt'],'choice':0} if name=='prompt.respond' else {}
-                    req,result=submit(name,args);finish(name,req,result)
-                assert peer.wait_released.is_set() and len(peer.prompt_writes)==3
+                    req,result=submit(name,args);done=finish(name,req,result)
+                    if scenario=='native_state' and index==2:
+                        end=time.monotonic()+3
+                        while True:
+                            try:state_evidence=router.call('printer.machine_state',{'operation_id':done['operation_id']});break
+                            except RequestRejected as error:
+                                assert str(error)=='correlated_state_report_pending' and time.monotonic()<end,str(error)
+                                time.sleep(.005)
+                        assert state_evidence['state']['request']==done['result']['wire_request']
+                        assert state_evidence['state']['session']==backend.prompt.channel.session
+                        assert state_evidence['state']['position']['x']==.25
+                        assert not state_evidence['physical_readiness_qualified'] and not state_evidence['resume_authorized']
+                        assert state_evidence['state']['position']['x']!=peer._lastX  # Separate native/virtual models.
+                        prompt_frames=len(peer.prompt_writes);line=sender._current_line
+                        repeated=router.call('printer.machine_state',{'operation_id':done['operation_id']})
+                        assert repeated['state']==state_evidence['state'] and repeated['observed_at']==state_evidence['observed_at']
+                        assert len(peer.prompt_writes)==prompt_frames and sender._current_line==line
+                        assert not peer.wait_released.is_set()
+                assert peer.wait_released.is_set() and len(peer.prompt_writes)==len(sequence)
             paused=finish('job.pause',pause_req,pending)
             assert paused['result']['resumable'],paused
             before=list(peer.completed_moves);cursor=sender.getFilePosition()
@@ -208,7 +230,8 @@ def main(scenario):
             assert not report['data']['independent_measurement']
             print(json.dumps({'scenario':scenario,'scope':'journaled assigned tools with software-only evidence provider',
                 'moves_completed':len(peer.completed_moves),'moves_at_pause':len(before),'receipts':len(receipts),
-                'native_prompt_frames':len(peer.prompt_writes) if scenario=='native_prompt' else 0,
+                'native_prompt_frames':len(peer.prompt_writes) if native_scenario else 0,
+                'native_state_read':state_evidence is not None,'native_state_scope':'stubbed_controller_variables' if state_evidence else None,
                 'physical_serial_open_or_discovery_attempts':len(denied),'source_changed_after_stage':True,'physical_provider_implemented':False,'source_bound_serial_capture':True}))
         finally:
             gate.set()
@@ -224,5 +247,5 @@ def main(scenario):
 
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('--scenario',choices=['resume','native_prompt','cancel','denied','resend','ack_timeout','sensor_fault','thermal_fault','idle_reports'],required=True)
+    parser=argparse.ArgumentParser();parser.add_argument('--scenario',choices=['resume','native_prompt','native_state','cancel','denied','resend','ack_timeout','sensor_fault','thermal_fault','idle_reports'],required=True)
     main(parser.parse_args().scenario)

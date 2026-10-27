@@ -19,6 +19,7 @@ clang++ --version
 uv venv --python 3.11 .venv-print-mcp
 uv pip sync --python .venv-print-mcp/bin/python requirements-print-mcp.lock
 .venv-print-mcp/bin/python scripts/prepare_firmware.py --repository https://github.com/joenewbry/Ender-3S1-llm.git
+.venv-print-mcp/bin/python scripts/prepare_state_fixture.py
 .venv-print-mcp/bin/python -m pytest -q tests tests_mcp tests_model tests_print_mcp --junitxml=software-tests.xml
 ```
 
@@ -86,7 +87,7 @@ and explicitly report heater shutdown as unconfirmed.
 
 
 A fresh sanitized export of host `8d8453f8bf334d194348ec941fe9b4de26378a56`
-was also reproduced:141 allowlisted files, new Python3.11.13 environment,
+was also reproduced:141 allowlisted files, new Python 3.11.13 environment,
 99 pinned packages, independent pinned firmware checkout, and641 passing tests
 with zero failures/errors/skips. All exported source hashes remained unchanged
 through testing. Sanitized evidence is in
@@ -140,3 +141,10 @@ uncertain operations. The corrected clients pass on Mac too.
 [Exact qualification record](../validation/linux-package-stage111.json). This
 closes the earlier supported-Python Linux test gap for this export. It does not
 qualify a physical USB connection, surviving-printer recovery or firmware flash.
+
+
+The second materializer downloads only 16 hash-pinned source files from maintained
+firmware `0f8d1ca` for the combined native state-report fixture. It does not replace
+the primary `98aa` firmware-test pin, build/upload firmware or open serial devices.
+It refuses existing destinations and corrupt/changed inputs. Pytest performs no
+automatic source download. See [combined state path](native-state-path.md).
