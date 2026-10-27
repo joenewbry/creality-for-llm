@@ -46,6 +46,7 @@ Updated October 27, 2026. Thirty-two host, six earlier Creality firmware and fou
 | [H23](https://github.com/joenewbry/creality-for-llm/pull/32) | Keep the sender closed after competing errors | `stack/h22-dispatch-admission` |
 | [H24](https://github.com/joenewbry/creality-for-llm/pull/33) | Inspect exact Mac owner descriptors without opening devices | `stack/h23-sender-error-close` |
 | [H25](https://github.com/joenewbry/creality-for-llm/pull/34) | Correlate controller-variable reports with journaled inspect tools | `stack/h24-macos-owner-metadata` |
+| [H26](https://github.com/joenewbry/creality-for-llm/pull/35) | Exercise native getter and reports through assigned LLM tools | `stack/h25-machine-state` |
 
 ## Firmware stack
 
@@ -126,3 +127,12 @@ The [new firmware PR5](https://github.com/joenewbry/Marlin/pull/5) depends on4 a
 supplies the optional state report; its source `0f8d1ca` separately passes four
 getter variants, five state-wire cases, eleven existing prompt cases and the
 F401 build. No host firmware-test repin or physical commissioning is implied.
+
+
+[H26](https://github.com/joenewbry/creality-for-llm/pull/35) adds the explicit
+16-file pinned native input and a combined actual getter/wire -> assigned sender
+-> journaled read scenario. Exact focused snapshot `d585922` passes 171 installed
+cases with no skips/failures; all 99 dependencies, all 16 native inputs and installed
+runtime bytes match. Production runtime remains unchanged from the earlier full
+`c8d079c` result. Hardware stubs and virtual motion are distinct models; this
+proof does not complete the physical provider or commissioning.

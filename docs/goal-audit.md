@@ -87,3 +87,16 @@ ordinary operation receipt exists. A failed or interrupted open therefore leaves
 history for the next readiness check. The immutable intent is not proof that a
 connection succeeded or shutdown completed. Printer startup journals and camera
 bindings are rejected in the opposite service role before receipt recovery.
+
+
+## Combined native state path
+
+The [combined state fixture](native-state-path.md) now links actual maintained
+getter/wire source, an assigned software terminal, the pinned sender and the
+journaled state read. It holds the native wait through inspection, then explicitly
+responds, pauses/resumes and completes all 80 original modeled moves once.
+Snapshot `d585922` passes 171 focused installed cases. Production modules remain
+byte-identical to full-suite snapshot `c8d079c`. This closes the earlier combined-
+path test gap. Hardware sampling and virtual motion are still separate models;
+operation-correlated barriers, configuration/physical continuity, the actual job
+provider, Mac transport and physical commissioning remain unfinished.

@@ -39,6 +39,10 @@ class NativeWaitMixin:
                     self._send(line.decode('ascii'))
                     if not receipt.active and not receipt.waiting:
                         self.wait_released.set()
+                elif line.startswith(b'//llmstate:'):
+                    # Preserve the original controller report. The real host
+                    # parser must classify malformed/stale reports itself.
+                    self._send(line.decode('ascii'))
                 elif line == b'start':
                     self._send('Error:Native fixture lost')
                     return

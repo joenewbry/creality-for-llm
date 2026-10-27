@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "scope": "combined native report through assigned sender and journaled LLM read; no physical qualification",
+  "firmware_fixture_commit": "0f8d1ca1055b9030cabf6ff8e3a6762fdb4dfee7",
+  "firmware_fixture_files": 16,
+  "firmware_fixture_materialized_from_public_urls": true,
+  "macos_focused": {
+    "passed": 75,
+    "skipped": 1,
+    "skip": "Linux owned terminal scenario",
+    "junit_sha256": "64547ab3848d0251686e1301ffea119ff544b94bea883e73c56506c768f06c42"
+  },
+  "native_macos": {
+    "wire_cases": 5,
+    "getter_variants": 4,
+    "existing_prompt_cases": 11,
+    "log_sha256": "818ee06bec205124a93cd83c80f96d4229aee525cb6b29205e154c776d3c1217",
+    "linked_getter_wire_cases": 6,
+    "linked_state_runtime_sha256": "af561e864ad7b0419b62f0cae597f1cdfb496fea4f1b707a1c4f9087228347fc"
+  },
+  "diagnostic_linux": {
+    "native_state_read": true,
+    "moves_completed": 80,
+    "moves_at_pause": 10,
+    "native_prompt_frames": 4,
+    "physical_serial_open_or_discovery_attempts": 0
+  },
+  "installed_followup": {
+    "source_commit": "d5859221b912f177c1f2d479e6051e8879f4a295",
+    "source_files": 317,
+    "runtime_bytes_match": true,
+    "source_hashes_unchanged": true,
+    "locked_packages_verified": 99,
+    "native_inputs_verified": 16,
+    "compiler": "Ubuntu clang version 15.0.7",
+    "physical_access": false,
+    "paid_model_calls": 0,
+    "tests": 171,
+    "passed": 171,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "duration_seconds": "129.080",
+    "junit_sha256": "c9fd0317f9b6a489aa2a87465d3b2f84200bef6fb7897c2f933ac001b62c5cf3",
+    "log_sha256": "2f7f7d24a0d0e0a8596c9cbddb2066e367a18c5433feb5db07a7b5a34d93ead7",
+    "test_corpus_outside_source": true,
+    "existing_qualified_runtime_reused_without_modification": true
+  },
+  "production_runtime_changed": false,
+  "full_installed_runtime_snapshot": "c8d079cfb93c6a6ca26b4e1bc71a7c33c597c827",
+  "physical_access": false,
+  "firmware_flashed": false,
+  "paid_model_calls": 0,
+  "limitations": [
+    "The native controller uses stubbed hardware and its state is distinct from the virtual motion model",
+    "The job evidence provider still reads virtual-peer state and is not a physical provider",
+    "No operation-correlated physical barrier, configuration or motor/sensor/part continuity qualification",
+    "Physical provider, Mac transport and development commissioning remain unfinished"
+  ],
+  "combined_getter_linked": true,
+  "linked_getter_wire_cases": 6,
+  "full_suite_rerun": false,
+  "later_delivery_changes": "documentation, qualification and archive metadata only; test/tool/fixture and runtime inputs match the focused snapshot"
+}

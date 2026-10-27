@@ -7,7 +7,7 @@ This development prototype includes typed tools, durable operations, virtual job
 native firmware prompt handling and bounded simulator setup controls.
 It does not yet implement a qualified hardware controller. Tests use virtual devices, software terminals and hardware substitutes; no physical printer or camera capture is controlled.
 
-Current installed-package qualification: **1,271 passed, one Mac-only fixture skipped on Linux/Python 3.11.13** at the [public source snapshot](https://github.com/joenewbry/creality-for-llm/tree/c8d079cfb93c6a6ca26b4e1bc71a7c33c597c827). Installed runtime bytes and all 99 locked dependencies were verified. See [qualification](validation/linux-package-stage139.json), [controller-state evidence](docs/machine-state.md), [goal audit](docs/goal-audit.md), [contribution stack](docs/contributions.md) and [post-repair printing plan](docs/printing-qualification-plan.md). The firmware state report has separate native/F401 evidence; its candidate remains unflashed. Physical job evidence, Mac transport and commissioning remain unfinished.
+Latest full installed-package qualification: **1,271 passed, one Mac-only fixture skipped on Linux/Python 3.11.13** at the [public source snapshot](https://github.com/joenewbry/creality-for-llm/tree/c8d079cfb93c6a6ca26b4e1bc71a7c33c597c827). Installed runtime bytes and all 99 locked dependencies were verified. See [qualification](validation/linux-package-stage139.json), [controller-state evidence](docs/machine-state.md), [goal audit](docs/goal-audit.md), [contribution stack](docs/contributions.md) and [post-repair printing plan](docs/printing-qualification-plan.md). The firmware state report has separate native/F401 evidence; its candidate remains unflashed. The later [combined native state path](docs/native-state-path.md) passes 171 focused installed checks while application runtime bytes remain unchanged. Physical job evidence, Mac transport and commissioning remain unfinished.
 
 The [owner About intake](docs/development-hardware.md) records firmware 2.0.8.28F4, screen V1.0.5 and reported hardware CR-FDM-v24S1_301. The [manufacturer recovery package](docs/recovery.md) now has verified channel provenance and matching mirror payloads; target, bootloader, settings restoration and sensor qualification remain open. Logitech work is deferred at the owner’s request.
 
@@ -37,7 +37,7 @@ It pins the modified firmware needed by native tests as well as host dependencie
 
 
 Use Python 3.11 and `pytest==8.3.5` in an isolated virtual environment.
-Run `python -m pytest -q tests tests_mcp tests_model tests_print_mcp` for the complete suite. Software-terminal opens and read-only OS metadata checks are included; physical serial opens are denied by the virtual runners.
+Prepare both source inputs as described in [reproduction](docs/reproduce.md), including `python scripts/prepare_state_fixture.py` for the maintained native report fixture. Then run `python -m pytest -q tests tests_mcp tests_model tests_print_mcp` for the complete suite. Software-terminal opens and read-only OS metadata checks are included; physical serial opens are denied by the virtual runners.
 Firmware builds use `platformio==6.1.18` and an isolated `PLATFORMIO_CORE_DIR`.
 
 ## OctoPrint integration experiment
