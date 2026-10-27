@@ -92,3 +92,32 @@ def test_reentrant_write_times_out_without_injecting_a_second_frame():
     writer = SharedFrameWriter(raw, lock_timeout=.01)
     assert writer.write_job(JOB) == len(JOB)
     assert calls == [JOB] and writer.fault is None
+
+
+def test_frame_observer_attaches_once_before_any_write():
+    from types import SimpleNamespace
+    events=[]
+    observer=SimpleNamespace(before_write=lambda seq,data:events.append(('begin',seq,data)),
+        after_write=lambda seq,data:events.append(('confirmed',seq,data)))
+    writer=SharedFrameWriter(lambda data:len(data))
+    writer.attach_observer(observer)
+    with pytest.raises(ValueError):writer.attach_observer(observer)
+    writer.write_job(JOB);writer.write_prompt(PROMPT)
+    assert events==[('begin',1,JOB),('confirmed',1,JOB),('begin',2,PROMPT),('confirmed',2,PROMPT)]
+    unobserved=SharedFrameWriter(lambda data:len(data));unobserved.write_job(JOB)
+    with pytest.raises(ValueError):unobserved.attach_observer(observer)
+
+
+@pytest.mark.parametrize('phase',['before','after'])
+def test_observation_failure_never_leaves_connection_reusable(phase):
+    from types import SimpleNamespace
+    wire=[]
+    def fail(*args):raise OSError('trace unavailable')
+    noop=lambda *args:None
+    writer=SharedFrameWriter(lambda data:wire.append(data) or len(data))
+    writer.attach_observer(SimpleNamespace(before_write=fail if phase=='before' else noop,
+        after_write=fail if phase=='after' else noop))
+    with pytest.raises(OSError):writer.write_job(JOB)
+    assert wire==([] if phase=='before' else [JOB])
+    assert writer.fault
+    with pytest.raises(OSError):writer.write_prompt(PROMPT)

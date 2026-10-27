@@ -28,6 +28,7 @@ include contributions/marlin-heater-watch-pr.md
 include contributions/marlin-heater-watch-zero.patch
 include dependency-notices.json
 include docs/architecture.md
+include docs/assigned-completion-barrier.md
 include docs/assigned-job.md
 include docs/assigned-observations.md
 include docs/blocker-matrix.md
@@ -77,6 +78,7 @@ include licenses/mcp-LICENSE.txt
 include licenses/openai-LICENSE.txt
 include licenses/pytest-LICENSE.txt
 include printer_control/__init__.py
+include printer_control/assigned_barrier.py
 include printer_control/assigned_job.py
 include printer_control/assigned_observations.py
 include printer_control/assigned_sender.py
@@ -163,6 +165,7 @@ include tests/octoprint_virtual_smoke.py
 include tests/restore_serial_scenario.py
 include tests/state_native_harness.py
 include tests/stream_disconnect_scenario.py
+include tests/test_assigned_barrier.py
 include tests/test_assigned_job.py
 include tests/test_assigned_observations.py
 include tests/test_assigned_sender.py
@@ -316,3 +319,4 @@ include validation/upstream-submission-stage115.json
 include validation/upstream-watch-builds-stage82.json
 include validation/upstream-watch-native-stage83.json
 include validation/upstream-watch-stage80.json
+include validation/assigned-barrier-stage141.json
