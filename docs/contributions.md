@@ -220,3 +220,15 @@ rechecked afterward. Controller-loop progress supports delayed model collection.
 Physical checkpoint proofs, existing immutable comparison and pause intervals
 remain required. See [design and limits](checkpoint-inspection.md) and
 [qualification evidence](../validation/checkpoint-inspection-stage147.json).
+
+## Owned firmware/settings report input
+
+An optional journaled pre-job inspection collects fixed M115/M503 reports between
+unique markers on the same owned sender/capture. Complete write order and original
+source times are checked; incomplete or uncertain intervals cannot complete.
+An official protocol client exercises the bounded tool. Reported settings and
+firmware declarations are retained with distinct source/settings digests, always
+with complete-configuration/binary/readiness/resume qualification false. Runtime
+idle timers, post-drain coverage and the actual physical provider remain open.
+See [report design and limits](configuration-report.md) and
+[qualification evidence](../validation/configuration-report-stage149.json).

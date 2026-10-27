@@ -8,11 +8,13 @@ uncertain command or authorize a physical pause/resume.
 
 Attach it to the source recorder before the first shared-writer frame. One trace
 observes both prompt and ordinary frames at the actual write boundary. It accepts
-only the exact barrier/marker pair (including valid numbered frame checksums),
+the exact barrier/marker pair for job phases (including valid numbered frame checksums),
 records write-start time and full-write confirmation, and rejects intervening or
 unplanned subsequent frames. The optional [post-drain inspection](checkpoint-inspection.md)
 durably permits one exact child query after the marker; it does not permit a
-general read-command exception. A receive can precede a write's return: its original source
+general read-command exception. A separate optional [configuration-report phase](configuration-report.md)
+uses a fixed five-frame group with both begin/end markers. Its completed read
+interval is retired before ordinary pre-job traffic resumes. A receive can precede a write's return: its original source
 arrival is retained, but no result is available until both writes are confirmed.
 
 The marker must come from the durable assigned capture under the same lease,

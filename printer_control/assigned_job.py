@@ -84,6 +84,7 @@ class AssignedJobBackend:
         self.cold_inspection=None;self._cold_admitting=False;self._cold_results={}
         self.completion_barrier=None;self._barrier_tokens={}
         self.checkpoint_inspection=None;self._checkpoint_pending=set();self._checkpoint_results={}
+        self.configuration_report=None;self._configuration_results={}
         self._resume_dispatched=set();self._resume_admission={}
         self._completion_window_seconds=30.;self._completion_window=None;self._completion_result=None
         self._owner_pid=os.getpid()
@@ -139,6 +140,10 @@ class AssignedJobBackend:
                         for operation_id in tuple(self.cold_inspection.pending):
                             outcome=self.poll(operation_id)
                             if outcome is not None:self._cold_results[operation_id]=outcome
+                    if self.configuration_report is not None:
+                        for operation_id in tuple(self.configuration_report.pending):
+                            outcome=self.poll(operation_id)
+                            if outcome is not None:self._configuration_results[operation_id]=outcome
                     for operation_id in tuple(self._checkpoint_pending):
                         outcome=self.poll(operation_id)
                         if outcome is not None:
@@ -214,6 +219,16 @@ class AssignedJobBackend:
             if checkpoint_inspection:
                 from .checkpoint_inspection import AssignedCheckpointInspection
                 self.checkpoint_inspection=AssignedCheckpointInspection(self)
+
+    def attach_configuration_report(self):
+        """Opt in to fixed owned M115/M503 queries; no physical identity grant."""
+        with self._lock:
+            if (self.completion_barrier is None or self.configuration_report is not None or self._closed
+                    or self._pump_started or self.sender._assigned_endpoint._claimed):
+                raise ValueError('attach configuration report after barrier and before sender starts')
+            from .configuration_report import AssignedConfigurationReport
+            self.configuration_report=AssignedConfigurationReport(self)
+            self.supported_operations=(*self.supported_operations,'printer.configuration.inspect')
 
     def _barrier_evidence(self, operation_id, phase):
         """Queue the fixed pair only on the sender already owned by this backend."""
@@ -352,6 +367,7 @@ class AssignedJobBackend:
         return data
 
     def can_overlap(self,operation,pending_ids):
+        if self.configuration_report is not None and self.configuration_report.pending:return False
         if any((op,phase) in self._barrier_tokens for op in self._checkpoint_pending
                 for phase in ('paused','resuming')):return False
         if self.cold_inspection is not None and self.cold_inspection.pending:return False
@@ -378,6 +394,11 @@ class AssignedJobBackend:
             if operation=='job.cancel' and self._started and cursor and cursor.get('origin')=='local' and Path(cursor.get('filename','')).resolve()==self.path:return
             raise RequestRejected('shared_connection_requires_reconciliation')
         state=self.sender.getState()
+        if operation=='printer.configuration.inspect':
+            if self._started or state!=self.sender.STATE_OPERATIONAL:raise RequestRejected('configuration_inspect_only_before_job')
+            if not self.prompt.channel.bound or self.prompt.channel.state!='ready':raise RequestRejected('bound_idle_prompt_channel_required')
+            if not self._file_valid():raise RequestRejected('configuration_job_identity_changed')
+            return
         if operation=='job.stage':
             if self._started or state!=self.sender.STATE_OPERATIONAL:raise RequestRejected('printer_not_idle_for_stage')
             data=self._read_bounded(self.source_path)
@@ -415,6 +436,9 @@ class AssignedJobBackend:
         self._operations[operation_id]=operation;self._deadlines[operation_id]=deadline;self._dispatched_at[operation_id]=self.clock()
         if operation in self.prompt.supported_operations:
             self.prompt.dispatch(operation_id,operation,arguments,deadline=deadline)
+            return
+        if operation=='printer.configuration.inspect':
+            self.configuration_report.dispatch(operation_id)
             return
         self._transitions[operation_id]=self._printing
         if self.checkpoint_inspection is not None and operation in ('job.pause','job.resume'):
@@ -535,6 +559,7 @@ class AssignedJobBackend:
             'physical_stop_confirmed':False})
 
     def poll(self,operation_id):
+        if operation_id in self._configuration_results:return self._configuration_results[operation_id]
         if operation_id in self._checkpoint_results:return self._checkpoint_results[operation_id]
         outcome=self._poll(operation_id)
         if outcome is not None and operation_id in self._checkpoint_pending:
@@ -547,6 +572,19 @@ class AssignedJobBackend:
         self._drain();operation=self._operations[operation_id]
         if operation in self.prompt.supported_operations:return self.prompt.poll(operation_id)
         state=self.sender.getState()
+        if operation=='printer.configuration.inspect':
+            try:
+                if self._fault:raise RequestRejected('shared_connection_uncertain')
+                result=self.configuration_report.poll(operation_id)
+                if result is None:return None
+                outcome=Outcome('completed',result)
+            except Exception as exc:
+                self.configuration_report.pending.discard(operation_id)
+                self._fault=self._fault or {'reason':'configuration_report_unqualified'}
+                outcome=Outcome('outcome_unknown',{'reason':'configuration_report_unqualified','detail':str(exc)[:128],
+                    'physical_readiness_qualified':False})
+            self._configuration_results[operation_id]=outcome
+            return outcome
         if self._fault:return Outcome('outcome_unknown',{'reason':'shared_connection_uncertain'})
         if self.cold_inspection is not None and operation_id in self.cold_inspection.pending:
             admission=self.cold_inspection.poll(operation_id)
@@ -690,6 +728,7 @@ class AssignedJobBackend:
                     resume_completion_barrier_enabled=self.completion_barrier is not None,
                     lifecycle_completion_barrier_enabled=self.completion_barrier is not None,
                     post_drain_checkpoint_inspection=self.checkpoint_inspection is not None,
+                    owned_configuration_report=self.configuration_report is not None,
                     cold_preflight_enabled=self.cold_preflight is not None,
                     cold_automatic_inspection=self.cold_inspection is not None,
                     cold_preflight_authorizes_physical_control=False,
