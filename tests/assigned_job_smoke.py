@@ -65,7 +65,7 @@ class FixtureEvidence:
 
 def main(scenario):
     denied=[];service=sender=peer=bridge=recorder=None;master=None
-    gate=threading.Event();witness=StreamWitness()
+    gate=threading.Event();witness=StreamWitness();start_deadline=[None]
     def forbidden(*a,**k):denied.append('forbidden_open_or_discovery');raise AssertionError('no physical serial access')
     with tempfile.TemporaryDirectory(prefix='assigned-job-fixture-') as temp,ExitStack() as stack:
         temp=Path(temp);stack.enter_context(patch.object(serial.Serial,'open',forbidden));stack.enter_context(patch.object(comm,'serialList',forbidden))
@@ -91,7 +91,15 @@ def main(scenario):
         class GatedPeer(RecordingVirtualPrinter):
             def _performMove(self,line):
                 if not native_scenario and line.startswith('G1 X6 '):assert gate.wait(15)
+                if scenario=='lifecycle_completion' and line.startswith('G1 X80 '):
+                    while time.time()<start_deadline[0]+.05:time.sleep(.005)
                 return super()._performMove(line)
+            def _gcode_M118(self,data):
+                if data.startswith('M118 E1 LLM_BARRIER_'):
+                    self.marker_count=getattr(self,'marker_count',0)+1
+                    if scenario=='lifecycle_missing' and self.marker_count==3:
+                        self.final_marker_withheld=True;return
+                return super()._gcode_M118(data)
         class NativePeer(NativeWaitMixin,GatedPeer):pass
         peer_type=NativePeer if native_scenario else GatedPeer
         options={'native_binary':(build_state_native_harness if scenario in ('native_state','native_barrier') else build_native_harness)(temp/'native')} if native_scenario else {}
@@ -122,8 +130,8 @@ def main(scenario):
             backend=service.backend
             recorder=AssignedMachineEventRecorder(service.journal,endpoint=sender._assigned_endpoint,lease=service.lease,clock=time.time)
             backend.attach_machine_events(recorder)
-            if scenario in ('sender_barrier','barrier_cancel','barrier_interleave','native_barrier','numbered_resume'):
-                backend.attach_completion_barrier()
+            if scenario in ('sender_barrier','barrier_cancel','barrier_interleave','native_barrier','numbered_resume','lifecycle_completion','lifecycle_missing'):
+                backend.attach_completion_barrier(completion_window_seconds=.4 if scenario=='lifecycle_missing' else 30.)
             bridge=PeerBridge(master,peer);backend.start()
             wait_for(sender.isOperational,'assigned job handshake');router=ToolRouter(service);receipts=[];counter=[0]
             if scenario=='idle_reports':
@@ -145,6 +153,8 @@ def main(scenario):
                 if name=='job.stage':args={**args,'file_sha256':state['file_sha256']}
                 request=dict(request_id=str(counter[0])+name,printer_id=state['printer_id'],connection_generation=state['connection_generation'],
                     expected_state_version=state['state_version'],deadline=time.time()+10,arguments=args)
+                if name=='job.start' and scenario=='lifecycle_completion':
+                    request['deadline']=time.time()+3.;start_deadline[0]=request['deadline']
                 return request,router.call(name,request)
             def finish(name,request,receipt):
                 end=time.monotonic()+12
@@ -237,7 +247,7 @@ def main(scenario):
                 return
             paused=finish('job.pause',pause_req,pending)
             assert paused['result']['resumable'],paused
-            if scenario in ('sender_barrier','barrier_cancel','barrier_interleave','native_barrier','numbered_resume'):
+            if scenario in ('sender_barrier','barrier_cancel','barrier_interleave','native_barrier','numbered_resume','lifecycle_completion','lifecycle_missing'):
                 proof=paused['result']['completion_barrier']
                 assert proof['operation_id']==paused['operation_id'] and proof['phase']=='paused'
                 assert len(proof['writes'])==2 and all(w['confirmed'] for w in proof['writes'])
@@ -257,9 +267,21 @@ def main(scenario):
                 cancelled=transition['result']['completion_barrier']
                 assert cancelled['phase']=='cancelled' and cancelled['operation_id']==transition['operation_id']
                 assert cancelled['token']!=paused['result']['completion_barrier']['token']
-            if scenario not in ('cancel','barrier_cancel'):
+            completion=None
+            if scenario=='lifecycle_missing':
+                wait_for(lambda:router.call('job.inspect',{})['job_state']=='outcome_unknown','missing final marker window expiry',timeout=10)
+                completion=router.call('job.inspect',{})
+                assert peer.completed_moves==expected and getattr(peer,'final_marker_withheld',False)
+                assert completion['completion_evidence'] is None and completion['blocking_fault']['reason']=='completion_lifecycle_unqualified'
+            elif scenario not in ('cancel','barrier_cancel'):
                 wait_for(lambda:router.call('job.inspect',{})['job_state']=='completed','qualified job completion',timeout=30)
                 assert peer.completed_moves==expected
+                completion=router.call('job.inspect',{})
+                if backend.completion_barrier is not None:
+                    final=completion['completion_evidence']
+                    assert final['marker']['phase']=='completed' and final['observation_sequence']>0
+                    assert final['marker']['token'] not in (paused['result']['completion_barrier']['token'],transition['result']['admission_barrier']['token'])
+                if scenario=='lifecycle_completion':assert time.time()>start_deadline[0]
             else:
                 assert router.call('job.inspect',{})['job_state']=='cancelled' and len(peer.completed_moves)<80
             assert not denied and not bridge.errors
@@ -275,7 +297,7 @@ def main(scenario):
                 'moves_completed':len(peer.completed_moves),'moves_at_pause':len(before),'receipts':len(receipts),
                 'native_prompt_frames':len(peer.prompt_writes) if native_scenario else 0,
                 'native_state_read':state_evidence is not None,'completion_barrier_enabled':backend.completion_barrier is not None,
-                'pause_barrier':paused['result'].get('completion_barrier'),'resume_barrier':transition['result'].get('admission_barrier'),'cancel_barrier':transition['result'].get('completion_barrier') if operation=='job.cancel' else None,'native_state_scope':'stubbed_controller_variables' if state_evidence else None,
+                'pause_barrier':paused['result'].get('completion_barrier'),'resume_barrier':transition['result'].get('admission_barrier'),'completion':completion,'original_start_deadline':start_deadline[0],'cancel_barrier':transition['result'].get('completion_barrier') if operation=='job.cancel' else None,'native_state_scope':'stubbed_controller_variables' if state_evidence else None,
                 'physical_serial_open_or_discovery_attempts':len(denied),'source_changed_after_stage':True,'physical_provider_implemented':False,'source_bound_serial_capture':True}))
         finally:
             gate.set()
@@ -291,5 +313,5 @@ def main(scenario):
 
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('--scenario',choices=['resume','native_prompt','native_state','cancel','denied','resend','ack_timeout','sensor_fault','thermal_fault','idle_reports','sender_barrier','barrier_cancel','barrier_interleave','native_barrier','numbered_resume'],required=True)
+    parser=argparse.ArgumentParser();parser.add_argument('--scenario',choices=['resume','native_prompt','native_state','cancel','denied','resend','ack_timeout','sensor_fault','thermal_fault','idle_reports','sender_barrier','barrier_cancel','barrier_interleave','native_barrier','numbered_resume','lifecycle_completion','lifecycle_missing'],required=True)
     main(parser.parse_args().scenario)

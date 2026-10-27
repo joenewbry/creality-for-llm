@@ -28,8 +28,8 @@ is frozen before the completed receipt. Missing/changed proofs produce unknown
 outcome and no resume grant. Resume rechecks the checkpoint, expiry, staged hash
 and stream epoch; a saved offset alone never authorizes continuation.
 
-EOF and Operational callbacks alone do not establish job completion or a drained
-cancel. Cancellation and final completion require their own external evidence.
+File-done and Operational callbacks alone do not establish job completion or a
+drained cancel. Cancellation and final completion require their own external evidence.
 Operation deadlines remain current-time limits. Expiry is unknown and never
 claims a physical stop. Supported prompt operations may overlap a pending
 start/pause/resume, so a firmware wait can be resolved without a second journal or
@@ -53,8 +53,20 @@ rechecked before dispatch.
 
 The combined native-handler scenario still uses modeled movement and the virtual
 printer's M400/M118 handlers. The hardware provider, installed firmware semantics,
-physical continuity and the completion marker at file end remain unfinished. See
+physical continuity and installed firmware qualification remain unfinished. See
 [completion check details](assigned-completion-barrier.md).
+
+## Lifecycle completion evidence
+
+With the optional check attached, the file-done callback starts a bounded final
+window from its original arrival timestamp. Operational state, the same staged
+hash and end cursor, a completed start receipt, a new final marker and external
+completion proof are required before job state becomes completed. Completion may
+follow the earlier job.start dispatch deadline; that request is not extended.
+The capability reports `lifecycle_completion_barrier_enabled` and the configured
+`completion_window_seconds`. Completed job.inspect includes `completion_evidence`.
+The evidence input is retained as a historical journal observation; it cannot
+restore live authority after a crash. See [bounds and source semantics](assigned-completion-barrier.md).
 
 ## Unqualified transport recovery
 

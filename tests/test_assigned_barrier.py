@@ -1,4 +1,5 @@
 """Real journal/source recorder and shared writer; no printer or sender model proof."""
+import json
 import pytest
 from test_assigned_observations import make_endpoint, deliver, wait_for
 from printer_control.assigned_barrier import AssignedCompletionBarrier
@@ -193,3 +194,25 @@ def test_resume_request_correlates_numbered_barrier_frames(barrier):
     assert result['phase']=='resuming' and result['operation_id']==operation
     assert [w['line_number'] for w in result['writes']]==[7,8]
     assert not result['resume_authorized'] and not result['physical_readiness_qualified']
+
+
+def test_final_lifecycle_window_can_follow_an_expired_start_dispatch_deadline(barrier):
+    from printer_control.assigned_barrier import AssignedCompletionWindow
+    check,capture,identity,_=barrier;journal=check.recorder.journal
+    request=dict(request_id='start',printer_id='fixture',connection_generation='g1',expected_state_version=1,
+        deadline=12.,operation='job.start',arguments={'job_id':'job'})
+    operation=journal.accept(request,now=10.,printer_id='fixture',generation='g1',state_version=1)['operation_id']
+    assert journal.claim(operation,now=10.);journal.finish(operation,'completed',{},now=11.)
+    capture[3][0]=25.
+    token=check.dispatch(operation,'completed',identity,lambda c:send(capture,c),completion_window=AssignedCompletionWindow(24.,5.))
+    reply(check,capture,token);result=check.poll()
+    assert result['completion_window']['observed_at']==24. and result['completion_window']['deadline']==29.
+    with journal._db() as db:record=json.loads(db.execute('SELECT intent FROM assigned_barriers').fetchone()[0])
+    assert record['request']['deadline']==12. and record['deadline']==29.
+
+
+def test_command_phase_cannot_use_a_lifecycle_window_to_extend_its_deadline(barrier):
+    from printer_control.assigned_barrier import AssignedCompletionWindow
+    check,capture,identity,operation=barrier
+    with pytest.raises(RequestRejected):
+        check.dispatch(operation,'paused',identity,lambda c:send(capture,c),completion_window=AssignedCompletionWindow(10.,30.))

@@ -184,6 +184,7 @@ include tests/test_firmware_host_actions.py
 include tests/test_firmware_parser.py
 include tests/test_fresh_resume.py
 include tests/test_journal.py
+include tests/test_lifecycle_completion.py
 include tests/test_machine_events.py
 include tests/test_machine_state.py
 include tests/test_macos_discovery.py
@@ -282,6 +283,7 @@ include validation/host-prompt-transport-boundary-stage92.json
 include validation/host-qualification-boundary-stage98.json
 include validation/host-virtual-adapters-boundary-stage95.json
 include validation/host-virtual-runtime-boundary-stage96.json
+include validation/lifecycle-completion-stage144.json
 include validation/linux-package-stage111.json
 include validation/linux-package-stage118.json
 include validation/linux-package-stage119.json
