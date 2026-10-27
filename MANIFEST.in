@@ -305,6 +305,7 @@ include validation/native-state-path-stage140.json
 include validation/native-thermal-stage78.json
 include validation/native-watch-stage79.json
 include validation/receive-arrival-stage120.json
+include validation/sender-barrier-stage142.json
 include validation/sender-close-stage137.json
 include validation/service-startup-stage118.json
 include validation/source-hazard-stage131.json

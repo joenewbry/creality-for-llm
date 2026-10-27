@@ -35,6 +35,22 @@ claims a physical stop. Supported prompt operations may overlap a pending
 start/pause/resume, so a firmware wait can be resolved without a second journal or
 serial reader. Unknown/fault states do not authorize bind/respond recovery.
 
+## Correlated pause and cancellation checks
+
+An explicit `attach_completion_barrier()` call after capture attachment and before
+`start()` enables fixed M400/unique-echo checks through the existing assigned
+sender. Pause stays running until its pair and original captured marker qualify;
+the external checkpoint provider remains required. The marker is rechecked after
+the provider returns. Cancellation uses a separate operation-bound marker plus
+its external completion proof. Correlation failure withdraws resume authority and
+produces outcome_unknown, with no automatic replay. The capability
+`pause_cancel_barrier_enabled` reports whether this optional path is attached.
+
+The combined native-handler scenario still uses modeled movement and the virtual
+printer's M400/M118 handlers. The hardware provider, installed firmware semantics,
+physical continuity and EOF lifecycle barrier remain unfinished. See
+[completion check details](assigned-completion-barrier.md).
+
 ## Unqualified transport recovery
 
 The assigned sender rejects every resend request and communication-timeout

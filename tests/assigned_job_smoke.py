@@ -86,14 +86,14 @@ def main(scenario):
         plugins=SimpleNamespace(get_hooks=get_hooks)
         stack.enter_context(patch.object(octoprint.plugin,'plugin_manager',lambda:plugins));stack.enter_context(patch.object(virtual_module,'plugin_manager',lambda:plugins))
         stack.enter_context(patch.object(comm,'eventManager',lambda:SimpleNamespace(fire=lambda *a,**k:None)))
-        native_scenario=scenario in ('native_prompt','native_state')
+        native_scenario=scenario in ('native_prompt','native_state','native_barrier')
         class GatedPeer(RecordingVirtualPrinter):
             def _performMove(self,line):
                 if not native_scenario and line.startswith('G1 X6 '):assert gate.wait(15)
                 return super()._performMove(line)
         class NativePeer(NativeWaitMixin,GatedPeer):pass
         peer_type=NativePeer if native_scenario else GatedPeer
-        options={'native_binary':(build_state_native_harness if scenario=='native_state' else build_native_harness)(temp/'native')} if native_scenario else {}
+        options={'native_binary':(build_state_native_harness if scenario in ('native_state','native_barrier') else build_native_harness)(temp/'native')} if native_scenario else {}
         content='G21\nG90\nM82\nT0\nM106 S0\nM104 S0\nM140 S0\nG92 E0\n'+''.join(f'G1 X{i} Y10 E{i/10:.1f} F6000\nM117 MODEL_{i:03d}\n' for i in range(1,81))
         expected=[s for s in content.splitlines() if s.startswith('G1 ')]
         job=temp/'software-only.gcode';job.write_text(content)
@@ -107,12 +107,22 @@ def main(scenario):
                 nonlocal sender
                 prompt=TTYPromptBackend.open(assignment,lambda:[device],time.time,lambda _:False,lease,copy_jobs=True)
                 sender=AssignedSender(AssignedSerialEndpoint(prompt),callbackObject=observer,printerProfileManager=profiles)
+                if scenario=='barrier_interleave':
+                    original=sender.sendCommand;injected=[]
+                    def send_with_interleave(command,*args,**kwargs):
+                        if isinstance(command,str) and command.startswith('M118 E1 LLM_BARRIER_') and not injected:
+                            injected.append(True)
+                            assert original('M105',tags={'source:fixture-interleave'}) is True
+                        return original(command,*args,**kwargs)
+                    sender.sendCommand=send_with_interleave
                 evidence=FixtureEvidence(peer,sender,witness,expected,denied=scenario=='denied')
                 return AssignedJobBackend(sender,job_path=job,job_id='fixture-job',witness=witness,evidence=evidence,clock=time.time)
             service=OperationService.from_backend_factory(journal,factory,readiness_check=lambda _:StartupAdmission('software-peer-only',False))
             backend=service.backend
             recorder=AssignedMachineEventRecorder(service.journal,endpoint=sender._assigned_endpoint,lease=service.lease,clock=time.time)
             backend.attach_machine_events(recorder)
+            if scenario in ('sender_barrier','barrier_cancel','barrier_interleave','native_barrier'):
+                backend.attach_completion_barrier()
             bridge=PeerBridge(master,peer);backend.start()
             wait_for(sender.isOperational,'assigned job handshake');router=ToolRouter(service);receipts=[];counter=[0]
             if scenario=='idle_reports':
@@ -185,12 +195,12 @@ def main(scenario):
             gate.set()
             state_evidence=None
             if native_scenario:
-                sequence=('prompt.inspect','prompt.bind','prompt.inspect','prompt.respond') if scenario=='native_state' else ('prompt.inspect','prompt.bind','prompt.respond')
+                sequence=('prompt.inspect','prompt.bind','prompt.inspect','prompt.respond') if scenario in ('native_state','native_barrier') else ('prompt.inspect','prompt.bind','prompt.respond')
                 for index,name in enumerate(sequence):
                     state=router.call('printer.status',{})
                     args={'prompt':state['prompt_snapshot']['prompt'],'choice':0} if name=='prompt.respond' else {}
                     req,result=submit(name,args);done=finish(name,req,result)
-                    if scenario=='native_state' and index==2:
+                    if scenario in ('native_state','native_barrier') and index==2:
                         end=time.monotonic()+3
                         while True:
                             try:state_evidence=router.call('printer.machine_state',{'operation_id':done['operation_id']});break
@@ -208,13 +218,38 @@ def main(scenario):
                         assert len(peer.prompt_writes)==prompt_frames and sender._current_line==line
                         assert not peer.wait_released.is_set()
                 assert peer.wait_released.is_set() and len(peer.prompt_writes)==len(sequence)
+            if scenario=='barrier_interleave':
+                end=time.monotonic()+12
+                while pending['status']=='running' and time.monotonic()<end:
+                    pending=router.call('operation.get',{'operation_id':pending['operation_id']})
+                assert pending['status']=='outcome_unknown',pending
+                assert pending['result']['reason']=='completion_barrier_unqualified',pending
+                assert 'interleaved' in pending['result']['detail'],pending
+                assert backend.checkpoint is None and not router.call('job.inspect',{})['resumable']
+                wait_for(lambda:any(row['event']['kind']=='serial_line_received' and 'echo:LLM_BARRIER_' in row['event']['data'].get('text','') for row in recorder.read(limit=1000)['events']),'original marker delivered after interleave')
+                before_frames=list(bridge.frames)
+                assert router.call('job.pause',pause_req)==pending
+                time.sleep(.1);assert bridge.frames==before_frames
+                assert not denied and not bridge.errors
+                print(json.dumps(dict(scenario=scenario,outcome=pending,no_replay_on_retry=True,
+                    physical_serial_open_or_discovery_attempts=len(denied),physical_provider_implemented=False)))
+                return
             paused=finish('job.pause',pause_req,pending)
             assert paused['result']['resumable'],paused
+            if scenario in ('sender_barrier','barrier_cancel','barrier_interleave','native_barrier'):
+                proof=paused['result']['completion_barrier']
+                assert proof['operation_id']==paused['operation_id'] and proof['phase']=='paused'
+                assert len(proof['writes'])==2 and all(w['confirmed'] for w in proof['writes'])
+                assert not proof['physical_readiness_qualified'] and not proof['resume_authorized']
             before=list(peer.completed_moves);cursor=sender.getFilePosition()
             time.sleep(.1);assert peer.completed_moves==before and sender.getFilePosition()==cursor
-            operation='job.cancel' if scenario=='cancel' else 'job.resume'
-            req,result=submit(operation);finish(operation,req,result)
-            if scenario!='cancel':
+            operation='job.cancel' if scenario in ('cancel','barrier_cancel') else 'job.resume'
+            req,result=submit(operation);transition=finish(operation,req,result)
+            if scenario=='barrier_cancel':
+                cancelled=transition['result']['completion_barrier']
+                assert cancelled['phase']=='cancelled' and cancelled['operation_id']==transition['operation_id']
+                assert cancelled['token']!=paused['result']['completion_barrier']['token']
+            if scenario not in ('cancel','barrier_cancel'):
                 wait_for(lambda:router.call('job.inspect',{})['job_state']=='completed','qualified job completion',timeout=30)
                 assert peer.completed_moves==expected
             else:
@@ -231,7 +266,8 @@ def main(scenario):
             print(json.dumps({'scenario':scenario,'scope':'journaled assigned tools with software-only evidence provider',
                 'moves_completed':len(peer.completed_moves),'moves_at_pause':len(before),'receipts':len(receipts),
                 'native_prompt_frames':len(peer.prompt_writes) if native_scenario else 0,
-                'native_state_read':state_evidence is not None,'native_state_scope':'stubbed_controller_variables' if state_evidence else None,
+                'native_state_read':state_evidence is not None,'completion_barrier_enabled':backend.completion_barrier is not None,
+                'pause_barrier':paused['result'].get('completion_barrier'),'cancel_barrier':transition['result'].get('completion_barrier') if operation=='job.cancel' else None,'native_state_scope':'stubbed_controller_variables' if state_evidence else None,
                 'physical_serial_open_or_discovery_attempts':len(denied),'source_changed_after_stage':True,'physical_provider_implemented':False,'source_bound_serial_capture':True}))
         finally:
             gate.set()
@@ -247,5 +283,5 @@ def main(scenario):
 
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('--scenario',choices=['resume','native_prompt','native_state','cancel','denied','resend','ack_timeout','sensor_fault','thermal_fault','idle_reports'],required=True)
+    parser=argparse.ArgumentParser();parser.add_argument('--scenario',choices=['resume','native_prompt','native_state','cancel','denied','resend','ack_timeout','sensor_fault','thermal_fault','idle_reports','sender_barrier','barrier_cancel','barrier_interleave','native_barrier'],required=True)
     main(parser.parse_args().scenario)
