@@ -825,7 +825,8 @@
         "docs/firmware-parity.md": "docs/firmware-parity.md",
         "validation/firmware-parity-stage134.json": "validation/firmware-parity-stage134.json",
         "docs/maintained-firmware.md": "docs/maintained-firmware.md",
-        "validation/maintained-firmware-stage135.json": "validation/maintained-firmware-stage135.json"
+        "validation/maintained-firmware-stage135.json": "validation/maintained-firmware-stage135.json",
+        "validation/thermal-handoff-stage136.json": "validation/thermal-handoff-stage136.json"
       }
     }
   }

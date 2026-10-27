@@ -1,6 +1,6 @@
 # Contribution delivery and review stack
 
-Updated October 27, 2026. Thirty host, six earlier Creality firmware and three maintained-source firmware pull requests are open as drafts in the owner's repositories. Each PR names its predecessor and validation evidence. They are review candidates, not merged releases or accepted upstream contributions.
+Updated October 27, 2026. Thirty host, six earlier Creality firmware and four maintained-source firmware pull requests are open as drafts in the owner's repositories. Each PR names its predecessor and validation evidence. They are review candidates, not merged releases or accepted upstream contributions.
 
 ## Repository relationships
 
@@ -102,9 +102,12 @@ physical commissioning or full thermal-manager qualification.
 | [M1](https://github.com/joenewbry/Marlin/pull/1) | Add printing-only S1 Pro v040 build profile | `reference/toka-v040` |
 | [M2](https://github.com/joenewbry/Marlin/pull/2) | Port session-bound LLM prompt control to S1 Pro v040 | `stack/v040-f1-profile` |
 | [M3](https://github.com/joenewbry/Marlin/pull/3) | Carry heater watch protection fixes onto S1 Pro v040 | `stack/v040-f2-protocol` |
+| [M4](https://github.com/joenewbry/Marlin/pull/4) | Complete thermal protection handoff at runtime | `stack/v040-f3-thermal` |
 
-The final candidate builds with 13,608 bytes of application flash free. Eleven
-actual-source prompt scenarios, six HeaterWatch template scenarios, three
-threshold checks and 66 existing host channel/backend tests pass. The 1,156-test
-installed Linux qualification remains tied to the earlier firmware pin.
-[Source/build evidence and limits](maintained-firmware.md).
+The first three source layers need the runtime correction in M4 to complete
+the near-target backport. The corrected candidate builds with13,600bytes free;
+32actual-source thermal paths,11prompt cases,6watch-template scenarios/3threshold
+checks and66host checks pass. All physical dependencies are recording stubs;
+full manager/physical shutdown and printing remain unqualified. The1156-test
+installed Linux qualification and older firmware-test pin are unchanged.
+[Detailed current source and limits](maintained-firmware.md).

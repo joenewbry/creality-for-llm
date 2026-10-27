@@ -281,6 +281,7 @@ include validation/receive-arrival-stage120.json
 include validation/service-startup-stage118.json
 include validation/source-hazard-stage131.json
 include validation/streamed-host-restart-stage109.json
+include validation/thermal-handoff-stage136.json
 include validation/transport-readiness-stage110.json
 include validation/tty-ownership-stage89.json
 include validation/tty-prompt-stage119.json

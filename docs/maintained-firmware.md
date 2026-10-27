@@ -20,7 +20,7 @@ progress, not permission to install it or a stock-equivalent printing claim.
   instructions. These are distinct from the controller source repository.
 
 The new PR chain is based on `reference/toka-v040`: printing profile, protocol
-port, then heater-watch parity. The checked-in qualification JSON records exact
+port, heater-watch parity, then the runtime handoff correction. The checked-in qualification JSON records exact
 commits, artifact hashes, dependencies and validation boundaries. This lineage
 is unrelated to a Mac/Linux split: either host OS speaks the same printer
 protocol, while firmware selection depends on the installed hardware.
@@ -100,3 +100,34 @@ protected regardless of whether it is currently printing. Logitech work remains
 entirely deferred. No printer or camera was accessed for this source port.
 
 [Structured qualification](../validation/maintained-firmware-stage135.json)
+
+
+## Runtime handoff correction
+
+The first three layers were not the complete near-target backport. Candidate
+7569d4a's watch template disarms at the hysteresis boundary, while TRFirstHeating
+still waits for the exact target. An actual-source runtime harness reproduced
+six regressions (nozzle/bed boundary hold, boundary drop and above-boundary
+drop); a later drop could evade both protection branches. These are software
+reproductions, not physical fault experiments.
+
+The [dependent runtime PR #4](https://github.com/joenewbry/Marlin/pull/4) ports the
+missing condition from upstream [Marlin PR #28695](https://github.com/MarlinFirmware/Marlin/pull/28695),
+merged as c27424fa51053dd3b0febde2f03b287499403d39. All 32 extracted-path scenarios
+pass after correction; other extracted source snippets and header/config hashes
+are unchanged. Actual error/disable/loud-kill functions run with recording IO.
+Assertions verify targets/PWM/pin writes and autotemp are off before park or
+final kill, no park when unhomed, one kill on repeated faults, correct boundary
+protection, heating stalls, wrap and idle behavior.
+
+Current source09162eb builds at183008/196608 flash (13600bytes free), RAM39860.
+Eleven prompt cases, six template cases/three typedef checks and66host checks
+pass. The previous layer requires this correction before commissioning
+consideration. No source has been flashed.
+
+Run `python3 buildroot/tests/llm_thermal_paths_native.py` from the firmware
+checkout; `--source-root` permits reproducing the six failures against7569d4a.
+Use `--output` to save detailed results and source/snippet hashes. The harness
+does not execute the complete temperature task, PID, ADC, interrupts or real
+screen/motion/kill/HAL. Physical shutdown remains unqualified, as do the target,
+screen, settings and recovery path. [Full structured evidence](../validation/thermal-handoff-stage136.json).
