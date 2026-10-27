@@ -269,3 +269,118 @@ def test_backend_overlap_policy_keeps_prompt_and_job_receipts_independent(setup)
     assert completed['status'] == 'completed'
     assert service.poll(first['operation_id'])['status'] == 'running'
     assert service.submit(prompt_request) == completed and len(backend.dispatched) == 2
+
+
+@pytest.mark.parametrize('change,reason', [
+    ({'generation': 'g2'}, 'connection_changed_before_dispatch'),
+    ({'printer_id': 'another'}, 'connection_changed_before_dispatch'),
+    ({'state_version': 2}, 'state_changed_before_dispatch'),
+    ({'observed_at': 0}, 'stale_observation'),
+    ({'observed_at': 11}, 'stale_observation'),
+])
+def test_committed_request_rechecks_context_before_dispatch(setup, monkeypatch, change, reason):
+    service, backend = setup
+    claim = service.journal.claim
+    def changed_after_claim(*args, **kwargs):
+        claimed = claim(*args, **kwargs)
+        backend.snapshot = replace(backend.snapshot, **change)
+        return claimed
+    monkeypatch.setattr(service.journal, 'claim', changed_after_claim)
+    result = service.submit(REQUEST)
+    assert result['status'] == 'rejected'
+    assert result['result'] == {'reason': reason, 'dispatched': False}
+    assert not backend.dispatched and not service._pending
+    assert service.submit(REQUEST) == result
+
+
+def test_commit_latency_cannot_send_an_expired_request(setup, monkeypatch):
+    service, backend = setup
+    now = [10.]
+    service.clock = lambda: now[0]
+    claim = service.journal.claim
+    def delayed_claim(*args, **kwargs):
+        claimed = claim(*args, **kwargs)
+        now[0] = REQUEST['deadline']
+        return claimed
+    monkeypatch.setattr(service.journal, 'claim', delayed_claim)
+    result = service.submit(REQUEST)
+    assert result['status'] == 'rejected'
+    assert result['result'] == {'reason': 'deadline_expired_before_dispatch', 'dispatched': False}
+    assert not backend.dispatched and not service._pending
+    assert service.submit(REQUEST) == result
+    assert [event['status'] for event in service.journal.events()] == ['accepted', 'running', 'rejected']
+
+
+@pytest.mark.parametrize('failure', ['rejected', 'exception'])
+def test_external_admission_is_rechecked_after_commit(setup, monkeypatch, failure):
+    service, backend = setup
+    validate = backend.validate
+    calls = []
+    def changing_admission(*args):
+        calls.append(1)
+        if len(calls) == 2:
+            if failure == 'rejected':
+                raise RequestRejected('clearance_no_longer_qualified')
+            raise OSError('evidence source unavailable')
+        return validate(*args)
+    monkeypatch.setattr(backend, 'validate', changing_admission)
+    result = service.submit(REQUEST)
+    assert result['status'] == ('rejected' if failure == 'rejected' else 'failed')
+    assert result['result'] == {'reason': 'clearance_no_longer_qualified' if failure == 'rejected'
+                                else 'dispatch_admission_unavailable', 'dispatched': False}
+    assert len(calls) == 2 and not backend.dispatched and not service._pending
+    assert service.submit(REQUEST) == result and len(calls) == 2
+
+
+def test_slow_second_validation_cannot_outlive_the_deadline(setup, monkeypatch):
+    service, backend = setup
+    now = [10.]
+    service.clock = lambda: now[0]
+    validate = backend.validate
+    calls = []
+    def delayed_admission(*args):
+        calls.append(1)
+        if len(calls) == 2:
+            now[0] = REQUEST['deadline']
+        return validate(*args)
+    monkeypatch.setattr(backend, 'validate', delayed_admission)
+    result = service.submit(REQUEST)
+    assert result['status'] == 'rejected'
+    assert result['result'] == {'reason': 'deadline_expired_before_dispatch', 'dispatched': False}
+    assert not backend.dispatched
+
+
+def test_changed_state_during_second_validation_is_not_dispatched(setup, monkeypatch):
+    service, backend = setup
+    validate = backend.validate
+    calls = []
+    def changed_admission(*args):
+        calls.append(1)
+        if len(calls) == 2:
+            backend.snapshot = replace(backend.snapshot, state_version=2)
+        return validate(*args)
+    monkeypatch.setattr(backend, 'validate', changed_admission)
+    result = service.submit(REQUEST)
+    assert result['status'] == 'rejected'
+    assert result['result'] == {'reason': 'state_changed_before_dispatch', 'dispatched': False}
+    assert not backend.dispatched
+
+
+def test_lease_loss_after_claim_leaves_intent_for_successor_without_dispatch(setup, monkeypatch):
+    service, backend = setup
+    claim = service.journal.claim
+    check = service.lease.check
+    def lost():
+        raise OwnershipError('ownership withdrawn after commit')
+    def lost_after_claim(*args, **kwargs):
+        claimed = claim(*args, **kwargs)
+        monkeypatch.setattr(service.lease, 'check', lost)
+        return claimed
+    monkeypatch.setattr(service.journal, 'claim', lost_after_claim)
+    with pytest.raises(OwnershipError):
+        service.submit(REQUEST)
+    assert not backend.dispatched and not service._pending
+    events = service.journal.events()
+    assert [event['status'] for event in events] == ['accepted', 'running']
+    assert service.journal.get(events[-1]['operation_id'])['status'] == 'running'
+    monkeypatch.setattr(service.lease, 'check', check)

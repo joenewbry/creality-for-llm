@@ -35,6 +35,7 @@ include docs/blocker-matrix.md
 include docs/camera-interface.md
 include docs/contributions.md
 include docs/development-hardware.md
+include docs/dispatch-admission.md
 include docs/firmware-parity.md
 include docs/firmware-stack-builds.md
 include docs/goal-audit.md

@@ -326,3 +326,30 @@ def test_interrupted_sender_start_retires_connection_and_is_not_retried(runtime)
     assert backend.prompt.receive_hub.fault=='assigned_start_interrupted'
     with pytest.raises(ValueError,match='already started'):backend.start()
     assert not backend._pump_thread.is_alive()
+
+
+@pytest.mark.parametrize('change', ['clearance', 'evidence_error', 'staged_bytes'])
+def test_start_rechecks_real_adapter_admission_after_durable_claim(runtime, monkeypatch, change):
+    service, backend, provider, sender, now, state, cursor, actions, path = runtime
+    complete(runtime, 'job.stage')
+    claim = service.journal.claim
+    def changed_after_claim(*args, **kwargs):
+        claimed = claim(*args, **kwargs)
+        if change == 'clearance':
+            provider.start_blockers = lambda *a: ['clearance_withdrawn']
+        elif change == 'evidence_error':
+            def unavailable(*a):
+                raise OSError('physical evidence source unavailable')
+            provider.start_blockers = unavailable
+        else:
+            backend.path.chmod(0o600)
+            backend.path.write_bytes(b'changed while request was committed')
+        return claimed
+    monkeypatch.setattr(service.journal, 'claim', changed_after_claim)
+    req = request(runtime, 'job.start')
+    result = service.submit(req)
+    assert result['status'] == ('failed' if change == 'evidence_error' else 'rejected')
+    assert result['result']['dispatched'] is False
+    assert actions == ['stage'] and not backend._started
+    assert not service._pending
+    assert service.submit(req) == result and actions == ['stage']
