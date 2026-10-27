@@ -8,6 +8,7 @@ import threading
 from .assigned_sender import AssignedSerialEndpoint,AssignedSerialObservation
 from .machine_events import MachineEventRecorder
 from .ownership import ControllerLease
+from .protocol import ProtocolObserver
 
 
 class AssignedMachineEventRecorder(MachineEventRecorder):
@@ -31,6 +32,10 @@ class AssignedMachineEventRecorder(MachineEventRecorder):
         self._source_sequence=endpoint.read_sequence
         self._source_lock=threading.Lock()
         self._reports={};self._resets=0
+        # This observer only withdraws dispatch authority. It cannot grant
+        # readiness, clear a fault or replace the asynchronous durable history.
+        self._interlock_observer=ProtocolObserver(self._connection_generation)
+        self._dispatch_inhibit=None
         super().__init__(journal,generation=self._connection_generation,clock=clock,retention=retention,capacity=capacity)
 
     def _persist(self,events):
@@ -67,6 +72,17 @@ class AssignedMachineEventRecorder(MachineEventRecorder):
                         or type(now) not in (int,float) or not math.isfinite(now)
                         or packet.received.observed_at>now):
                     raise ValueError('source line mismatch or invalid clock')
+                # Classify the original source line before returning it to the
+                # sender. Persistence may lag; it must not leave a dispatch window.
+                events=self._interlock_observer.feed(packet.received.data,packet.received.observed_at)
+                hazard=next((event for event in events if event.kind in ('fault','sensor_suspect')
+                    or event.kind=='protocol_error' and event.data.get('reason')=='nonfinite_temperature'),None)
+                if hazard is not None:
+                    reason='assigned_serial_'+hazard.kind
+                    self._dispatch_inhibit=self._dispatch_inhibit or dict(reason=reason,
+                        source_sequence=packet.sequence,observed_at=packet.received.observed_at,
+                        physical_stop_confirmed=False)
+                    self.endpoint.retire(reason)
                 provenance=dict(capture_id=self.capture_id,printer_id=self._printer_id,
                     connection_generation=self._connection_generation,source_sequence=packet.sequence,
                     bytes=len(packet.received.data),sha256=hashlib.sha256(packet.received.data).hexdigest(),
@@ -99,7 +115,8 @@ class AssignedMachineEventRecorder(MachineEventRecorder):
             return dict(scope='source_bound_serial_reports',physical_readiness_qualified=False,
                 capture_id=self.capture_id,printer_id=self._printer_id,source_connection_generation=self._connection_generation,
                 source_usable=bool(usable),capturing=bool(active),fault=self._fault,controller_resets_observed=self._resets,
-                sensor_validity=None,physical_position_verified=False,reports=reports)
+                sensor_validity=None,physical_position_verified=False,
+                dispatch_inhibit=copy.deepcopy(self._dispatch_inhibit),reports=reports)
 
     def read(self,after=0,limit=100):
         self._check_process()

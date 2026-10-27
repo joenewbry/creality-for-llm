@@ -71,7 +71,7 @@ def main(scenario):
         config.set(['serial','timeout','positionLogWait'],1.);config.set(['feature','sdSupport'],False)
         config.set(['serial','suppressSecondHello'],True)
         if scenario=='ack_timeout':config.set(['serial','timeout','communication'],.5)
-        if scenario in ('resend','ack_timeout'):config.set(['serial','sendM112OnError'],True)
+        if scenario in ('resend','ack_timeout','sensor_fault','thermal_fault'):config.set(['serial','sendM112OnError'],True)
         profiles=PrinterProfileManager()
         defaults=VirtualPrinterPlugin().get_settings_defaults();defaults.update(enabled=True,throttle=.001,simulateReset=False,sendWait=False,commandBuffer=4,simulated_errors=[])
         virtual_settings=octoprint.plugin.plugin_settings('virtual_printer',defaults=defaults,settings=config)
@@ -141,9 +141,12 @@ def main(scenario):
                 print(json.dumps({'scenario':scenario,'rejected_before_start':True,'physical_serial_open_or_discovery_attempts':len(denied)}));return
             finish('job.start',req,result)
             wait_for(lambda:peer.wait_active.is_set() if scenario=='native_prompt' else any('Recv: echo:MODEL_005' in s for s in observer.logs),'initial progress')
-            if scenario in ('resend','ack_timeout'):
+            if scenario in ('resend','ack_timeout','sensor_fault','thermal_fault'):
                 if scenario=='resend':peer._send('Resend: 1')
-                expected_fault='assigned_resend_unqualified' if scenario=='resend' else 'assigned_timeout_unqualified'
+                elif scenario=='sensor_fault':peer._send('ok T:-15.00 /0.00 B:21.70 /0.00')
+                elif scenario=='thermal_fault':peer._send('Error:THERMAL RUNAWAY')
+                expected_fault={'resend':'assigned_resend_unqualified','ack_timeout':'assigned_timeout_unqualified',
+                    'sensor_fault':'assigned_serial_sensor_suspect','thermal_fault':'assigned_serial_fault'}[scenario]
                 wait_for(lambda:backend.prompt.receive_hub.fault==expected_fault,'assigned replay retirement',timeout=10)
                 wait_for(lambda:sender.getState()==sender.STATE_CLOSED_WITH_ERROR,'assigned sender error closure')
                 before_frames=list(bridge.frames);time.sleep(.1)
@@ -157,6 +160,13 @@ def main(scenario):
                 wait_for(lambda:recorder.read()['events'][-1]['event']['kind']!='capture_started','captured source lines')
                 if scenario=='resend':
                     wait_for(lambda:any(row['event']['kind']=='resend_requested' for row in recorder.read(limit=1000)['events']),'recorded resend request')
+                if scenario in ('sensor_fault','thermal_fault'):
+                    kind='sensor_suspect' if scenario=='sensor_fault' else 'fault'
+                    wait_for(lambda:any(row['event']['kind']==kind for row in recorder.read(limit=1000)['events']),'recorded source hazard')
+                    assert state['serial_reports']['dispatch_inhibit']['reason']==expected_fault
+                    for name in ('job.resume','prompt.inspect','prompt.bind'):
+                        _,blocked=submit(name,{} if name.startswith('prompt.') else None)
+                        assert blocked['status']=='rejected',blocked
                 assert not denied and not bridge.errors and not drain_errors
                 print(json.dumps(dict(scenario=scenario,transport_fault=expected_fault,job_state=state['job_state'],
                     physical_stop_confirmed=False,automatic_emergency_frame_emitted=False,physical_serial_open_or_discovery_attempts=len(denied),
@@ -205,5 +215,5 @@ def main(scenario):
 
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('--scenario',choices=['resume','native_prompt','cancel','denied','resend','ack_timeout'],required=True)
+    parser=argparse.ArgumentParser();parser.add_argument('--scenario',choices=['resume','native_prompt','cancel','denied','resend','ack_timeout','sensor_fault','thermal_fault'],required=True)
     main(parser.parse_args().scenario)
