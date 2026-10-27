@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "scope": "owned assigned sender and passive prompt-copy lifecycle; software qualification only",
+  "qualified_public_snapshot": "4e820fa0e2ec4dcc5656b780e335ca9377cbb347",
+  "linux_qualification": "linux-package-stage132.json",
+  "explicit_one_shot_start": true,
+  "source_capture_required": true,
+  "controller_lease_checked_before_start": true,
+  "background_evidence_provider_callbacks": false,
+  "independent_serial_receive_owners_added": 0,
+  "prompt_copy_consumed_without_tool_calls": true,
+  "consumer_failure_retires_shared_dispatch": true,
+  "close_order": [
+    "signal and join prompt consumer",
+    "sender",
+    "durable capture",
+    "transport",
+    "controller lease"
+  ],
+  "stalled_consumer_retains_ownership": true,
+  "physical_shutdown_claimed": false,
+  "physical_device_access": false,
+  "paid_model_calls": 0,
+  "tests": {
+    "focused_mac": {
+      "passed": 64,
+      "skipped_linux_only": 9
+    },
+    "idle_linux": {
+      "passed": 1,
+      "prompt_copy_bytes": 78848,
+      "tool_calls_during_capture": 0
+    },
+    "hazard_repetitions_linux": {
+      "runs": 12,
+      "sensor": 6,
+      "thermal": 6,
+      "log_sha256": "8165bce0c5a1c3c111371aa5e468d75abe04e2d254a794eb385754e64c792f8c"
+    },
+    "installed_linux": {
+      "tests": "1156",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "403.646"
+    }
+  },
+  "initial_idle_failure": {
+    "public_snapshot": "958ce321ecba22f09690e8f183d9d7beb2fd5786",
+    "observed": "20-second source-report timeout followed by recorder close timeout; simulator peer threads remained after cleanup exception",
+    "payload": "3000 small reports; many individual journal transactions",
+    "correction": "128 longer reports still exceed the same 65536-byte copy capacity; fixture peer cleanup executes even if service close raises",
+    "log_sha256": "3aefede3e91c32b62842ddcf196ec9e1874a959c970a0238ea84f181e28ade7c",
+    "debug_log_sha256": "3091a0c191b0777db6c1cc2d91544eb67c4fb8462da3cb0ad67f2f21dc9693fd",
+    "failed_run_retained": true
+  },
+  "retirement_order_failure": {
+    "public_snapshot": "12abfc0ff05603de983b5385139bea9599052d98",
+    "full_run": {
+      "passed": 1153,
+      "failed": 1
+    },
+    "full_run_log_sha256": "5e833a9c7509fc446adab040774bb930690518875e43a5a5d8727268df3178f0",
+    "trace_sha256": "b9ab2e4b9426867e559a59a64d321a8cebd7d135be3dd3d50720c1983758e5f5",
+    "observed": "prompt consumer retired with generic reason before source recorder sensor_suspect; specific-reason assertion failed while dispatch remained fenced",
+    "correction": "preserve existing fence cause or map prompt sensor/firmware cause to the same source-hazard category; assertions unchanged"
+  },
+  "limitations": [
+    "No physical evidence provider, hardware policy, native Mac transport or commissioning supplied",
+    "Callback and OS metadata bounds remain an integration requirement; a callback holding the backend guard can delay service close reaching join",
+    "Join completion and sender closure do not prove motion stopped or heaters cold",
+    "High-rate per-line durable journal throughput remains unqualified; the byte-capacity test does not establish it"
+  ],
+  "camera_scope": "deferred_by_owner"
+}

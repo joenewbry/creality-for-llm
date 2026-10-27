@@ -109,8 +109,10 @@ Start verifies active capture and the existing controller lease, then starts the
 pinned sender and one passive prompt-copy consumer exactly once. Neither start
 nor the consumer discovers or opens a port. The consumer drains observations
 without LLM tool calls and does not invoke the external evidence provider. It
-uses the same backend guard as foreground operations; all source reads still
-belong to the sender's single endpoint reader.
+uses the same backend guard as foreground operations. Once the sender claims
+the reader role, it only drains prompt copies; the sender reads the descriptor.
+During startup the existing hub may read before that handoff, serialized through
+the same shared gate. No second descriptor or independent receive owner is added.
 
 Capture loss, prompt-channel uncertainty or a consumer callback exception
 retires shared dispatch and invalidates resume. Startup interruption is also
