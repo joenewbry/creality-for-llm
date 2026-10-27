@@ -1,0 +1,53 @@
+{
+  "linux": {
+    "passed": 146,
+    "skipped": 0,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 19.641,
+    "xml_sha256": "04dd08dcdf4efcebc9e33de11fbf315dbdefcc9e23b087324964a654d5f0ed66"
+  },
+  "mac": {
+    "passed": 351,
+    "skipped": 31,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 4.773,
+    "xml_sha256": "6e1b5714e550b80958d83925367b020dd1eb489db049b4f02c62a66b1f7fc8de"
+  },
+  "schema_version": 1,
+  "date": "2026-10-27",
+  "source_commit": "442cc91",
+  "scope": "optional controller-managed fresh cold inspection; source software qualification only",
+  "physical_readiness_qualified": false,
+  "physical_printers_accessed": false,
+  "camera_scope": "deferred",
+  "source_age_seconds": 1,
+  "matched_python_and_fixture_inputs": 158,
+  "linux_scope": "146 final-source focused inspection, preflight, parser, state-reader and service tests; not the broader Mac cohort",
+  "mac_scope": "351 final-source assigned transport/job/barrier/capture, service/startup, shared stream and ownership tests; 31 Linux-only skips",
+  "earlier_linux_regression": {
+    "passed": 380,
+    "seconds": 225.202,
+    "scope": "earlier development snapshot before final exception handling and two new adversarial tests; not a final-source full regression claim"
+  },
+  "export_checks": 9,
+  "behaviors": [
+    "running parent and child inspection intents committed before query",
+    "one owned sender and shared parent deadline",
+    "matching original job/hash/host/generation/session/capture and source arrival",
+    "controller loop advances admission without another model poll",
+    "external qualification callbacks remain mandatory",
+    "source checks after callbacks, filesystem persistence and witness setup",
+    "duplicate request and lost workflow memory cannot replay child or job effect",
+    "source freshness remains one second; physical authority remains false"
+  ],
+  "remaining": [
+    "qualified hardware and firmware/configuration identity",
+    "bounded external provider and runtime latency qualification",
+    "ordered post-drain checkpoint inspection",
+    "sensor diagnosis and physical continuity",
+    "development commissioning and nonprinting demonstration",
+    "separate post-repair printing qualification"
+  ]
+}

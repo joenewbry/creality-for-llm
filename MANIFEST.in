@@ -80,6 +80,7 @@ include licenses/openai-LICENSE.txt
 include licenses/pytest-LICENSE.txt
 include printer_control/__init__.py
 include printer_control/assigned_barrier.py
+include printer_control/assigned_inspection.py
 include printer_control/assigned_job.py
 include printer_control/assigned_observations.py
 include printer_control/assigned_preflight.py
@@ -169,6 +170,7 @@ include tests/restore_serial_scenario.py
 include tests/state_native_harness.py
 include tests/stream_disconnect_scenario.py
 include tests/test_assigned_barrier.py
+include tests/test_assigned_inspection.py
 include tests/test_assigned_job.py
 include tests/test_assigned_observations.py
 include tests/test_assigned_preflight.py
@@ -279,6 +281,7 @@ include validation/development-readonly-stage130.json
 include validation/dispatch-admission-stage137.json
 include validation/firmware-parity-stage134.json
 include validation/firmware-stack-stage76.json
+include validation/fresh-inspection-stage146.json
 include validation/fresh-resume-stage143.json
 include validation/host-core-boundary-stage90.json
 include validation/host-llm-interface-boundary-stage97.json

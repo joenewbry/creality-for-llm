@@ -46,12 +46,35 @@ and the assigned adapter still reports physical_control_qualified=false.
 
 ## Scope and work remaining
 
-The inspect input has the existing one-second source-age bound. This component
-does not issue or renew inspections, and a model round trip cannot extend that
-bound. The full controller-managed provider must acquire fresh inspections within
-its journaled stage/start workflow; that coordinator is still unfinished. A later
-checkpoint reader also needs an ordered inspection compatible with the completion
-barrier, rather than injecting arbitrary reads into its strict write sequence.
+The inspect input retains the existing one-second source-age bound. Opt in with
+`attach_cold_preflight(policy, automatic_inspection=True)`. Stage/start admission
+journals a child `prompt.inspect` beneath the running parent. The owned sender
+emits that fixed query; competing prompt operations cannot replace it. A completed
+correlated child receipt and fresh original state line are required before
+screening, external checks and the job effect. The existing controller loop
+advances admission without another model call. A slow model can retrieve the
+resulting stage receipt later; it cannot refresh the original source clock.
+Default explicit-preview mode remains available.
+
+Child intent is committed before its single dispatch. It shares the parent's
+deadline and binds job/hash/host/generation/session/capture. Duplicate requests or
+lost in-memory workflow state never replay a claimed child. A receipt arriving
+before its state line waits within that deadline. Stale state, changed inputs
+and failed external proofs prevent the job effect. Source freshness/ownership
+are checked after filesystem persistence or witness setup, before selecting or
+starting. Interrupted job effects become unknown and are not retried. Restart
+recovery leaves unfinished parent/child operations unknown.
+
+Automatic admission invokes trusted external callbacks under the backend guard,
+as synchronous admission already does. Those callbacks must be bounded; the
+coordinator supplies no timeout that can preempt arbitrary external code. On a
+late return it rechecks the original evidence age/deadline and refuses the job
+effect. Runtime latency and callback behavior still need qualification.
+
+This coordinates source inspection, not the full physical provider. A later
+checkpoint reader still needs an ordered inspection compatible with the strict
+completion barrier. Hardware/configuration and physical continuity proofs remain
+required, with no physical qualification granted by this optional mode.
 
 Tests use synthetic cold-ready wire values through the real assigned capture,
 prompt channel, durable journal and router. An official Model Context Protocol
