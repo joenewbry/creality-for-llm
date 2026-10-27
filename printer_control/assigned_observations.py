@@ -44,7 +44,7 @@ class AssignedMachineEventRecorder(MachineEventRecorder):
         with self._condition:
             for event in events:
                 if event['kind']=='connection_invalidated':self._reports.clear();self._resets+=1
-                if event['kind'] in ('temperature','reported_position','firmware_identity','fault','sensor_suspect'):
+                if event['kind'] in ('temperature','reported_position','firmware_identity','fault','sensor_suspect','machine_state'):
                     self._reports[event['kind']]=copy.deepcopy(event)
 
     def _check_process(self):
@@ -76,7 +76,9 @@ class AssignedMachineEventRecorder(MachineEventRecorder):
                 # sender. Persistence may lag; it must not leave a dispatch window.
                 events=self._interlock_observer.feed(packet.received.data,packet.received.observed_at)
                 hazard=next((event for event in events if event.kind in ('fault','sensor_suspect')
-                    or event.kind=='protocol_error' and event.data.get('reason')=='nonfinite_temperature'),None)
+                    or event.kind=='protocol_error' and event.data.get('reason') in (
+                        'nonfinite_temperature','invalid_machine_state','nonfinite_machine_state',
+                        'machine_state_session_changed','machine_state_replayed')),None)
                 if hazard is not None:
                     reason='assigned_serial_'+hazard.kind
                     self._dispatch_inhibit=self._dispatch_inhibit or dict(reason=reason,

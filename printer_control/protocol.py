@@ -8,6 +8,7 @@ import re
 import math
 import uuid
 from .prompt_wire import PromptWireReceipt
+from .machine_state import MachineStateReport
 
 
 @dataclass(frozen=True)
@@ -30,6 +31,8 @@ class ProtocolObserver:
         self._discard = False
         self._prompt = None
         self.capabilities: dict[str, bool] = {}
+        self._machine_sequence = 0
+        self._machine_session = None
 
     def _event(self, kind, now, **data):
         self.sequence += 1
@@ -43,6 +46,8 @@ class ProtocolObserver:
         self._buffer.clear()
         self._discard = False
         self.capabilities.clear()
+        self._machine_sequence = 0
+        self._machine_session = None
         events.append(self._event("connection_invalidated", now, reason=reason, physical_state="unknown"))
         self.generation = uuid.uuid4().hex
         return events
@@ -79,7 +84,7 @@ class ProtocolObserver:
                         events.append(self._event("protocol_error", now, reason="non_ascii_line"))
                         self._invalidate_prompt(events, now, "malformed_stream")
                         continue
-                    events.extend(self._line(line if line.lstrip().startswith("//llm:") else line.strip(), now))
+                    events.extend(self._line(line if line.lstrip().startswith(("//llm:", "//llmstate:")) else line.strip(), now))
             elif not self._discard:
                 self._buffer.append(byte)
                 if len(self._buffer) > self.MAX_LINE:
@@ -96,6 +101,20 @@ class ProtocolObserver:
 
     def _line(self, line, now):
         events = []
+        if line.lstrip().startswith('//llmstate:'):
+            try:
+                report = MachineStateReport.decode(line)
+                if self._machine_session is not None and report.session != self._machine_session:
+                    raise ValueError('machine_state_session_changed')
+                if report.sequence <= self._machine_sequence:
+                    raise ValueError('machine_state_replayed')
+            except ValueError as error:
+                return [self._event('protocol_error', now, reason=str(error))]
+            self._machine_session, self._machine_sequence = report.session, report.sequence
+            events.append(self._event('machine_state', now, **report.to_dict()))
+            if any(report.values[index] < 0 for index in (5, 7)):
+                events.append(self._event('sensor_suspect', now, reason='negative_temperature', heating_permitted=False))
+            return events
         if line.lstrip().startswith("//llm:"):
             try:
                 receipt = PromptWireReceipt.decode(line)

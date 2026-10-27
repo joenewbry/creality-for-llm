@@ -302,6 +302,14 @@
     "tests/test_macos_owners.py",
     "scripts/qualify_macos_pty.py",
     "docs/macos-owners.md",
-    "validation/macos-owners-stage138.json"
+    "validation/macos-owners-stage138.json",
+    "printer_control/machine_state.py",
+    "printer_control/assigned_state.py",
+    "tests/test_machine_state.py",
+    "tests/test_assigned_state.py",
+    "tests/fixtures/machine-state-native.json",
+    "docs/machine-state.md",
+    "validation/machine-state-stage139.json",
+    "validation/linux-package-stage139.json"
   ]
 }
