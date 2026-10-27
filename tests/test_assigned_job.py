@@ -353,3 +353,85 @@ def test_start_rechecks_real_adapter_admission_after_durable_claim(runtime, monk
     assert actions == ['stage'] and not backend._started
     assert not service._pending
     assert service.submit(req) == result and actions == ['stage']
+
+
+
+def test_barrier_attachment_requires_capture_before_start(runtime):
+    with pytest.raises(ValueError,match='after capture and before sender start'):
+        runtime[1].attach_completion_barrier()
+
+
+def test_pending_barrier_does_not_call_checkpoint_or_grant_resume(runtime):
+    service,backend,provider,sender,*_=runtime
+    complete(runtime,'job.stage');complete(runtime,'job.start')
+    dispatches=[];checkpoints=[];writes=[];proof=[None]
+    def dispatch(operation,phase,identity,enqueue):
+        dispatches.append((operation,phase,identity))
+        enqueue('M400');enqueue('M118 E1 LLM_BARRIER_unit');return 'unit'
+    backend.completion_barrier=SimpleNamespace(dispatch=dispatch,poll=lambda:proof[0])
+    sender.sendCommand=lambda cmd,**kw:writes.append(cmd) or True
+    provider.checkpoint=lambda *a:checkpoints.append(a)
+    req=request(runtime,'job.pause');receipt=service.submit(req)
+    for _ in range(3):receipt=service.poll(receipt['operation_id'])
+    assert receipt['status']=='running' and not checkpoints and len(dispatches)==1
+    assert writes==['M400','M118 E1 LLM_BARRIER_unit']
+    proof[0]={'resume_authorized':False,'physical_readiness_qualified':False}
+    receipt=service.poll(receipt['operation_id'])
+    assert receipt['status']=='outcome_unknown' and checkpoints
+    assert receipt['result']['reason']=='pause_evidence_unqualified'
+    assert backend.checkpoint is None
+
+
+def test_refused_barrier_enqueue_is_unknown_and_never_retried(runtime):
+    service,backend,provider,sender,*_=runtime
+    complete(runtime,'job.stage');complete(runtime,'job.start')
+    writes=[]
+    def dispatch(operation,phase,identity,enqueue):enqueue('M400')
+    backend.completion_barrier=SimpleNamespace(dispatch=dispatch,poll=lambda:None)
+    sender.sendCommand=lambda cmd,**kw:writes.append(cmd) or False
+    req=request(runtime,'job.pause');receipt=service.submit(req)
+    receipt=service.poll(receipt['operation_id'])
+    assert receipt['status']=='outcome_unknown' and receipt['result']['reason']=='completion_barrier_unqualified'
+    assert service.submit(req)==receipt and writes==['M400']
+    assert backend.checkpoint is None
+
+
+@pytest.mark.parametrize('scenario',['sender_barrier','barrier_cancel','barrier_interleave','native_barrier'])
+def test_assigned_barrier_through_pinned_sender(scenario):
+    if sys.platform!='linux':pytest.skip('Linux owned-terminal barrier integration')
+    root=Path(__file__).resolve().parents[1]
+    run=subprocess.run([sys.executable,'tests/assigned_job_smoke.py','--scenario',scenario],cwd=root,capture_output=True,text=True,timeout=85)
+    assert run.returncode==0,run.stderr[-6000:]
+    result=json.loads(run.stdout.splitlines()[-1])
+    assert result['physical_serial_open_or_discovery_attempts']==0 and not result['physical_provider_implemented']
+    print(json.dumps(result,sort_keys=True))  # Retain scenario evidence in JUnit capture.
+    if scenario=='barrier_interleave':
+        assert result['outcome']['status']=='outcome_unknown' and result['no_replay_on_retry']
+    else:
+        proof=result['pause_barrier']
+        assert result['completion_barrier_enabled'] and proof['phase']=='paused'
+        assert len(proof['writes'])==2 and all(w['confirmed'] for w in proof['writes'])
+        assert not proof['resume_authorized'] and not proof['physical_readiness_qualified']
+        assert result['moves_completed']==80 if scenario!='barrier_cancel' else 0<result['moves_completed']<80
+        if scenario=='barrier_cancel':assert result['cancel_barrier']['phase']=='cancelled'
+        if scenario=='native_barrier':assert result['native_state_read'] and result['native_prompt_frames']==4
+
+
+
+def test_pause_rechecks_barrier_after_external_checkpoint_callback(runtime):
+    service,backend,provider,sender,now,*_=runtime
+    complete(runtime,'job.stage');complete(runtime,'job.start')
+    polls=[]
+    def poll():
+        polls.append(now[0])
+        if now[0]>10.:raise RequestRejected('barrier_marker_stale')
+        return {'resume_authorized':False,'physical_readiness_qualified':False}
+    backend.completion_barrier=SimpleNamespace(dispatch=lambda *a:'token',poll=poll)
+    def capture():
+        now[0]+=1.1
+        return SimpleNamespace(envelope=lambda:{})
+    backend._capture=capture
+    req=request(runtime,'job.pause');receipt=service.submit(req);receipt=service.poll(receipt['operation_id'])
+    assert receipt['status']=='outcome_unknown' and receipt['result']['reason']=='completion_barrier_unqualified'
+    assert receipt['result']['detail']=='barrier_marker_stale' and len(polls)==2
+    assert backend.checkpoint is None and backend.witness.frozen and not backend.witness.allow_job_commands

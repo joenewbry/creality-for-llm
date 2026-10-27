@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-27",
+  "scope": "source-tested assigned pause/cancel sender integration; physical provider remains unqualified",
+  "source_commit": "d44c0c5eaa99b40aa230b1afed80cb743a321680",
+  "runtime_commit": "66f506b55cfd30a9ce506c8e93267c7fdeb918f9",
+  "linux": {
+    "passed": 203,
+    "skipped": 0,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 163.4,
+    "xml_sha256": "a0efcb9e15f0c66d79b46bcab40eabec264dfb4ce5e2f8dc60b9e875fc5b1770"
+  },
+  "mac": {
+    "passed": 188,
+    "skipped": 15,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 3.5,
+    "xml_sha256": "ae0f498a01801d5ef8c2c1a920cabed8cd4d332a263a3fd0c5be39f250292bc7"
+  },
+  "source_inputs_matched": 151,
+  "native_inputs_verified": 16,
+  "native_source_commit": "0f8d1ca1055b9030cabf6ff8e3a6762fdb4dfee7",
+  "old_fixture_pin_clean": "98aa03248337b8039a09bbc1a29f33432aed08ca",
+  "compiler": "Ubuntu clang 15.0.7",
+  "export_checks_passed": 9,
+  "scenarios": {
+    "powered_pause_resume": {
+      "moves_completed": 80,
+      "pause_marker_correlated": true,
+      "original_moves_once": true
+    },
+    "cancel": {
+      "separate_operation_marker": true,
+      "moves_completed": 7
+    },
+    "interleaved_command": {
+      "outcome": "outcome_unknown",
+      "checkpoint_refused": true,
+      "idempotent_retry_no_replay": true
+    },
+    "native_prompt_state_and_sender_barrier": {
+      "moves_completed": 80,
+      "native_prompt_frames": 4,
+      "controller_state_read": true,
+      "sampling": "hardware stubs",
+      "movement_and_M400_M118": "pinned virtual printer"
+    }
+  },
+  "post_provider_recheck": true,
+  "diagnostics": [
+    "Initial interleave test wrapper treated sender QueueMarker as a string; fixed the test wrapper.",
+    "Native fixture setup correctly refused a symlink root; retained verification and used real copied inputs.",
+    "Native child completed, but test parser initially read build diagnostics as the scenario result; final parser reads the last result line.",
+    "Latency test initially expected the stream guard to be unfrozen after invalidation; corrected the assertion to require frozen dispatch."
+  ],
+  "installed_package_tested": false,
+  "full_suite_repeated": false,
+  "firmware_flashed": false,
+  "physical_printer_access": false,
+  "camera_access": false,
+  "physical_provider_implemented": false,
+  "remaining": [
+    "EOF lifecycle barrier with an explicit evidence deadline",
+    "fresh resume and configuration/preflight/continuity provider",
+    "installed firmware identity and semantics qualification",
+    "sensor diagnosis, development commissioning and demonstration",
+    "separate post-repair printing qualification"
+  ]
+}

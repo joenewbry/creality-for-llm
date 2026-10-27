@@ -69,6 +69,7 @@ class AssignedJobBackend:
         self.path=self.source_path
         self._staging=tempfile.TemporaryDirectory(prefix='assigned-staged-job-')
         self.machine_events=None;self.state_reader=None
+        self.completion_barrier=None;self._barrier_tokens={}
         self._owner_pid=os.getpid()
         self._pump_started=False;self._pump_thread=None;self._pump_stop=threading.Event()
         self._pump_error=None;self._pump_samples=0
@@ -147,6 +148,34 @@ class AssignedJobBackend:
             reader=AssignedStateReader(recorder)
             self.machine_events=recorder;self.state_reader=reader
             self.supported_reads=type(self).supported_reads+('printer.machine_events','printer.machine_state')
+
+    def attach_completion_barrier(self):
+        """Opt in before start; keep external physical checkpoint proofs required."""
+        from .assigned_barrier import AssignedCompletionBarrier
+        with self._lock:
+            if (self.machine_events is None or self._closed or self._pump_started
+                    or self.sender._assigned_endpoint._claimed or self.completion_barrier is not None):
+                raise ValueError('attach one completion barrier after capture and before sender start')
+            self.completion_barrier=AssignedCompletionBarrier(self.machine_events)
+
+    def _barrier_evidence(self, operation_id, phase):
+        """Queue the fixed pair only on the sender already owned by this backend."""
+        key=(operation_id,phase)
+        if key not in self._barrier_tokens:
+            def enqueue(command):
+                if self.sender.sendCommand(command,tags={'source:llm-completion-barrier'}) is not True:
+                    raise RequestRejected('assigned_sender_refused_barrier_command')
+            token=self.completion_barrier.dispatch(operation_id,phase,self.identity(),enqueue)
+            self._barrier_tokens[key]=token
+        return self.completion_barrier.poll()
+
+    def _barrier_outcome(self, operation_id, phase):
+        try:return self._barrier_evidence(operation_id,phase)
+        except Exception as exc:
+            self._fault={'reason':'completion_barrier_unqualified'};self._phase='outcome_unknown'
+            self.checkpoint=None;self.witness.invalidate_resume()
+            return Outcome('outcome_unknown',{'reason':'completion_barrier_unqualified',
+                'detail':str(exc)[:128],'physical_stop_confirmed':False})
 
     def guard(self):return self._lock
 
@@ -339,8 +368,20 @@ class AssignedJobBackend:
         if operation=='job.pause' and state==self.sender.STATE_PAUSED:
             self.checkpoint=None
             result={'evidence_type':'assigned_sender_pause_state','job_id':self.job_id,'resumable':False,'evidence_scope':self.evidence_kind,'physical_control_qualified':False}
+            if self.completion_barrier is not None:
+                proof=self._barrier_outcome(operation_id,'paused')
+                if isinstance(proof,Outcome):return proof
+                if proof is None:return None
+                result['completion_barrier']=proof
             try:
                 epoch=self.witness.snapshot()[2];checkpoint=self._capture()
+                if self.completion_barrier is not None:
+                    # An external provider may block. Recheck original marker
+                    # age, source authority and actual writes after it returns.
+                    proof=self._barrier_outcome(operation_id,'paused')
+                    if isinstance(proof,Outcome):return proof
+                    if proof is None:return None
+                    result['completion_barrier']=proof
                 if not self.witness.freeze(epoch):raise RequestRejected('commands_during_checkpoint')
                 self.checkpoint=checkpoint;self._pause_epoch=epoch
                 result.update(checkpoint.envelope());result['resumable']=True
@@ -350,14 +391,24 @@ class AssignedJobBackend:
                 return Outcome('outcome_unknown',result)
             return Outcome('completed',result)
         if operation=='job.cancel' and state==self.sender.STATE_OPERATIONAL:
+            barrier=None
+            if self.completion_barrier is not None:
+                barrier=self._barrier_outcome(operation_id,'cancelled')
+                if isinstance(barrier,Outcome):return barrier
+                if barrier is None:return None
             try:proven=self.evidence.cancelled(self.identity(),operation_id)
             except Exception:
                 self._fault={'reason':'cancellation_evidence_unavailable'};self._phase='outcome_unknown';self.witness.invalidate_resume()
                 return Outcome('outcome_unknown',{'reason':'cancellation_evidence_unavailable'})
             if self._evidence_valid(proven,'cancelled',operation_id,deadline=self._deadlines[operation_id]):
+                if self.completion_barrier is not None:
+                    barrier=self._barrier_outcome(operation_id,'cancelled')
+                    if isinstance(barrier,Outcome):return barrier
+                    if barrier is None:return None
                 self._phase='cancelled'
                 return Outcome('completed',{'evidence_type':'assigned_cancel_with_external_completion_evidence','job_id':self.job_id,
-                    'evidence_source':proven.source,'evidence_scope':proven.scope,'evidence_observed_at':proven.observed_at,'physical_control_qualified':False})
+                    'evidence_source':proven.source,'evidence_scope':proven.scope,'evidence_observed_at':proven.observed_at,'physical_control_qualified':False,
+                    **({'completion_barrier':barrier} if barrier is not None else {})})
         if state==self.sender.STATE_OPERATIONAL and operation in ('job.start','job.pause','job.resume'):
             return Outcome('outcome_unknown',{'reason':'job_ended_before_transition_observed'})
         return None
@@ -377,6 +428,7 @@ class AssignedJobBackend:
 
     def capabilities(self):
         return dict(scope='experimental_assigned_job_adapter',physical_control_qualified=False,
+                    pause_cancel_barrier_enabled=self.completion_barrier is not None,
                     external_evidence_provider_required=True,evidence_scope=self.evidence_kind,
                     coordinated_prompt_pump_supported=True,
                     automatic_resend_supported=False,timeout_ack_credit_supported=False,

@@ -30,17 +30,36 @@ planner's full busy predicate rather than merely its block count. Firmware
 identity, physical sensor/motor/part continuity and a checkpoint provider remain
 separate requirements.
 
-## Integration remaining
+## Sender integration
 
-The primitive is implemented and tested against the real shared writer, owned
-journal and source recorder using software endpoints. It is not yet connected to
-the assigned job evidence provider or exercised as a new scenario through the
-pinned sender. The existing job provider continues to identify itself as a
-software fixture. Callers must hold their job control guard, supply the exact job
-identity, and invoke dispatch with an internal enqueue adapter for that same
-sender; no application or model input may supply that callable. Sender scheduling
-and background traffic may make the deliberately strict pair fail qualification.
-This is conservative unknown evidence, not permission to retry or bypass it.
+`AssignedJobBackend.attach_completion_barrier()` opts in after source capture is
+attached and before the sender starts. No new model tool or raw command argument
+is added. When the sender reaches Paused, the backend queues the fixed pair
+through that same sender and keeps the pause receipt running until its original
+source marker and complete-frame writes qualify. Only then does the external
+provider attempt the checkpoint. The marker is checked again after that callback,
+which may have blocked; stale or intervening evidence cannot become a checkpoint.
+The cancellation path similarly waits for its own operation-bound pair and
+retains the separate external cancellation proof requirement. A refused enqueue
+or failed correlation produces outcome_unknown and withdraws resume authority;
+repeating the request cannot submit the pair again.
+
+The new owned-terminal scenarios exercise powered pause/resume of all 80 original
+modeled moves once, a separate cancellation marker, an interleaved command, and
+maintained native prompt/state handlers combined with the barrier path. Native
+sampling uses hardware stubs, and movement plus M400/M118 are provided by the
+pinned virtual printer. This is not a run of Marlin's physical motion planner.
+The ordinary checkpoint provider still reads private virtual-peer fields and
+identifies its scope as software-only. The marker does not replace motor, sensor,
+configuration or part-continuity qualification.
+
+Sender scheduling or background traffic may make the deliberately strict pair
+fail qualification. This is unknown evidence, not permission to retry or bypass
+it. Construction remains opt-in while firmware/profile qualification and a
+physical provider are unfinished. EOF completion still uses the existing external
+provider; integrating a final marker needs an explicit lifecycle evidence window,
+separate from the earlier job.start dispatch deadline. Fresh resume admission and
+physical continuity are also separate from a historical pause marker.
 
 Pause supports continuously powered, in-place continuation only after all
 checkpoint proofs qualify. Power-loss recovery and opening the protected printer

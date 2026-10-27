@@ -146,3 +146,15 @@ See [implementation and integration limits](assigned-completion-barrier.md) and
 [scoped validation](../validation/assigned-barrier-stage141.json). This is not a
 new installed-package/full-suite result. Pinned-sender provider integration and
 physical commissioning remain open; neither printer was accessed.
+
+## Sender pause/cancel barrier integration
+
+The optional assigned-job path now waits for its own source-correlated barrier
+before completing a pause or cancellation receipt and rechecks it after external
+evidence callbacks. The pinned-sender software-terminal scenarios exercise an
+80-move pause/resume, separate cancellation marker, interleaving refusal and
+maintained native prompt/state handlers with modeled movement/barrier commands.
+Linux passes 203 source checks, Mac 188 with 15 Linux-only skips; nine export
+checks pass. See [scoped validation](../validation/sender-barrier-stage142.json).
+Physical provider, EOF lifecycle evidence, fresh resume and commissioning remain
+open. Neither printer nor any camera was accessed.
