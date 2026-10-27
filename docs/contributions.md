@@ -171,3 +171,17 @@ Mac 197 with 16 Linux-only skips. Plain and numbered sender scenarios complete a
 80 original modeled moves once. See [qualification](../validation/fresh-resume-stage143.json)
 and [design](assigned-completion-barrier.md). Physical provider, final print
 completion evidence and commissioning remain open.
+
+## Final lifecycle completion
+
+The optional assigned path now measures a bounded final evidence window from the
+original file-done callback, checks the consumed staged file, and requires a
+completed start receipt, new source marker and external proof before completion.
+The start dispatch deadline remains unchanged; command deadlines cannot use the
+lifecycle window. Final evidence is rechecked after callbacks/persistence and
+retained as a historical observation. Linux passes 233 source checks; Mac 215
+with 18 Linux-only skips. A modeled 80-move job completes after the start deadline;
+withholding its final marker leaves the job unknown even after all moves finish.
+See [qualification](../validation/lifecycle-completion-stage144.json) and
+[design](assigned-completion-barrier.md). Hardware provider and commissioning
+remain unfinished.

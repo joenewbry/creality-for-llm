@@ -22,6 +22,18 @@ from .service import Context,Outcome
 from .prompt_backend import PromptBackend
 
 
+class _AssignedJobCallbacks(_CallbackTap):
+    """Stamp EOF at callback arrival; never wait on controller/journal locks."""
+    def __init__(self,original,events,clock):
+        super().__init__(original,events);self.clock=clock
+
+    def on_comm_print_job_done(self,*args,**kwargs):
+        try:observed_at=self.clock()
+        except Exception:observed_at=None
+        self.events.put(('completed',observed_at))
+        return self.original.on_comm_print_job_done(*args,**kwargs)
+
+
 @dataclass(frozen=True)
 class AssignedJobEvidence:
     identity_sha256: str
@@ -71,6 +83,7 @@ class AssignedJobBackend:
         self.machine_events=None;self.state_reader=None
         self.completion_barrier=None;self._barrier_tokens={}
         self._resume_dispatched=set();self._resume_admission={}
+        self._completion_window_seconds=30.;self._completion_window=None;self._completion_result=None
         self._owner_pid=os.getpid()
         self._pump_started=False;self._pump_thread=None;self._pump_stop=threading.Event()
         self._pump_error=None;self._pump_samples=0
@@ -79,7 +92,7 @@ class AssignedJobBackend:
         self._staged=False;self._stage_revision=0;self._started=False;self._printing=0
         self._operations={};self._transitions={};self._deadlines={};self._dispatched_at={};self._start_operation_id=None;self.checkpoint=None;self._pause_epoch=None
         self._events=queue.SimpleQueue()
-        self._callback=_CallbackTap(sender._callback,self._events)
+        self._callback=_AssignedJobCallbacks(sender._callback,self._events,self.clock)
         sender._callback=self._callback
 
     def start(self):
@@ -150,14 +163,16 @@ class AssignedJobBackend:
             self.machine_events=recorder;self.state_reader=reader
             self.supported_reads=type(self).supported_reads+('printer.machine_events','printer.machine_state')
 
-    def attach_completion_barrier(self):
+    def attach_completion_barrier(self,*,completion_window_seconds=30.):
         """Opt in before start; keep external physical checkpoint proofs required."""
-        from .assigned_barrier import AssignedCompletionBarrier
+        from .assigned_barrier import AssignedCompletionBarrier,AssignedCompletionWindow
+        AssignedCompletionWindow(0.,completion_window_seconds)
         with self._lock:
             if (self.machine_events is None or self._closed or self._pump_started
                     or self.sender._assigned_endpoint._claimed or self.completion_barrier is not None):
                 raise ValueError('attach one completion barrier after capture and before sender start')
             self.completion_barrier=AssignedCompletionBarrier(self.machine_events)
+            self._completion_window_seconds=completion_window_seconds
 
     def _barrier_evidence(self, operation_id, phase):
         """Queue the fixed pair only on the sender already owned by this backend."""
@@ -166,7 +181,8 @@ class AssignedJobBackend:
             def enqueue(command):
                 if self.sender.sendCommand(command,tags={'source:llm-completion-barrier'}) is not True:
                     raise RequestRejected('assigned_sender_refused_barrier_command')
-            token=self.completion_barrier.dispatch(operation_id,phase,self.identity(),enqueue)
+            token=self.completion_barrier.dispatch(operation_id,phase,self.identity(),enqueue,
+                **({'completion_window':self._completion_window} if phase=='completed' else {}))
             self._barrier_tokens[key]=token
         return self.completion_barrier.poll()
 
@@ -190,7 +206,14 @@ class AssignedJobBackend:
             elif event=='state':
                 if value==self.sender.STATE_PRINTING:self._printing+=1;self._phase='running'
                 elif value==self.sender.STATE_PAUSED:self._phase='paused'
-            elif event=='completed':self._phase='completing'
+            elif event=='completed':
+                if self.completion_barrier is not None:
+                    from .assigned_barrier import AssignedCompletionWindow
+                    try:
+                        if self._completion_window is not None:raise ValueError('duplicate EOF')
+                        self._completion_window=AssignedCompletionWindow(value,self._completion_window_seconds)
+                    except (ValueError,TypeError):self._fault=self._fault or {'reason':'completion_notice_invalid'}
+                self._phase='completing'
             elif event=='cancelled':self._phase='cancelling'
             else:self._fault=self._fault or {'reason':'sender_job_failed'}
         if self.prompt.channel.state in ('uncertain','disconnected') or self.prompt.receive_hub.fault or self.prompt.frame_writer.fault:
@@ -200,6 +223,8 @@ class AssignedJobBackend:
             self._fault=self._fault or {'reason':'sender_fault_or_disconnect'}
         if self._fault:
             self._phase='outcome_unknown';self.checkpoint=None;self.witness.invalidate_resume()
+        elif self._phase=='completing' and self.completion_barrier is not None:
+            self._finish_lifecycle(state)
         elif self._phase=='completing' and state==self.sender.STATE_OPERATIONAL:
             # Provider must independently establish the final barrier. The EOF
             # callback and Operational state are not movement completion evidence.
@@ -209,6 +234,53 @@ class AssignedJobBackend:
                 self.checkpoint=None;self.witness.invalidate_resume()
             else:
                 if self._evidence_valid(proven,'completed',self._start_operation_id):self._phase='completed'
+
+    def _completion_file(self):
+        cursor=self.sender.getFilePosition()
+        if not cursor or cursor.get('origin')!='local' or Path(cursor.get('filename','')).resolve()!=self.path:
+            raise RequestRejected('completion_file_identity_changed')
+        data=self._read_bounded(self.path)
+        if hashlib.sha256(data).hexdigest()!=self.sha256 or cursor.get('pos')!=len(data):
+            raise RequestRejected('completion_file_hash_or_cursor_unqualified')
+
+    def _finish_lifecycle(self,state):
+        try:
+            window=self._completion_window;now=self.clock()
+            if window is None or not window.observed_at<=now<window.deadline:
+                raise RequestRejected('completion_lifecycle_window_expired')
+            if state!=self.sender.STATE_OPERATIONAL:return
+            self._completion_file()
+            with self.machine_events.journal._db() as db:
+                row=db.execute('SELECT status FROM operations WHERE operation_id=?',(self._start_operation_id,)).fetchone()
+            if row is not None and row['status']=='running':return
+            if row is None or row['status']!='completed':
+                raise RequestRejected('completed_start_receipt_required')
+            marker=self._barrier_evidence(self._start_operation_id,'completed')
+            if marker is None:return
+            proof=self.evidence.completed(self.identity(),self._start_operation_id)
+            if not self._evidence_valid(proof,'completed',self._start_operation_id,deadline=window.deadline):return
+            if not window.observed_at<=proof.observed_at:
+                raise RequestRejected('completion_provider_before_eof')
+            marker=self._barrier_evidence(self._start_operation_id,'completed')
+            if marker is None:return
+            if marker.get('identity')!=self.identity() or marker.get('operation_id')!=self._start_operation_id:
+                raise RequestRejected('completion_marker_job_identity_changed')
+            result=dict(identity=self.identity(),start_operation_id=self._start_operation_id,
+                completion_window=window.record(),marker=marker,external_evidence=dict(source=proof.source,
+                    scope=proof.scope,observed_at=proof.observed_at),physical_control_qualified=False)
+            # This is a durable historical evidence input, not restored authority.
+            sequence=self.machine_events.journal.record_observation(dict(event='completion_evidence_observed',
+                **result),source='job.inspect',now=self.clock())
+            if self.sender.getState()!=self.sender.STATE_OPERATIONAL:
+                raise RequestRejected('completion_identity_changed_during_commit')
+            self._completion_file()
+            marker=self._barrier_evidence(self._start_operation_id,'completed')
+            if marker is None:raise RequestRejected('completion_marker_lost_during_commit')
+            result['observation_sequence']=sequence
+            self._completion_result=result;self._phase='completed'
+        except Exception as exc:
+            self._fault=self._fault or {'reason':'completion_lifecycle_unqualified','detail':str(exc)[:128]}
+            self._phase='outcome_unknown';self.checkpoint=None;self.witness.invalidate_resume()
 
     def identity(self):
         return dict(printer_id=self.printer_id,generation=self.generation,host_session=self.host_session,
@@ -478,6 +550,7 @@ class AssignedJobBackend:
                     observed_at=context.observed_at,evidence_type='assigned_sender_with_external_qualification',
                     job_id=self.job_id,file_sha256=self.sha256,job_state=self._phase,staged=self._staged,
                     sender_state=self.sender.getStateString(),evidence_scope=self.evidence_kind,
+                    completion_evidence=json.loads(json.dumps(self._completion_result)),
                     resumable=paused and not blockers,resume_blockers=blockers,blocking_fault=self._fault,
                     physical_control_qualified=False,external_evidence_provider_required=True,
                     prompt_pump=dict(started=self._pump_started,running=bool(self._pump_thread and self._pump_thread.is_alive()),
@@ -488,6 +561,8 @@ class AssignedJobBackend:
         return dict(scope='experimental_assigned_job_adapter',physical_control_qualified=False,
                     pause_cancel_barrier_enabled=self.completion_barrier is not None,
                     resume_completion_barrier_enabled=self.completion_barrier is not None,
+                    lifecycle_completion_barrier_enabled=self.completion_barrier is not None,
+                    completion_window_seconds=self._completion_window_seconds if self.completion_barrier is not None else None,
                     external_evidence_provider_required=True,evidence_scope=self.evidence_kind,
                     coordinated_prompt_pump_supported=True,
                     automatic_resend_supported=False,timeout_ack_credit_supported=False,

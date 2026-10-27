@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-27",
+  "scope": "final lifecycle completion source qualification; physical provider remains unfinished",
+  "source_commit": "46d740beba35f51fa9169b7ba25fe7d2928fa627",
+  "linux": {
+    "passed": 233,
+    "skipped": 0,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 214.73,
+    "xml_sha256": "cde3a927c77c41ff508247931b386d86eb850612b7faf4ff84ac24bb5c62c74e"
+  },
+  "mac": {
+    "passed": 215,
+    "skipped": 18,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 3.82,
+    "xml_sha256": "0407de0b5b91151b88118e3d2ba7e4729a7e742e82e2cdab2f127449b4ab26d4"
+  },
+  "source_inputs_matched": 153,
+  "native_inputs_verified": 16,
+  "native_source_commit": "0f8d1ca1055b9030cabf6ff8e3a6762fdb4dfee7",
+  "window": {
+    "origin": "original assigned sender file-done callback timestamp",
+    "default_seconds": 30,
+    "maximum_seconds": 120,
+    "may_extend_command_deadlines": false
+  },
+  "scenarios": {
+    "late_job_completion": {
+      "moves_once": 80,
+      "final_marker_after_start_deadline": true,
+      "original_start_receipt_preserved": true
+    },
+    "missing_final_marker": {
+      "moves_once": 80,
+      "job_state": "outcome_unknown",
+      "completion_evidence": null
+    },
+    "plain_and_numbered": {
+      "fresh_resume_and_final_marker": true,
+      "moves_once": 80
+    },
+    "native_handlers": {
+      "prompt_frames": 4,
+      "sampling": "hardware stubs",
+      "movement_M400_M118": "pinned virtual printer"
+    }
+  },
+  "admission_requires": [
+    "completed original start receipt",
+    "same staged file hash and end cursor",
+    "unchanged job/host/connection/capture identity",
+    "new source-correlated final marker",
+    "external completion proof",
+    "source/freshness/file rechecks after callbacks and persistence"
+  ],
+  "unit_refusals": [
+    "expired original callback window cannot be refreshed by late polling",
+    "finishing time consumes the same window",
+    "marker alone cannot replace external proof",
+    "duplicate completion callback",
+    "foreign or changed file",
+    "file switch during provider callback",
+    "slow provider expires marker",
+    "lifecycle window cannot extend a command deadline"
+  ],
+  "durable_record": "historical completion_evidence_observed input; never restored live authority",
+  "export_checks_passed": 9,
+  "installed_package_tested": false,
+  "full_suite_repeated": false,
+  "physical_printer_access": false,
+  "camera_access": false,
+  "firmware_flashed": false,
+  "physical_provider_implemented": false,
+  "remaining": [
+    "configuration identity, physically bounded preflight and continuity provider",
+    "installed board/processor/screen/bootloader/firmware qualification",
+    "negative nozzle-temperature diagnosis and development commissioning",
+    "nonprinting hardware demonstration and separate post-repair printing qualification"
+  ]
+}

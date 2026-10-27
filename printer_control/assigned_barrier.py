@@ -5,6 +5,7 @@ The caller supplies its qualified firmware profile and queues through its existi
 sender. Original source capture and actual complete-frame writes establish the
 correlation; sender callbacks and ok responses do not establish completion.
 """
+from dataclasses import dataclass
 import hashlib
 import json
 import math
@@ -15,6 +16,25 @@ import uuid
 
 from .assigned_observations import AssignedMachineEventRecorder
 from .journal import RequestRejected
+
+
+@dataclass(frozen=True)
+class AssignedCompletionWindow:
+    """Internal bounded EOF evidence window; never extends command deadlines."""
+    observed_at: float
+    seconds: float
+
+    def __post_init__(self):
+        if (type(self.observed_at) not in (int,float) or not math.isfinite(self.observed_at) or self.observed_at<0
+                or type(self.seconds) not in (int,float) or not math.isfinite(self.seconds) or not 0<self.seconds<=120
+                or not math.isfinite(self.deadline) or self.deadline<=self.observed_at):
+            raise ValueError('bounded completion lifecycle window required')
+
+    @property
+    def deadline(self):return self.observed_at+self.seconds
+
+    def record(self):return dict(source='assigned_sender_eof_callback',observed_at=self.observed_at,
+        seconds=self.seconds,deadline=self.deadline)
 
 
 class AssignedCompletionBarrier:
@@ -62,7 +82,7 @@ class AssignedCompletionBarrier:
         with self.recorder.journal._db() as db:
             row = db.execute('SELECT request,status FROM operations WHERE operation_id=?',
                 (action['operation_id'],)).fetchone()
-        permitted = ('running','completed') if action['phase'] == 'completed' else ('running',)
+        permitted = ('completed',) if action['phase'] == 'completed' else ('running',)
         if row is None or row['status'] not in permitted or json.loads(row['request']) != action['request']:
             raise RequestRejected('barrier_operation_no_longer_authorized')
 
@@ -105,7 +125,7 @@ class AssignedCompletionBarrier:
                 for write in self._active['writes']:
                     if write['sequence'] == sequence: write['confirmed'] = True
 
-    def dispatch(self, operation_id, phase, identity, enqueue):
+    def dispatch(self, operation_id, phase, identity, enqueue, *, completion_window=None):
         """Persist once, then enqueue two fixed commands through the owned sender.
 
         enqueue is an internal sender adapter, never a caller-supplied tool value.
@@ -126,6 +146,10 @@ class AssignedCompletionBarrier:
             recorder = self.recorder
             if identity['printer_id'] != recorder._printer_id or identity['generation'] != recorder._connection_generation:
                 raise RequestRejected('barrier_connection_identity_mismatch')
+            if (phase=='completed') != (type(completion_window) is AssignedCompletionWindow):
+                raise RequestRejected('completion_window_only_for_final_lifecycle')
+            if phase!='completed' and completion_window is not None:
+                raise RequestRejected('command_deadline_cannot_be_overridden')
             identity = dict(identity)
             now = self._now()
             token = uuid.uuid4().hex
@@ -133,15 +157,22 @@ class AssignedCompletionBarrier:
                 row = db.execute('SELECT request,status FROM operations WHERE operation_id=?',(operation_id,)).fetchone()
                 if row is None: raise RequestRejected('journaled_barrier_operation_required')
                 request = json.loads(row['request'])
-                if (row['status'] not in (('running','completed') if phase == 'completed' else ('running',)) or request['operation'] != self.PHASE_OPERATIONS[phase]
+                if (row['status'] not in (('completed',) if phase == 'completed' else ('running',)) or request['operation'] != self.PHASE_OPERATIONS[phase]
                         or request['printer_id'] != identity['printer_id']
                         or request['connection_generation'] != identity['generation']
                         or request['arguments'] != {'job_id': identity['job_id']}
-                        or now >= request['deadline']):
+                        or phase!='completed' and now >= request['deadline']):
                     raise RequestRejected('barrier_operation_identity_or_deadline_mismatch')
+                deadline=request['deadline']
+                if phase=='completed':
+                    claimed=db.execute("SELECT MIN(observed_at) FROM events WHERE operation_id=? AND status='running'",(operation_id,)).fetchone()[0]
+                    if (claimed is None or not claimed<=completion_window.observed_at<=now<completion_window.deadline):
+                        raise RequestRejected('completion_window_stale_or_before_start')
+                    deadline=completion_window.deadline
                 cursor = db.execute('SELECT MAX(sequence) FROM machine_events').fetchone()[0] or 0
                 intent = dict(operation_id=operation_id,phase=phase,identity=identity,token=token,
-                    capture_id=recorder.capture_id,started_at=now,deadline=request['deadline'],after=cursor,request=request)
+                    capture_id=recorder.capture_id,started_at=now,deadline=deadline,after=cursor,request=request)
+                if completion_window is not None:intent['completion_window']=completion_window.record()
                 try:
                     db.execute('INSERT INTO assigned_barriers VALUES (?,?,?,?,?,?)',
                         (operation_id,phase,token,recorder.journal._encode(intent),'dispatching','{}'))
@@ -207,7 +238,8 @@ class AssignedCompletionBarrier:
                 result = dict(operation_id=action['operation_id'],phase=action['phase'],identity=action['identity'],
                     token=action['token'],capture_id=action['capture_id'],writes=action['writes'],receipt=receipt,
                     evidence_type='source_correlated_firmware_barrier_marker',
-                    physical_readiness_qualified=False,resume_authorized=False)
+                    physical_readiness_qualified=False,resume_authorized=False,
+                    **({'completion_window':action['completion_window']} if 'completion_window' in action else {}))
                 with self.recorder.journal._db() as db:
                     db.execute("UPDATE assigned_barriers SET status='completed',result=? WHERE token=?",
                         (self.recorder.journal._encode(result),action['token']))

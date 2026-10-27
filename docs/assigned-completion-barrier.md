@@ -67,13 +67,39 @@ The ordinary checkpoint provider still reads private virtual-peer fields and
 identifies its scope as software-only. The marker does not replace motor, sensor,
 configuration or part-continuity qualification.
 
+## Final print completion
+
+The pinned sender's file-done callback can precede movement drain. Its assigned
+callback wrapper timestamps the original callback without waiting on controller
+or database locks. A final completion window is measured from that timestamp,
+not from a later status poll. The optional attachment accepts
+`completion_window_seconds` (30 seconds by default, strictly positive and at most
+120). These are software evidence timeouts, not a qualified physical motion policy.
+
+After the sender reaches Operational, the backend verifies the same private
+staged file, original hash and end cursor. It requires the original job.start
+receipt to be completed, then persists a fresh final marker intent using that
+operation/job identity and the separate lifecycle window. A completed start's
+old dispatch deadline is preserved; no pause/resume/cancel deadline can use this
+window. The original start claim must precede the callback timestamp. A fast job
+may wait for its start receipt without refreshing the callback window.
+
+Final state stays completing until both the source marker and external completion
+proof qualify. The file/identity and marker are checked again after callbacks and
+persistence. A durable historical observation records the evidence input; live
+job.inspect returns the completion evidence and its observation sequence. The
+start receipt still describes its initial transition. Missing/stale markers,
+duplicate callbacks, file changes, source loss or expiry produce outcome_unknown.
+A later poll or successor cannot create a new nonce to replay this intent.
+
+The software scenarios include completion after the original start deadline and a
+withheld final marker. A fully consumed modeled file alone does not establish
+completion. Actual motion-planner, firmware, motor/sensor/part-continuity and
+installed-printer qualification remain separate.
+
 Sender scheduling or background traffic may make the deliberately strict pair
 fail qualification. This is unknown evidence, not permission to retry or bypass
-it. Construction remains opt-in while firmware/profile qualification and a
-physical provider are unfinished. EOF completion still uses the existing external
-provider; integrating a final marker needs an explicit lifecycle evidence window,
-separate from the earlier job.start dispatch deadline. Fresh source-correlated
-resume admission is implemented; physical continuity remains separate from both the new marker and a historical pause checkpoint.
+it. Construction stays optional while the physical provider is unfinished.
 
 Pause supports continuously powered, in-place continuation only after all
 checkpoint proofs qualify. Power-loss recovery and opening the protected printer
