@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_mcp_job_pause_resume_executes_every_simulated_move_once(tmp_path):
     async def scenario():
         params = StdioServerParameters(command=sys.executable,
-            args=[str(ROOT/'tests/octoprint_virtual_smoke.py'), '--mcp', '--journal', str(tmp_path/'job.sqlite')], cwd=str(ROOT))
+            args=[str(ROOT/'tests/octoprint_virtual_smoke.py'), '--mcp', '--pause-fixture', '--journal', str(tmp_path/'job.sqlite')], cwd=str(ROOT))
         async with stdio_client(params) as (incoming, outgoing):
             async with ClientSession(incoming, outgoing, read_timeout_seconds=20.) as client:
                 await client.initialize()
@@ -52,6 +52,7 @@ def test_mcp_job_pause_resume_executes_every_simulated_move_once(tmp_path):
                 assert pause_status['resume_request_available'] and not pause_status['resume_authorized']
                 assert pause_status['resume_gate']=='fresh_recheck_required'
                 before = paused['simulation_evidence']['completed_moves']
+                assert 0 < before < 80, 'pause must occur mid-stream'
                 await asyncio.sleep(.5)
                 assert (await read())['simulation_evidence']['completed_moves'] == before
                 await submit('job.resume')
