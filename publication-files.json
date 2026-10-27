@@ -340,6 +340,10 @@
     "printer_control/checkpoint_inspection.py",
     "tests/test_checkpoint_inspection.py",
     "validation/checkpoint-inspection-stage147.json",
-    "docs/physical-provider-plan.md"
+    "docs/physical-provider-plan.md",
+    "docs/configuration-report.md",
+    "printer_control/configuration_report.py",
+    "tests/test_configuration_report.py",
+    "validation/configuration-report-stage149.json"
   ]
 }

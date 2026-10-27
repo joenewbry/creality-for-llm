@@ -38,7 +38,7 @@ class AssignedCompletionWindow:
 
 
 class AssignedCompletionBarrier:
-    PHASE_OPERATIONS = {'paused': 'job.pause', 'completed': 'job.start', 'cancelled': 'job.cancel', 'resuming': 'job.resume'}
+    PHASE_OPERATIONS = {'paused': 'job.pause', 'completed': 'job.start', 'cancelled': 'job.cancel', 'resuming': 'job.resume', 'configuration': 'printer.configuration.inspect'}
 
     def __init__(self, recorder):
         if type(recorder) is not AssignedMachineEventRecorder:
@@ -111,7 +111,7 @@ class AssignedCompletionBarrier:
                 action['fault'] = action['fault'] or 'barrier_write_outside_deadline'
             command = self._command(data)
             index = action['begun']
-            if index < 2 and command == action['commands'][index]:
+            if index < len(action['commands']) and command == action['commands'][index]:
                 action['begun'] += 1
                 action['writes'].append(dict(sequence=sequence,started_at=now,
                     sha256=hashlib.sha256(data).hexdigest(),confirmed=False,
@@ -132,7 +132,7 @@ class AssignedCompletionBarrier:
                     if write['sequence'] == sequence: write['confirmed'] = True
 
     def dispatch(self, operation_id, phase, identity, enqueue, *, completion_window=None):
-        """Persist once, then enqueue two fixed commands through the owned sender.
+        """Persist once, then enqueue the fixed command group through the owned sender.
 
         enqueue is an internal sender adapter, never a caller-supplied tool value.
         A failed/interrupted enqueue leaves a non-replayable durable intent.
@@ -160,6 +160,8 @@ class AssignedCompletionBarrier:
             identity = dict(identity)
             now = self._now()
             token = uuid.uuid4().hex
+            commands=('M400','M118 E1 LLM_BARRIER_'+token)
+            if phase=='configuration':commands+=('M115','M503','M118 E1 LLM_CONFIG_END_'+token)
             with recorder.journal._db() as db:
                 row = db.execute('SELECT request,status FROM operations WHERE operation_id=?',(operation_id,)).fetchone()
                 if row is None: raise RequestRejected('journaled_barrier_operation_required')
@@ -178,15 +180,15 @@ class AssignedCompletionBarrier:
                     deadline=completion_window.deadline
                 cursor = db.execute('SELECT MAX(sequence) FROM machine_events').fetchone()[0] or 0
                 intent = dict(operation_id=operation_id,phase=phase,identity=identity,token=token,
-                    capture_id=recorder.capture_id,started_at=now,deadline=deadline,after=cursor,request=request)
+                    capture_id=recorder.capture_id,started_at=now,deadline=deadline,after=cursor,request=request,commands=commands)
                 if completion_window is not None:intent['completion_window']=completion_window.record()
                 try:
                     db.execute('INSERT INTO assigned_barriers VALUES (?,?,?,?,?,?)',
                         (operation_id,phase,token,recorder.journal._encode(intent),'dispatching','{}'))
                 except Exception as exc:
                     raise RequestRejected('barrier_intent_not_new') from exc
-            self._active = dict(intent,commands=('M400','M118 E1 LLM_BARRIER_'+token),
-                begun=0,writes=[],fault=None,receipt=None)
+            self._active = dict(intent,commands=commands,
+                begun=0,writes=[],fault=None,receipt=None,end_receipt=None)
             # Commit latency may consume the deadline or ownership.
             try:
                 self._check_source()
@@ -202,6 +204,15 @@ class AssignedCompletionBarrier:
             with self._lock: self._active['fault'] = self._active['fault'] or 'barrier_enqueue_interrupted'
             raise
         return token
+
+    def retire_configuration(self, operation_id):
+        """Release a completed read interval before future ordinary job writes."""
+        with self._lock:
+            proof=self.poll()
+            if proof is None or proof['operation_id']!=operation_id or proof['phase']!='configuration':
+                raise RequestRejected('completed_configuration_interval_required')
+            self._active=None
+            return proof
 
     def authorize_inspection(self, operation_id, child_id, wire_request):
         """Permit one exact prompt-lane inspect after a fresh completed marker.
@@ -269,7 +280,11 @@ class AssignedCompletionBarrier:
                     event = row['event']
                     if event['kind'] != 'serial_line_received': continue
                     raw = event['data']['text'].encode('ascii')
-                    if raw.rstrip(b'\r\n') != ('echo:LLM_BARRIER_'+action['token']).encode(): continue
+                    marker=raw.rstrip(b'\r\n')
+                    is_end=(action['phase']=='configuration' and marker==('echo:LLM_CONFIG_END_'+action['token']).encode())
+                    if not is_end and marker!=('echo:LLM_BARRIER_'+action['token']).encode():continue
+                    key='end_receipt' if is_end else 'receipt'
+                    write_index=4 if is_end else 1
                     provenance = event['data'].get('receive_provenance',{})
                     arrival = event['observed_at']
                     writes = action['writes']
@@ -279,10 +294,10 @@ class AssignedCompletionBarrier:
                         and provenance.get('printer_id') == self.recorder._printer_id
                         and provenance.get('connection_generation') == self.recorder._connection_generation
                         and provenance.get('sha256') == hashlib.sha256(raw).hexdigest()
-                        and len(writes) == 2 and writes[1]['started_at'] <= arrival < action['deadline'])
-                    if not valid or action['receipt'] is not None:
+                        and len(writes)>write_index and writes[write_index]['started_at'] <= arrival < action['deadline'])
+                    if not valid or action[key] is not None:
                         action['fault'] = action['fault'] or 'barrier_marker_invalid_or_replayed'
-                    else: action['receipt'] = dict(event_sequence=row['sequence'],observed_at=arrival,provenance=provenance)
+                    else: action[key] = dict(event_sequence=row['sequence'],observed_at=arrival,provenance=provenance)
                 action['after'] = page['next_after']
                 now = self._now()
                 if now < action['started_at'] or now >= action['deadline']:
@@ -290,10 +305,15 @@ class AssignedCompletionBarrier:
                 receipt = action['receipt']
                 if receipt and not 0 <= now-receipt['observed_at'] <= max_age:
                     action['fault'] = action['fault'] or 'barrier_marker_stale'
+                end=action.get('end_receipt')
+                if end and not 0<=now-end['observed_at']<=max_age:action['fault']=action['fault'] or 'configuration_end_marker_stale'
+                if end and (receipt is None or end['event_sequence']<=receipt['event_sequence']):action['fault']=action['fault'] or 'configuration_marker_order_invalid'
                 if action['fault']: raise RequestRejected(action['fault'])
-                if not receipt or len(action['writes']) != 2 or not all(w['confirmed'] for w in action['writes']): return None
+                if (not receipt or len(action['writes'])!=len(action['commands']) or not all(w['confirmed'] for w in action['writes'])
+                        or action['phase']=='configuration' and end is None):return None
                 result = dict(operation_id=action['operation_id'],phase=action['phase'],identity=action['identity'],
                     token=action['token'],capture_id=action['capture_id'],writes=action['writes'],receipt=receipt,
+                    **({'end_receipt':end} if end is not None else {}),
                     evidence_type='source_correlated_firmware_barrier_marker',
                     physical_readiness_qualified=False,resume_authorized=False,
                     **({'inspection':action['inspection']} if 'inspection' in action else {}),
@@ -305,7 +325,8 @@ class AssignedCompletionBarrier:
                 self._check_source()
                 self._check_operation(action)
                 now = self._now()
-                if not 0 <= now-receipt['observed_at'] <= max_age or now >= action['deadline']:
+                if (not 0 <= now-receipt['observed_at'] <= max_age or now >= action['deadline']
+                        or end is not None and not 0<=now-end['observed_at']<=max_age):
                     raise RequestRejected('barrier_expired_during_commit')
                 action['completed'] = True
                 return json.loads(json.dumps(result))

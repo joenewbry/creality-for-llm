@@ -1,0 +1,72 @@
+{
+  "linux": {
+    "passed": 423,
+    "skipped": 0,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 268.001,
+    "xml_sha256": "4939bbb4c48b15a633d2742d6f4217489a095de91da25ec4cab78ed0cc7d4ff4"
+  },
+  "mac": {
+    "passed": 392,
+    "skipped": 31,
+    "failures": 0,
+    "errors": 0,
+    "seconds": 6.229,
+    "xml_sha256": "9ce710cf41289b006be73e6df7efff7f6b94193ef3187b1b646dfddd2b8c83c2"
+  },
+  "schema_version": 1,
+  "date": "2026-10-27",
+  "source_commit": "3b14096a44a53f90d754fd513af5b75998a4e34d",
+  "scope": "same focused source cohort; synthetic M115/M503 replies through actual owned primitives and official protocol client",
+  "source_inputs_matched": 165,
+  "new_configuration_tests": 20,
+  "export_checks": 9,
+  "tool": "printer.configuration.inspect",
+  "supported_phase": "bound idle sender before first job only",
+  "fixed_commands": [
+    "M400",
+    "unique M118 begin marker",
+    "M115",
+    "M503",
+    "unique M118 end marker"
+  ],
+  "transcript_max_bytes": 16384,
+  "transcript_max_lines": 256,
+  "original_marker_max_age_seconds": 1,
+  "configuration_identity_complete": false,
+  "firmware_binary_identity_verified": false,
+  "physical_readiness_qualified": false,
+  "resume_authorized": false,
+  "physical_printers_accessed": false,
+  "firmware_flashed": false,
+  "camera_scope": "deferred",
+  "firmware_source_review": "0f8d1ca; MarlinSettings::report and G-code inactivity fields",
+  "verified_behaviors": [
+    "durable exact command intent before enqueue",
+    "plain and numbered complete-frame evidence",
+    "both ordered markers and interior source provenance required",
+    "missing, replayed, partial, interleaved, stale or changed-scope replies remain unknown",
+    "controller-loop progress and late result collection",
+    "exact-byte transcript versus canonical reported-settings digest",
+    "one fixed tool with no raw command/path/settings-write input",
+    "post-persistence source/deadline check and finite trace retirement",
+    "lost workflow tokens cannot replay commands"
+  ],
+  "remaining": [
+    "runtime timeout and profile-specific configuration coverage",
+    "post-drain configuration sampling",
+    "known artifact and target identity",
+    "actual physical provider and startup checker",
+    "Mac transport/runtime qualification",
+    "sensor diagnosis and development-only commissioning",
+    "separate post-repair printing qualification"
+  ],
+  "limitations": [
+    "M503 reported RAM settings are not complete live configuration",
+    "M115 declaration is not binary or board attestation",
+    "new report replies are synthetic; no complete physical M503 execution",
+    "existing native/sender checks are separate regression coverage",
+    "no new installed-package/full-suite qualification"
+  ]
+}

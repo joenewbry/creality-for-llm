@@ -38,6 +38,10 @@ Pre-open evidence must come from trusted operator/qualification sources, without
 opening a printer prematurely. After a qualified connection opens, observe and
 verify the actual firmware/configuration before enabling job actions. These are
 two separate admissions. A stale journal entry cannot substitute for either.
+The optional [owned firmware/settings collector](configuration-report.md) now
+supplies a reported baseline before the first job. Its digest does not establish
+complete runtime configuration, installed binary or physical readiness. Idle
+timers, profile coverage and post-drain collection remain separate gaps.
 The current stock firmware does not supply the new LLM_MACHINE_STATE report;
 that source path needs the separately qualified candidate installation.
 
@@ -76,7 +80,7 @@ operations by itself. No LLM tool may install a qualification or waive a fault.
 
 ## Delivery evidence and remaining demonstration
 
-The latest focused source cohort passes 403 Linux checks and 372 Mac checks,
+The earlier post-drain source cohort passes 403 Linux checks and 372 Mac checks,
 with 31 Linux-only Mac skips. It uses the actual shared writer/capture/channel/
 journal/backend and synthetic source/physical inputs. It does not implement this
 physical provider or qualify the connected printer. The earlier installed-package
