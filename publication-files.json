@@ -335,6 +335,10 @@
     "validation/cold-preflight-stage145.json",
     "printer_control/assigned_inspection.py",
     "tests/test_assigned_inspection.py",
-    "validation/fresh-inspection-stage146.json"
+    "validation/fresh-inspection-stage146.json",
+    "docs/checkpoint-inspection.md",
+    "printer_control/checkpoint_inspection.py",
+    "tests/test_checkpoint_inspection.py",
+    "validation/checkpoint-inspection-stage147.json"
   ]
 }
