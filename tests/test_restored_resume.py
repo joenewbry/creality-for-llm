@@ -57,7 +57,7 @@ def test_resume_handoff_is_durable_rechecked_and_one_use(tmp_path,hot):
     with service:
         receipt=service.submit(request)
         assert receipt['status']=='running'
-        assert calls==['observe','observe','resume']
+        assert calls==['observe','observe','observe','resume']
         assert service.submit(request)==receipt
         assert service.poll(receipt['operation_id'])['status']=='completed'
         assert restore.status=='resumed' and service._restore is None
@@ -67,17 +67,21 @@ def test_resume_handoff_is_durable_rechecked_and_one_use(tmp_path,hot):
         assert restore.receipt()['result']['resume_result']['evidence_type']=='stub_printing_transition'
 
 
-def test_temperature_loss_between_validation_and_dispatch_prevents_resume(tmp_path):
+@pytest.mark.parametrize('lost_at,expected_status', [(2, 'failed'), (3, 'outcome_unknown')])
+def test_temperature_loss_between_validation_and_dispatch_prevents_resume(tmp_path,lost_at,expected_status):
     service,restore,request,calls=ready(tmp_path/'journal',hot=True)
     with service:
         acquire=service.backend.restored_resume_evidence
         def drift(plan):
             result=acquire(plan)
-            if len(calls)==2:result['thermal']['nozzle_actual']=180
+            if len(calls)==lost_at:result['thermal']['nozzle_actual']=180
             return result
         service.backend.restored_resume_evidence=drift
         receipt=service.submit(request)
-        assert receipt['status']=='outcome_unknown'  # claimed but not dispatched
+        assert receipt['status']==expected_status
+        if lost_at==2:
+            assert receipt['result']['dispatched'] is False
+        assert service.submit(request)==receipt
         assert 'resume' not in calls
         assert restore.invalidated and service._thermal_pause.policy.state=='invalid'
         assert service.backend.witness.allow_job_commands is False
